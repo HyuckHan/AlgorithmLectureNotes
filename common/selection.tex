@@ -1,0 +1,17 @@
+% Shared selection and order-statistics styles.
+\tikzset{
+ select cell/.style={sort cell,minimum width=9mm,minimum height=8mm},
+ select pivot/.style={sort pivot,minimum width=9mm,minimum height=8mm},
+ select target/.style={sort current,minimum width=9mm,minimum height=8mm},
+ select discard/.style={sort inactive,minimum width=9mm,minimum height=8mm},
+ select active/.style={sort active,minimum width=9mm,minimum height=8mm},
+ group box/.style={draw=AlgoRule,rounded corners,thick,inner sep=2mm},
+ group median/.style={select cell,draw=AlgoOrange,very thick,fill=AlgoOrange!20},
+ mom/.style={select cell,draw=AlgoOrange,ultra thick,double,fill=AlgoOrange!35},
+ guaranteed less/.style={select cell,draw=AlgoBlue,very thick,fill=AlgoBlue!12},
+ guaranteed greater/.style={select cell,draw=AlgoBlueTwo,very thick,fill=AlgoBlueTwo!18},
+ unknown/.style={select cell,draw=AlgoGray,fill=AlgoGray!12},
+ recurrence term/.style={draw=AlgoOrange,very thick,rounded corners,fill=AlgoOrange!8,align=center,inner sep=2.5mm}
+}
+\newcommand{\selectarray}[1]{\foreach \v [count=\i] in {#1}{\node[select cell] at ({.95*(\i-1)},0){\v};\node[font=\small,text=AlgoGray] at ({.95*(\i-1)},-.58){\i};}}
+\newcommand{\rankbadge}[1]{\tikz[baseline=-.6ex]\node[callout,inner sep=1.3mm]{rank $i=#1$};}

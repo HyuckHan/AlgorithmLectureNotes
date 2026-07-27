@@ -1,0 +1,12 @@
+% Shared recursion, listings, and foundational TikZ styles.
+\usepackage{listings}
+\lstdefinestyle{ccode}{language=C,basicstyle=\ttfamily\small,keywordstyle=\color{AlgoBlue}\bfseries,commentstyle=\color{AlgoGray},stringstyle=\color{AlgoOrange},showstringspaces=false,columns=fullflexible,keepspaces=true,frame=single,rulecolor=\color{AlgoRule},backgroundcolor=\color{AlgoLight},xleftmargin=2mm,xrightmargin=2mm,aboveskip=1mm,belowskip=1mm}
+\lstset{style=ccode}
+\tikzset{stack/.style={draw=AlgoBlue,rounded corners,fill=AlgoLight,minimum width=4cm,minimum height=.65cm},
+ peg/.style={draw=AlgoBlue,very thick},disk/.style={draw=AlgoBlue,fill=AlgoOrange!25,rounded corners=1pt,minimum height=.22cm},
+ wall/.style={fill=AlgoBlue},open/.style={fill=white,draw=AlgoRule},visited/.style={fill=AlgoGray!30,draw=AlgoGray},path/.style={fill=AlgoOrange!35,draw=AlgoOrange,very thick},dead/.style={pattern=north east lines,pattern color=AlgoGray,draw=AlgoGray},
+ pixel/.style={fill=AlgoOrange!70,draw=AlgoOrange},counted/.style={fill=AlgoOrange!25,draw=AlgoOrange,very thick},
+ tree node/.style={draw=AlgoRule,rounded corners,fill=white,font=\small,inner sep=2.5pt,minimum height=6mm},chosen/.style={tree node,draw=AlgoOrange,very thick,fill=AlgoOrange!15},
+ alt/.code args={<#1>#2#3}{\alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}}}}
+\newcommand{\threeparts}[3]{\begin{description}\item[Base]#1\item[Recurse]#2\item[Progress]#3\end{description}}
+\newcommand{\gridcell}[3]{\node[#3,minimum size=.72cm] at (#2,-#1) {};}

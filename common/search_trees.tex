@@ -1,0 +1,35 @@
+% Shared search-tree styles.
+\tikzset{
+ callout/.append style={align=center},
+ tree node/.append style={align=center},
+ st node/.style={circle,draw=AlgoBlue,thick,fill=white,minimum size=7.5mm,font=\small,inner sep=1pt,align=center},
+ st current/.style={st node,draw=AlgoOrange,ultra thick,fill=AlgoOrange!22},
+ st done/.style={st node,draw=AlgoBlueTwo,thick,fill=AlgoBlue!10},
+ st inactive/.style={st node,draw=AlgoGray,text=AlgoGray,fill=AlgoGray!10},
+ st violation/.style={st node,draw=red!75!black,ultra thick,fill=red!12},
+ st nil/.style={rectangle,draw=AlgoGray,fill=AlgoGray!12,font=\tiny,minimum width=8mm,minimum height=4mm},
+ st edge/.style={thick,draw=AlgoRule},
+ st active edge/.style={ultra thick,draw=AlgoOrange,-Latex},
+ st parent edge/.style={thick,draw=AlgoBlueTwo,-Latex,dashed},
+ avl node/.style={st node,minimum size=8mm},
+ rb red/.style={circle,draw=red!75!black,ultra thick,fill=red!13,minimum size=10.5mm,font=\small\bfseries,align=center},
+ rb black/.style={circle,draw=AlgoBlue,ultra thick,fill=AlgoBlue!14,minimum size=10.5mm,font=\small\bfseries,align=center},
+ bnode/.style={draw=AlgoBlue,very thick,rounded corners=1pt,fill=white,minimum height=11mm,font=\large,inner xsep=4mm},
+ bcurrent/.style={bnode,draw=AlgoOrange,ultra thick,fill=AlgoOrange!15},
+ bpromote/.style={bnode,draw=AlgoOrange,ultra thick,double,fill=AlgoOrange!25},
+ bmerge/.style={bnode,draw=AlgoBlueTwo,ultra thick,fill=AlgoBlue!12},
+ page mark/.style={draw=AlgoGray,rounded corners,fill=AlgoGray!8,inner sep=1.5mm}
+}
+\newcommand{\NIL}{\mathrm{NIL}}
+\newcommand{\treelegend}{\tikz[baseline=-.6ex]\node[st current,minimum size=5mm]{};\ current\quad
+\tikz[baseline=-.6ex]\node[st done,minimum size=5mm]{};\ processed\quad
+\tikz[baseline=-.6ex]\node[st inactive,minimum size=5mm]{};\ inactive}
+\newcommand{\travtree}[7]{%
+\begin{tikzpicture}[x=1.25cm,y=1cm]
+\coordinate(ta)at(0,0);\coordinate(tb)at(-2,-1);\coordinate(tc)at(2,-1);
+\coordinate(td)at(-3,-2);\coordinate(te)at(-1,-2);\coordinate(tf)at(1,-2);\coordinate(tg)at(3,-2);
+\draw[st edge](ta)--(tb)(ta)--(tc)(tb)--(td)(tb)--(te)(tc)--(tf)(tc)--(tg);
+\node[st node,#1]at(ta){A};\node[st node,#2]at(tb){B};\node[st node,#3]at(tc){C};
+\node[st node,#4]at(td){D};\node[st node,#5]at(te){E};\node[st node,#6]at(tf){F};\node[st node,#7]at(tg){G};
+\end{tikzpicture}}
+\newcommand{\rbtnode}[3]{\node[#1] (#2) {#3};}
