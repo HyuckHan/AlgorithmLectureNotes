@@ -4,7 +4,7 @@
 \begin{block}{구분}discovery order \(\ne\) finish order \(\ne\) 현재 recursion stack.\end{block}
 \end{frame}
 \begin{frame}{DFS Pseudocode}
-\scriptsize
+\algofont
 \begin{algorithmic}[1]
 \Procedure{DFS}{$G$}\ForAll{$u\in V$}\State $color[u]\gets W,\ parent[u]\gets\NIL$\EndFor
 \State $time\gets0$
@@ -34,7 +34,7 @@ d&1&2&4&10&3&5&9&8\\f&16&15&7&11&14&6&12&13
 \gtakeaway{DFS tree edge는 parent relation이며 원래 graph의 모든 edge를 뜻하지 않는다.}
 \end{frame}
 \begin{frame}{Iterative DFS: Traversal Variant}
-\footnotesize\begin{algorithmic}[1]\State \Call{Push}{$S,s$}; mark \(s\) discovered
+\algofont\begin{algorithmic}[1]\State \Call{Push}{$S,s$}; mark \(s\) discovered
 \While{$S\ne\emptyset$}\State \(u\gets\Call{Pop}{S}\)
 \ForAll{\(v\in Adj[u]\) in reverse order}\If{\(v\) undiscovered}\State mark and \Call{Push}{$S,v$}\EndIf\EndFor\EndWhile\end{algorithmic}
 \begin{alertblock}{정확한 의미}tree나 단순 trace에서는 reverse push로 recursive discovery order를 재현할 수 있다. 일반 graph에서 visited-on-push 방식은 exact recursive DFS tree와 finish behavior를 보장하지 않는다.\end{alertblock}

@@ -1,24 +1,28 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{theme/beamerthemealgorithms}[2026/07/24 Repository-wide lecture theme]
+\ProvidesPackage{theme/beamerthemealgorithms}[2026/07/27 Repository-wide lecture theme]
 \RequirePackage{fontspec}
 \RequirePackage{xcolor}
+% -- Structural palette (also used as TikZ fill tints; do NOT repoint these) --
 \definecolor{AlgoBlue}{HTML}{102A43}
 \definecolor{AlgoBlueTwo}{HTML}{243B53}
-\definecolor{AlgoOrange}{HTML}{F08C46}
-\definecolor{AlgoGray}{HTML}{627D98}
+\definecolor{AlgoOrange}{HTML}{F08C46}   % fills / rules / progress bar only
+\definecolor{AlgoGray}{HTML}{627D98}      % fill tints only (AlgoGray!NN)
 \definecolor{AlgoLight}{HTML}{F5F7FA}
 \definecolor{AlgoRule}{HTML}{D9E2EC}
+% -- Text-only colors, WCAG AA on white/AlgoLight (>= 4.5:1) --
+\definecolor{AlgoOrangeText}{HTML}{B45309} % 5.02:1  (emphasis text)
+\definecolor{AlgoGrayText}{HTML}{586F86}   % 5.21:1  (muted / footer text)
 \setsansfont{Noto Sans}[Scale=0.94]
 \setmainfont{Noto Sans}[Scale=0.94]
 \IfFontExistsTF{Noto Sans CJK KR}{\newfontfamily\koreanfont{Noto Sans CJK KR}}{}
 \usetheme[progressbar=frametitle,numbering=fraction]{metropolis}
 \setbeamercolor{normal text}{fg=AlgoBlue,bg=white}
-\setbeamercolor{alerted text}{fg=AlgoOrange}
+\setbeamercolor{alerted text}{fg=AlgoOrangeText}   % was AlgoOrange (2.46:1) -> now 5.02:1
 \setbeamercolor{example text}{fg=AlgoBlueTwo}
 \setbeamercolor{frametitle}{fg=white,bg=AlgoBlue}
 \setbeamercolor{progress bar}{fg=AlgoOrange,bg=AlgoRule}
 \setbeamercolor{title separator}{fg=AlgoOrange}
-\setbeamercolor{footline}{fg=AlgoGray,bg=white}
+\setbeamercolor{footline}{fg=AlgoGrayText,bg=white}
 \setbeamercolor{block title}{fg=white,bg=AlgoBlueTwo}
 \setbeamercolor{block body}{fg=AlgoBlue,bg=AlgoLight}
 \setbeamercolor{block title alerted}{fg=white,bg=AlgoOrange}
@@ -31,6 +35,7 @@
 \setbeamerfont{author}{size=\small}
 \setbeamerfont{footline}{size=\tiny}
 \setbeamertemplate{frame footer}{Introduction to Algorithms}
-\newcommand{\keyterm}[1]{\textcolor{AlgoOrange}{\bfseries #1}}
-\newcommand{\muted}[1]{\textcolor{AlgoGray}{#1}}
+% -- Emphasis / muted text: single source of truth, accessible colors --
+\newcommand{\keyterm}[1]{\textcolor{AlgoOrangeText}{\bfseries #1}}
+\newcommand{\muted}[1]{\textcolor{AlgoGrayText}{#1}}
 \newenvironment{takeaway}{\begin{block}{Takeaway}}{\end{block}}

@@ -14,7 +14,7 @@ BFS layer invariant가 곧 shortest-path correctness다.
 \begin{alertblock}{BFS}한 edge인 \(s\to t\)를 선택하지만 weight 10. 최단 weight path는 \(s\to a\to t\), weight 2.\end{alertblock}
 \end{frame}
 \begin{frame}{DAG Shortest Paths}
-\scriptsize\begin{algorithmic}[1]
+\algofont\begin{algorithmic}[1]
 \Procedure{DAGShortestPaths}{$G,s$}\State \(order\gets\Call{TopologicalSort}{G}\)
 \State 모든 \(dist\gets\infty,\ parent\gets\NIL;\ dist[s]\gets0\)
 \ForAll{$u$ in \(order\)}\If{$dist[u]\ne\infty$}\ForAll{$(u,v,w)\in Adj[u]$}\State\Call{Relax}{$u,v,w$}\EndFor\EndIf\EndFor\EndProcedure

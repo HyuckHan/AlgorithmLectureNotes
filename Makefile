@@ -1,5 +1,5 @@
-.PHONY: all lecture01 lecture01-handout lecture02 lecture02-handout lecture03 lecture03-handout lecture04 lecture04-handout lecture05 lecture05-handout lecture06 lecture06-handout lecture07 lecture07-handout lecture08 lecture09 lecture09-handout lecture10 lecture10-handout combined combined10 combined09 combined08 combined06 combined05 combined04 combined03 clean
-all: lecture01 lecture01-handout lecture02 lecture02-handout lecture03 lecture03-handout lecture04 lecture04-handout lecture05 lecture05-handout lecture06 lecture06-handout lecture07 lecture07-handout lecture08 lecture09 lecture09-handout lecture10 lecture10-handout combined
+.PHONY: all lecture01 lecture01-handout lecture02 lecture02-handout lecture03 lecture03-handout lecture04 lecture04-handout lecture05 lecture05-handout lecture06 lecture06-handout lecture07 lecture07-handout lecture08 lecture08-handout lecture09 lecture09-handout lecture10 lecture10-handout combined combined10 combined09 combined08 combined06 combined05 combined04 combined03 clean
+all: lecture01 lecture01-handout lecture02 lecture02-handout lecture03 lecture03-handout lecture04 lecture04-handout lecture05 lecture05-handout lecture06 lecture06-handout lecture07 lecture07-handout lecture08 lecture08-handout lecture09 lecture09-handout lecture10 lecture10-handout combined
 lecture01:
 	latexmk -lualatex lecture01/lecture01.tex
 lecture01-handout:
@@ -31,6 +31,8 @@ lecture07-handout:
 	latexmk -lualatex lecture07/lecture07_handout.tex
 lecture08:
 	latexmk -lualatex lecture08/lecture08.tex
+lecture08-handout:
+	latexmk -lualatex lecture08/lecture08_handout.tex
 lecture09:
 	latexmk -lualatex lecture09/lecture09.tex
 lecture09-handout:
@@ -70,6 +72,7 @@ clean:
 	latexmk -C lecture07/lecture07.tex
 	latexmk -C lecture07/lecture07_handout.tex
 	latexmk -C lecture08/lecture08.tex
+	latexmk -C lecture08/lecture08_handout.tex
 	latexmk -C lecture09/lecture09.tex
 	latexmk -C lecture09/lecture09_handout.tex
 	latexmk -C lecture10/lecture10.tex

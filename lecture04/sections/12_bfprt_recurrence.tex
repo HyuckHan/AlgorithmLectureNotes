@@ -1,3 +1,23 @@
+\begin{frame}{왜 여기엔 Master Theorem을 못 쓰나}
+\[
+T(n)\le T\!\left(\lceil n/5\rceil\right)+T\!\left(7n/10+O(1)\right)+\Theta(n).
+\]
+두 재귀 부분문제의 \keyterm{크기가 다르다}(\(n/5\)와 \(7n/10\)).
+Lecture 2의 Master Theorem 기본형은 \emph{같은 크기} 부분문제 \(a\)개, 즉 \(a\,T(n/b)\) 꼴만 다룬다.
+\begin{center}
+\begin{tabular}{ll}\toprule
+\(a\,T(n/b)+f(n)\) & Master Theorem 적용 가능\\
+\(T(n/5)+T(7n/10)+f(n)\) & \keyterm{적용 불가} — substitution으로\\
+\bottomrule
+\end{tabular}
+\end{center}
+대신 \(T(n)\le cn\)을 가정하고 대입한다. 핵심은 부분문제 크기 합이
+\[
+\tfrac{1}{5}+\tfrac{7}{10}=\tfrac{9}{10}<1
+\]
+이라서 선형 overhead가 흡수된다는 점이다.
+\begin{takeaway}Master Theorem은 만능이 아니다. 부분문제 크기가 다르면 재귀 트리나 substitution으로 돌아간다.\end{takeaway}
+\end{frame}
 \begin{frame}{Recurrence의 세 항}
 \[T(n)\le T(\lceil n/5\rceil)+T(7n/10+O(1))+\Theta(n)\]
 \begin{columns}[T]

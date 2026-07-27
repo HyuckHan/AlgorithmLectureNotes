@@ -7,8 +7,5 @@
  pixel/.style={fill=AlgoOrange!70,draw=AlgoOrange},counted/.style={fill=AlgoOrange!25,draw=AlgoOrange,very thick},
  tree node/.style={draw=AlgoRule,rounded corners,fill=white,font=\small,inner sep=2.5pt,minimum height=6mm},chosen/.style={tree node,draw=AlgoOrange,very thick,fill=AlgoOrange!15},
  alt/.code args={<#1>#2#3}{\alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}}}}
-\newcommand{\mission}[1]{\begin{block}{Mission}#1\end{block}}
 \newcommand{\threeparts}[3]{\begin{description}\item[Base]#1\item[Recurse]#2\item[Progress]#3\end{description}}
 \newcommand{\gridcell}[3]{\node[#3,minimum size=.72cm] at (#2,-#1) {};}
-\newcommand{\sectiontakeaway}[1]{\begin{takeaway}#1\end{takeaway}}
-\newcommand{\optional}[1][Optional]{\tikz[baseline=(label.base)]\node[draw=AlgoRule,rounded corners=2pt,fill=AlgoLight,text=AlgoGray,font=\scriptsize\bfseries,inner xsep=4pt,inner ysep=2pt] (label) {#1};}

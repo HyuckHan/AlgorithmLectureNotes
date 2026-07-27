@@ -9,7 +9,7 @@
 \begin{alertblock}{해석}\texttt{pick(5,...,4)}의 의도는 \(0,\ldots,4\)에서 중복 없이 4개를 고르는 \(5P_4\) 생성으로 본다.\end{alertblock}
 \end{frame}
 \begin{frame}{Permutation Pseudocode}
-\scriptsize\begin{algorithmic}[1]
+\algofont\begin{algorithmic}[1]
 \Procedure{ChoosePermutation}{$n,k,depth,used,choice$}
 \If{\(depth=k\)}\State output \(choice[0..k-1]\); \Return\EndIf
 \For{\(value\gets0\) to \(n-1\)}
@@ -41,7 +41,7 @@ P(n,k)=\frac{n!}{(n-k)!},\qquad P(5,4)=120.
 \end{itemize}
 \end{frame}
 \begin{frame}{Combination: 순서를 제거한다}
-\scriptsize\begin{algorithmic}[1]
+\algofont\begin{algorithmic}[1]
 \Procedure{ChooseCombination}{$n,k,start,depth,choice$}
 \If{\(depth=k\)}\State output \(choice\); \Return\EndIf
 \For{\(value\gets start\) to \(n-(k-depth)\)}

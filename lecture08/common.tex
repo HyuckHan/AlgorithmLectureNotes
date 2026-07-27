@@ -23,9 +23,6 @@
  relax/.style={draw=AlgoOrange,ultra thick,rounded corners,fill=AlgoOrange!12,inner sep=2mm}
 }
 \newcommand{\ginf}{\ensuremath{\infty}}
-\newcommand{\gtakeaway}[1]{\begin{takeaway}#1\end{takeaway}}
-\newcommand{\gmission}[1]{\begin{block}{Mission}#1\end{block}}
-\newcommand{\gcheckpoint}[1]{\begin{exampleblock}{Checkpoint}#1\end{exampleblock}}
 \newcommand{\queueview}[1]{\begin{tikzpicture}[baseline=-.5ex,x=.72cm]\foreach \v [count=\i from 0] in {#1}{\node[qcell]at(\i,0){\v};}\end{tikzpicture}}
 \newcommand{\statelegend}{\tikz[baseline=-.6ex]\node[ginactive,minimum size=5mm]{W};\ undiscovered\quad
 \tikz[baseline=-.6ex]\node[gseen,minimum size=5mm]{G};\ discovered\quad

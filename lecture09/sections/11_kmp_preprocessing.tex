@@ -1,6 +1,6 @@
 \subsection{KMP Preprocessing}
 \begin{frame}{BuildLPS Pseudocode}
-\scriptsize\begin{algorithmic}[1]
+\algofont\begin{algorithmic}[1]
 \Procedure{BuildLPS}{$P$}\State \(m\gets|P|;\ lps[0]\gets0;\ len\gets0;\ i\gets1\)
 \While{\(i<m\)}
 \If{\(P[i]=P[len]\)}\State \(len\gets len+1;\ lps[i]\gets len;\ i\gets i+1\)

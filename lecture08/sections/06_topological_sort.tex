@@ -7,7 +7,7 @@
 \begin{itemize}\item valid order는 여러 개일 수 있다.\item tie/container policy에 따라 concrete order가 달라진다.\end{itemize}
 \end{frame}
 \begin{frame}{Kahn Algorithm}
-\scriptsize\begin{algorithmic}[1]
+\algofont\begin{algorithmic}[1]
 \Procedure{TopoKahn}{$G$}\State 모든 \(indegree[v]\) 계산; \(Q\gets\) indegree 0 vertices; \(order\gets[]\)
 \While{$Q\ne\emptyset$}\State \(u\gets\Call{Remove}{Q}\); append \(u\)
 \ForAll{$v\in Adj[u]$}\State \(indegree[v]\gets indegree[v]-1\)
@@ -37,7 +37,7 @@
 \begin{alertblock}{판정}zero-indegree container가 비고 \(processedCount<|V|\)이면 directed cycle. partial output을 full order로 반환하지 않는다.\end{alertblock}
 \end{frame}
 \begin{frame}{DFS Topological Sort}
-\scriptsize\begin{algorithmic}[1]
+\algofont\begin{algorithmic}[1]
 \Function{TopoVisit}{$u$}\State \(color[u]\gets G\)
 \ForAll{$v\in Adj[u]$}\If{$color[v]=G$}\State\Return CYCLE\EndIf
 \If{$color[v]=W$ \textbf{ and } \Call{TopoVisit}{$v$}=\text{CYCLE}}\State\Return CYCLE\EndIf\EndFor

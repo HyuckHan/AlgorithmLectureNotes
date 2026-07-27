@@ -21,7 +21,7 @@ currentSum+remainingSum<W
 \begin{alertblock}{음수가 있으면}초과한 합이 나중에 감소할 수 있으므로 첫 조건은 일반적으로 안전하지 않다.\end{alertblock}
 \end{frame}
 \begin{frame}{Subset Sum Pseudocode}
-\tiny\begin{algorithmic}[1]
+\algofont\begin{algorithmic}[1]
 \Procedure{SubsetSum}{$i,currentSum,remainingSum$}
 \If{\(currentSum=W\)}\State report selection; \Return\EndIf
 \If{\(i=n\lor currentSum>W\lor currentSum+remainingSum<W\)}\State\Return\EndIf

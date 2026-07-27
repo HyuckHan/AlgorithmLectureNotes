@@ -27,3 +27,17 @@
 \sortingtakeaway{max-heap의 root를 반복 추출한다. active heap과 sorted suffix의 경계를 놓치지 말자.}
 \muted{$n\log n$ 하한은 비교 결과만 사용하는 model의 한계다. Key의 범위와 digit 구조를 직접 이용하면 이 가정을 벗어날 수 있다.}
 \end{frame}
+\begin{frame}{Heap의 또 다른 얼굴: Priority Queue}
+지금까지 heap을 \emph{정렬 장치}로 봤지만, 본질은 \keyterm{Priority Queue ADT}다.
+\begin{center}
+\begin{tabular}{lll}\toprule
+연산 & 의미 & max-heap 비용\\\midrule
+\textsc{Insert}(x)      & 원소 추가            & \(\Theta(\log n)\)\\
+\textsc{ExtractMax}()   & 최댓값 제거·반환      & \(\Theta(\log n)\)\\
+\textsc{Maximum}()      & 최댓값 열람          & \(\Theta(1)\)\\
+\bottomrule
+\end{tabular}
+\end{center}
+Heapsort는 이 ADT의 \emph{한 가지 응용}일 뿐이다.
+\begin{takeaway}``동적으로 최소/최대 원소를 계속 꺼내는'' 문제라면 heap이 답이다. \keyterm{Lecture 8}의 Prim·Dijkstra와 \keyterm{Lecture 10}의 A\(^*\)가 모두 이 min-priority queue를 핵심 자료구조로 다시 쓴다.\end{takeaway}
+\end{frame}

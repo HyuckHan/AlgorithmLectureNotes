@@ -39,7 +39,7 @@ dp[i][1]&=dp[i-1][1]+M[i][1].
 \begin{alertblock}{잘못된 초기화}\texttt{if (i==1 || j==1) return M[i][j]}는 누적합이 아니라 현재 값만 반환한다.\end{alertblock}
 \end{frame}
 \begin{frame}{Naive Recursive MinPath}
-\scriptsize\begin{algorithmic}[1]
+\algofont\begin{algorithmic}[1]
 \Procedure{MinPath}{$i,j$}
 \If{$i=1$ \textbf{and} $j=1$}\State\Return $M[1][1]$\EndIf
 \If{$i=1$}\State\Return \Call{MinPath}{$1,j-1$}+$M[1][j]$\EndIf

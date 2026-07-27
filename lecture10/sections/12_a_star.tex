@@ -9,28 +9,47 @@ f(n)=g(n)+h(n).
 \]
 OPEN에서 \(f\)가 최소인 state를 확장한다. 본문은 nonnegative edge cost와 consistent heuristic을 기본 전제로 한다.
 \end{frame}
-\begin{frame}{Graph-Search A* Pseudocode}
-\tiny\begin{algorithmic}[1]
+\begin{frame}{Graph-Search A*: 메인 루프}
+\algofont
+\begin{algorithmic}[1]
 \Procedure{AStar}{$start,goal$}
-\State \(g[*]\gets\infty;\ parent[*]\gets NIL;\ closed\gets\varnothing\)
-\State \(g[start]\gets0\)
-\State \(open\gets\) min-PQ; insert \((h(start),0,start)\)
-\While{\(open\ne\varnothing\)}
-\State \((key,entryG,u)\gets ExtractMin(open)\)
-\If{\(entryG\ne g[u]\)}\State\textbf{continue}\Comment stale \(g\) snapshot\EndIf
-\If{\(u\in closed\)}\State\textbf{continue}\EndIf
-\State \(closed\gets closed\cup\{u\}\)
-\If{\(u=goal\)}\State\Return \Call{Reconstruct}{parent,goal}\EndIf
-\ForAll{\((u,v,w)\in Adj[u]\)}
-\If{\(v\in closed\)}\State\textbf{continue}\EndIf
-\State \(tentative\gets g[u]+w\)
-\If{\(tentative<g[v]\)}\State \(g[v]\gets tentative;\ parent[v]\gets u\)
-\State insert \((g[v]+h(v),g[v],v)\)\EndIf
-\EndFor\EndWhile
-\State\Return NO\_PATH
+  \State \(g[*]\gets\infty;\ parent[*]\gets NIL;\ closed\gets\varnothing\)
+  \State \(g[start]\gets0\)
+  \State \(open\gets\) min-PQ; insert \((h(start),0,start)\)
+  \While{\(open\ne\varnothing\)}
+    \State \((key,entryG,u)\gets ExtractMin(open)\)
+    \If{\(entryG\ne g[u]\)} \State \textbf{continue} \Comment{stale \(g\) snapshot} \EndIf
+    \If{\(u\in closed\)} \State \textbf{continue} \EndIf
+    \State \(closed\gets closed\cup\{u\}\)
+    \If{\(u=goal\)} \State \Return \Call{Reconstruct}{parent,goal} \EndIf
+    \State \Call{Relax}{$u$} \Comment{다음 슬라이드}
+  \EndWhile
+  \State \Return NO\_PATH
 \EndProcedure
 \end{algorithmic}
-\vspace{-3mm}\tiny\textbf{본문 정책:}\quad integer edge cost와 integer \(h\), nonnegative cost, consistent \(h\). 일반 floating-point 구현은 exact \(f\) equality 대신 저장한 \(g\) snapshot 또는 version을 검사한다.
+\vfill
+\muted{OPEN에서 \(f=g+h\)가 최소인 state를 꺼내 CLOSED로 확정한다.}
+\end{frame}
+
+\begin{frame}{Graph-Search A*: 이웃 완화(Relax)}
+\algofont
+\begin{algorithmic}[1]
+\Procedure{Relax}{$u$}
+  \ForAll{\((u,v,w)\in Adj[u]\)}
+    \If{\(v\in closed\)} \State \textbf{continue} \EndIf
+    \State \(tentative\gets g[u]+w\)
+    \If{\(tentative<g[v]\)}
+      \State \(g[v]\gets tentative;\ parent[v]\gets u\)
+      \State insert \((g[v]+h(v),\,g[v],\,v)\)
+    \EndIf
+  \EndFor
+\EndProcedure
+\end{algorithmic}
+\vfill
+\begin{block}{본문 정책}
+integer edge cost와 integer \(h\), nonnegative cost, consistent \(h\).
+일반 floating-point 구현은 exact \(f\) equality 대신 저장한 \(g\) snapshot(또는 version)을 검사한다.
+\end{block}
 \end{frame}
 \begin{frame}{Grid와 Manhattan Heuristic}
 4-neighbor, unit cost grid에서

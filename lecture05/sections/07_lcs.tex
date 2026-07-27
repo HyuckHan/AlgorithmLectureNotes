@@ -65,7 +65,7 @@ dp[i][j]=\max\{dp[i-1][j],dp[i][j-1]\}.
 \begin{itemize}\item 최적해는 $X[i]$를 쓰지 않는 경우 또는 $Y[j]$를 쓰지 않는 경우 중 적어도 하나에 포함\item “임의로 하나를 버린다”가 아니라 두 최적 prefix를 비교\end{itemize}
 \end{frame}
 \begin{frame}{Naive LCS Recursion}
-\scriptsize\begin{algorithmic}[1]
+\algofont\begin{algorithmic}[1]
 \Procedure{LCSLength}{$X,Y,m,n$}
 \If{$m=0$ \textbf{or} $n=0$}\State\Return 0\EndIf
 \If{$X[m-1]=Y[n-1]$}\State\Return $1+\Call{LCSLength}{X,Y,m-1,n-1}$\EndIf

@@ -22,13 +22,9 @@
  opencell/.style={board,fill=AlgoOrange!15,draw=AlgoOrange,thick},
  closedcell/.style={board,fill=AlgoBlue!12,draw=AlgoBlue,thick}
 }
-\newcommand{\ssmission}[1]{\begin{block}{Mission}#1\end{block}}
-\newcommand{\sstakeaway}[1]{\begin{takeaway}#1\end{takeaway}}
-\newcommand{\sscheckpoint}[1]{\begin{exampleblock}{Checkpoint}#1\end{exampleblock}}
 \newcommand{\incbadge}[1]{\tikz[baseline=-.55ex]\node[ssinc]{INC \(=#1\)};}
 \newcommand{\ubbadge}[1]{\tikz[baseline=-.55ex]\node[ssbox]{UB \(=#1\)};}
 \newcommand{\statebadge}[2]{\tikz[baseline=-.55ex]\node[ssbox]{#1: #2};}
 \newcommand{\prunetriangle}[2]{\node[ssprune]at(#1){P};\node[font=\tiny,text=red!70!black,below=1mm]at(#1){#2};}
 \newcommand{\pqview}[1]{\tikz[baseline=-.55ex]\node[ssbox]{PQ: #1};}
-\newcommand{\ssoptional}[1][Optional]{\tikz[baseline=(label.base)]\node[draw=AlgoRule,rounded corners=2pt,fill=AlgoLight,text=AlgoGray,font=\scriptsize\bfseries,inner xsep=4pt,inner ysep=2pt] (label) {#1};}
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}

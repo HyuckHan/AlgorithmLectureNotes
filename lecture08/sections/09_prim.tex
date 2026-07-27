@@ -1,10 +1,28 @@
 \section{Part I. Prim Algorithm}
+\begin{frame}{Lecture 3의 Heap이 여기서 돌아온다}
+Prim의 \(Q\)와 Dijkstra의 우선순위 큐는 새 자료구조가 아니라
+\keyterm{Lecture 3의 (min-)heap}이다. 정렬이 아니라 \emph{동적 최소원소 추출기}로 쓴다
+.
+\begin{center}
+\begin{tabular}{lll}\toprule
+연산 & 역할 & 비용\\\midrule
+\textsc{ExtractMin}()      & 다음에 확정할 vertex 선택 & \(\Theta(\log V)\)\\
+\textsc{DecreaseKey}(v,k)  & 더 싼 연결 발견 시 갱신    & \(\Theta(\log V)\)\\
+\bottomrule
+\end{tabular}
+\end{center}
+전체 vertex \(V\)개를 꺼내고 edge \(E\)개마다 갱신하므로
+\[
+O\!\left((V+E)\log V\right).
+\]
+\begin{block}{연결 고리}같은 heap이 \keyterm{Lecture 10}의 A\(^*\)에서는 \(f=g+h\)를 key로 하는 min-PQ로 다시 등장한다.\end{block}
+\end{frame}
 \begin{frame}{Prim의 핵심 상태}
 \begin{description}\item[key[v]]현재 tree에 \(v\)를 연결하는 cheapest \emph{single edge} weight\item[parent[v]]그 edge의 tree-side endpoint\item[Q]아직 tree 밖에 있는 vertices의 min-priority queue\end{description}
 \begin{alertblock}{Dijkstra와 다름}Prim key는 한 edge, Dijkstra dist는 source부터 누적 path weight다.\end{alertblock}
 \end{frame}
 \begin{frame}{Prim Pseudocode}
-\scriptsize\begin{algorithmic}[1]
+\algofont\begin{algorithmic}[1]
 \Procedure{Prim}{$G,r$}\ForAll{$v\in V$}\State \(key[v]\gets\infty,\ parent[v]\gets\NIL\)\EndFor
 \State \(key[r]\gets0;\ Q\gets\Call{MinPriorityQueue}{V,key}\)
 \While{$Q\ne\emptyset$}\State \(u\gets\Call{ExtractMin}{Q}\)

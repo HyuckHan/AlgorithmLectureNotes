@@ -4,7 +4,7 @@
 \begin{itemize}\item vertex priority가 아니라 edge sorting\item cycle test는 DSU의 Find roots 비교\end{itemize}
 \end{frame}
 \begin{frame}{Kruskal Pseudocode}
-\scriptsize\begin{algorithmic}[1]
+\algofont\begin{algorithmic}[1]
 \Procedure{Kruskal}{$G$}\State \(T\gets\emptyset\); \ForAll{$v\in V$}\State\Call{MakeSet}{$v$}\EndFor
 \State sort edges by nondecreasing \((weight,u,v)\)
 \ForAll{$(u,v,w)$ in sorted edges}\If{\Call{Find}{$u$}\(\ne\)\Call{Find}{$v$}}

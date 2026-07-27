@@ -11,9 +11,6 @@
  smarrow/.style={-Latex,draw=AlgoOrange,ultra thick},
  smfallback/.style={-Latex,draw=red!70!black,thick,dashed,bend right=25}
 }
-\newcommand{\smission}[1]{\begin{block}{Mission}#1\end{block}}
-\newcommand{\stakeaway}[1]{\begin{takeaway}#1\end{takeaway}}
-\newcommand{\scheckpoint}[1]{\begin{exampleblock}{Checkpoint}#1\end{exampleblock}}
 \newcommand{\smrow}[3]{%
   \node[anchor=east,font=\small\bfseries] at(-.45,#1){#2};
   \foreach \c [count=\i from 0] in {#3}{\node[smcell] at(\i,#1){\c};}}
