@@ -1,0 +1,30 @@
+\tikzset{
+ smcell/.style={draw=AlgoRule,fill=white,minimum width=7.5mm,minimum height=7.5mm,font=\small\bfseries,inner sep=0pt},
+ smindex/.style={font=\tiny,text=gray},
+ smactive/.style={smcell,draw=AlgoOrange,ultra thick,fill=AlgoOrange!16},
+ smmatched/.style={smcell,draw=AlgoBlueTwo,thick,fill=AlgoBlue!10},
+ smverified/.style={smcell,draw=green!45!black,ultra thick,fill=green!9},
+ smbad/.style={smcell,draw=red!70!black,ultra thick,fill=red!8},
+ sminactive/.style={smcell,draw=AlgoGray,text=AlgoGray,fill=AlgoGray!7},
+ smhash/.style={draw=AlgoBlue,rounded corners,fill=AlgoLight,inner sep=2mm,font=\small},
+ smnote/.style={draw=AlgoOrange,rounded corners,fill=AlgoOrange!10,inner sep=2mm,font=\small},
+ smarrow/.style={-Latex,draw=AlgoOrange,ultra thick},
+ smfallback/.style={-Latex,draw=red!70!black,thick,dashed,bend right=25}
+}
+\newcommand{\smission}[1]{\begin{block}{Mission}#1\end{block}}
+\newcommand{\stakeaway}[1]{\begin{takeaway}#1\end{takeaway}}
+\newcommand{\scheckpoint}[1]{\begin{exampleblock}{Checkpoint}#1\end{exampleblock}}
+\newcommand{\smrow}[3]{%
+  \node[anchor=east,font=\small\bfseries] at(-.45,#1){#2};
+  \foreach \c [count=\i from 0] in {#3}{\node[smcell] at(\i,#1){\c};}}
+\newcommand{\smindices}[2]{%
+  \foreach \c [count=\i from 0] in {#2}{\node[smindex] at(\i,#1){\i};}}
+\newcommand{\smshiftrow}[4]{%
+  \node[anchor=east,font=\small\bfseries] at(-.45,#1){#2};
+  \foreach \c [count=\i from 0] in {#4}{\node[smcell] at({\i+#3},#1){\c};}}
+\newcommand{\hashbadge}[2]{\tikz[baseline=-.55ex]\node[smhash]{#1 \(=\) #2};}
+\newcommand{\matchmark}{\textcolor{AlgoBlue}{\ensuremath{\checkmark}}}
+\newcommand{\mismatchmark}{\textcolor{red!70!black}{\ensuremath{\times}}}
+\newcommand{\candidatebadge}{\textcolor{AlgoOrange}{\ensuremath{\mathbf H}}}
+\newcommand{\verifiedbadge}{\textcolor{green!45!black}{\ensuremath{\mathbf V}}}
+\newcommand{\collisionbadge}{\textcolor{red!70!black}{\ensuremath{\mathbf C}}}

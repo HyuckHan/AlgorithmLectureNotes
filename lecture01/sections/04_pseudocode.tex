@@ -1,0 +1,76 @@
+\section{Part D. 의사코드(Pseudocode)}
+
+% 13
+\begin{frame}{왜 의사코드인가?}
+  \begin{columns}[T,onlytextwidth]
+    \column{.47\textwidth}
+      \textbf{자연어}\par
+      읽기 쉽지만 모호할 수 있다.\par\medskip
+      \alert{``원하는 값을 찾는다''}는 해결책이 아니다.
+    \column{.47\textwidth}
+      \textbf{실제 코드}\par
+      실행 가능하지만 문법·자료형·라이브러리 세부사항이 섞인다.
+  \end{columns}
+  \vfill
+  \begin{block}{Pseudocode}
+    실행 순서와 핵심 연산을 정확히 드러내되 특정 프로그래밍 언어에는 묶이지 않는다.
+  \end{block}
+\end{frame}
+
+% 14
+\begin{frame}{이 강의의 의사코드 규약}
+  \begin{tabular}{@{}>{\ttfamily}p{.29\textwidth}p{.64\textwidth}@{}}
+    \toprule
+    표기 & 의미 \\
+    \midrule
+    Procedure F(args) & 절차 이름과 입력 선언 \\
+    x $\gets$ expr & 오른쪽을 계산해 x에 대입 \\
+    If / Else & 조건에 따른 분기 \\
+    For / While & 정해진 범위 / 조건 동안 반복 \\
+    Return value & 호출자에게 결과 반환 \\
+    \{comment\} & 실행되지 않는 설명 \\
+    \bottomrule
+  \end{tabular}
+  \vfill
+  들여쓰기가 블록의 시작과 끝을 나타낸다.
+\end{frame}
+
+% 15
+\begin{frame}[fragile]{제어 흐름은 어떻게 읽는가?}
+  \begin{columns}[T,onlytextwidth]
+    \column{.48\textwidth}
+    \begin{algorithmic}[1]
+      \If{$condition$}
+        \State $statement_1$
+      \Else
+        \State $statement_2$
+      \EndIf
+    \end{algorithmic}
+    참이면 한 경로만 실행한다.
+    \column{.48\textwidth}
+    \begin{algorithmic}[1]
+      \While{$condition$}
+        \State $statement$
+      \EndWhile
+    \end{algorithmic}
+    조건을 다시 검사하며 반복한다.
+  \end{columns}
+  \vfill
+  \begin{block}{For는 While로 표현할 수 있다}
+    초기화 → 조건 검사 → 본문 → 증감의 반복이다. 반복 중 경계값을 바꾸는 코드는 피한다.
+  \end{block}
+\end{frame}
+
+% 16
+\begin{frame}{의사코드 Checkpoint: 모호함 제거}
+  \textbf{과제:} ``리스트 $A$에서 $x$를 찾는다''를 최소한 다음 질문에 답하도록 고쳐라.
+  \begin{itemize}
+    \item 어디서부터 어떤 순서로 비교하는가?
+    \item 같음을 발견하면 무엇을 반환하는가?
+    \item 끝까지 없으면 무엇을 반환하는가?
+    \item 언제 반복이 끝나는가?
+  \end{itemize}
+  \begin{takeaway}
+    의사코드는 아이디어를 숨기는 장식이 아니라, \textbf{모든 실행 경로를 검토하는 도구}다.
+  \end{takeaway}
+\end{frame}

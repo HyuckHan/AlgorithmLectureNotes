@@ -1,0 +1,54 @@
+\section{Part J. Kruskal과 Disjoint Set}
+\begin{frame}{Kruskal의 관점}
+\gmission{edge를 가벼운 순서로 보고, 서로 다른 component를 잇는 edge만 accept해 forest를 합친다.}
+\begin{itemize}\item vertex priority가 아니라 edge sorting\item cycle test는 DSU의 Find roots 비교\end{itemize}
+\end{frame}
+\begin{frame}{Kruskal Pseudocode}
+\scriptsize\begin{algorithmic}[1]
+\Procedure{Kruskal}{$G$}\State \(T\gets\emptyset\); \ForAll{$v\in V$}\State\Call{MakeSet}{$v$}\EndFor
+\State sort edges by nondecreasing \((weight,u,v)\)
+\ForAll{$(u,v,w)$ in sorted edges}\If{\Call{Find}{$u$}\(\ne\)\Call{Find}{$v$}}
+\State \(T\gets T\cup\{(u,v)\}\); \Call{Union}{$u,v$}\EndIf
+\If{$|T|=|V|-1$}\State\textbf{break}\EndIf\EndFor
+\State \Return \(T\) or MINIMUM\_SPANNING\_FOREST\EndProcedure
+\end{algorithmic}
+\end{frame}
+\begin{frame}{Disjoint Set Union}
+\begin{description}\item[MakeSet(x)]singleton component\item[Find(x)]representative/root\item[Union(x,y)]두 component merge\end{description}
+\begin{block}{Optimization}union by rank/size + path compression: amortized \(O(\alpha(V))\), practically near constant.\end{block}
+\end{frame}
+\begin{frame}{DSU Animation}
+\centering\begin{tikzpicture}
+\node[pq]at(0,1.65){Components: \only<1>{\{A\}\{B\}\{C\}\{D\}}\only<2>{\{A,B\}\{C\}\{D\}}\only<3>{\{A,B\}\{C,D\}}\only<4>{\{A,B,C,D\}}};
+\node[callout,text width=11cm]at(0,.55){Processed edge: \only<1>{none}\only<2>{\(AB:\ Find(A)\ne Find(B)\Rightarrow\) accept; Union}\only<3>{\(CD:\ Find(C)\ne Find(D)\Rightarrow\) accept; Union}\only<4>{\(BC:\ Find(B)\ne Find(C)\Rightarrow\) accept; Union}};
+\node[callout,text width=11cm]at(0,-.65){Next \(AD\): \only<1>{\(Find(A)\ne Find(D)\Rightarrow\) accept}\only<2>{\(Find(A)\ne Find(D)\Rightarrow\) accept}\only<3>{\(Find(A)\ne Find(D)\Rightarrow\) accept and merge}\only<4>{\(Find(A)=Find(D)\Rightarrow\) reject: cycle}};
+\node[font=\scriptsize,text=gray]at(0,-1.55){accept iff endpoint roots differ; reject iff roots are equal};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Kruskal Trace: A--G}
+\centering\begin{tikzpicture}[x=.82cm,y=.72cm]
+\node[gvertex](a)at(0,0){A};\node[gvertex](b)at(1.4,1.4){B};\node[gvertex](c)at(3,1.5){C};
+\node[gvertex](d)at(4.5,0){D};\node[gvertex](e)at(2.2,3){E};\node[gvertex](f)at(4.3,3){F};\node[gvertex](g)at(5.8,1.5){G};
+\draw[gedge](a)--node[left,font=\tiny]{8}(b)(a)--node[below left,font=\tiny]{9}(c)(a)--node[below,font=\tiny]{11}(d);
+\draw[gedge](b)--node[above left,font=\tiny]{10}(e)(c)--node[left,font=\tiny]{5}(e)(c)--node[below,font=\tiny]{13}(d)(c)--node[above,font=\tiny]{12}(f);
+\draw[gedge](d)--node[right,font=\tiny]{8}(f)(d)--node[below right,font=\tiny]{8}(g)(f)--node[above right,font=\tiny]{7}(g);
+\only<1->{\draw[gmst](c)--(e);}\only<2->{\draw[gmst](f)--(g);}\only<3->{\draw[gmst](a)--(b);}
+\only<4->{\draw[gmst](d)--(f);}\only<5>{\draw[greject](d)--node[below]{X}(g);}\only<6->{\draw[gmst](a)--(c);}\only<7->{\draw[gmst](a)--(d);}
+\node[pq]at(9,2.8){Decision: \only<1>{accept CE}\only<2>{accept FG}\only<3>{accept AB}\only<4>{accept DF}\only<5>{reject DG}\only<6>{accept AC}\only<7>{reject BE; accept AD}};
+\node[callout]at(9,1.5){Selected: \only<1>{1}\only<2>{2}\only<3>{3}\only<4>{4}\only<5>{4}\only<6>{5}\only<7>{6} edges};
+\node[callout]at(9,.2){Weight: \only<1>{5}\only<2>{12}\only<3>{20}\only<4>{28}\only<5>{28}\only<6>{37}\only<7>{48}};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Accept와 Reject의 Invariant}
+\begin{itemize}\item accept 전 endpoints의 roots가 다르다.\item Union 후 selected forest는 여전히 acyclic이다.\item same-root edge는 cycle을 만들므로 reject한다.\item connected graph에서  \(V-1\) accept하면 종료한다.\end{itemize}
+\end{frame}
+\begin{frame}{Kruskal Complexity}
+\[
+O(E\log E)+O(E\alpha(V))=O(E\log E).
+\]
+simple graph는 \(E\le V^2\)이므로 \(\log E=O(\log V)\), 따라서 \(O(E\log V)\)로도 쓸 수 있다.
+\end{frame}
+\begin{frame}{Part J Checkpoint}
+\begin{enumerate}\item \(T\)에 넣는 것은 vertex인가 edge인가?\item same-root edge는 왜 reject하는가?\item disconnected input 결과는?\end{enumerate}
+\begin{exampleblock}{답}\((u,v)\) edge; cycle을 만들기 때문; minimum spanning forest.\end{exampleblock}
+\end{frame}

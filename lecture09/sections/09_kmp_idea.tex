@@ -1,0 +1,39 @@
+\subsection{KMP의 핵심 아이디어}
+\begin{frame}{KMP가 이미 아는 것}
+현재까지 \(j\) characters가 일치했다면
+\[
+P[0..j-1]=T[i-j..i-1].
+\]
+다음 \(T[i]\)에서 mismatch가 나도, 이 matched prefix의 suffix 중 pattern prefix인 부분은 재사용할 수 있다.
+\end{frame}
+\begin{frame}{Mismatch Fallback}
+\centering\begin{tikzpicture}[x=.82cm,y=.78cm]
+\smindices{3.0}{0,1,2,3,4,5}
+\smrow{2.35}{T}{B,A,A,B,A,X}
+\only<1-2|handout:0>{\smshiftrow{.85}{P}{0}{B,A,A,B,A,B}}
+\only<3-4|handout:1>{\smshiftrow{.85}{P}{3}{B,A,A}}
+\only<1|handout:0>{\node[smbad]at(5,2.35){X};\node[smbad]at(5,.85){B};}
+\only<2|handout:0>{\node[smverified]at(3,2.35){B};\node[smverified]at(4,2.35){A};
+\node[smverified]at(0,.85){B};\node[smverified]at(1,.85){A};}
+\only<3|handout:0>{\node[smverified]at(3,2.35){B};\node[smverified]at(4,2.35){A};
+\node[smverified]at(3,.85){B};\node[smverified]at(4,.85){A};
+\draw[smfallback](1,.25)to node[below,font=\scriptsize]{pattern shift, \(i=5\) 고정}(4,.25);}
+\only<4|handout:1>{\node[smverified]at(3,2.35){B};\node[smverified]at(4,2.35){A};
+\node[smverified]at(3,.85){B};\node[smverified]at(4,.85){A};
+\node[smbad]at(5,2.35){X};\node[smbad]at(5,.85){A};}
+\node[smhash,text width=.72\linewidth]at(2.5,-.55){%
+\only<1|handout:0>{old \(j=5\): \texttt{BAABA} matched, current \(T[i]=\texttt{X}\) mismatch}%
+\only<2|handout:0>{\(lps[4]=2\): matched text suffix \texttt{BA} \(=\) pattern prefix \texttt{BA}}%
+\only<3|handout:0>{new \(j=2\), same text index \(i=5\): equal parts를 정렬}%
+\only<4|handout:1>{suffix \texttt{BA} \(=\) prefix \texttt{BA}; \(i=5\)는 고정이고 \texttt{X}를 \(P[2]\)와 다시 비교}};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{KMP 핵심: Text Index는 고정된다}
+\begin{alertblock}{과도한 표현 금지}``각 text 문자를 정확히 한 번 비교''하는 것은 아니다.\end{alertblock}
+\begin{block}{Mismatch invariant}\(j>0\)인 mismatch에서는 text index \(i\)를 고정하고 \(j\gets lps[j-1]\)만 수행한다.\end{block}
+\begin{block}{정확한 표현}\(i\)는 감소하지 않으며, 같은 \(T[i]\)가 여러 pattern position과 비교될 수 있어도 전체 comparison 수는 linear하게 bounded된다.\end{block}
+\end{frame}
+\begin{frame}{KMP 핵심 아이디어 Checkpoint}
+\begin{enumerate}\item mismatch이고 \(j>0\)이면 무엇이 변하는가?\item fallback 값은 어디서 얻는가?\item text index가 왼쪽으로 가는가?\end{enumerate}
+\begin{exampleblock}{답}\(j\)만; \(lps[j-1]\); 아니다.\end{exampleblock}
+\end{frame}

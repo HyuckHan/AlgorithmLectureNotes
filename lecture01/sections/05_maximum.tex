@@ -1,0 +1,87 @@
+\section{Part E. Maximum 찾기}
+
+% 17
+\begin{frame}{문제: 가장 큰 원소 찾기}
+  \begin{block}{Specification}
+    \textbf{Input:} 비어 있지 않은 정수 배열 $A[1..n]$\quad
+    \textbf{Output:} $\max\{A[1],\ldots,A[n]\}$
+  \end{block}
+  \begin{enumerate}
+    \item 첫 원소를 지금까지의 최댓값 $v$로 둔다.
+    \item 다음 원소가 $v$보다 크면 $v$를 갱신한다.
+    \item 모든 원소를 본 뒤 $v$를 반환한다.
+  \end{enumerate}
+  \keyterm{설계 아이디어:} 답 전체를 기억하지 말고, 지금까지 필요한 정보만 유지한다.
+\end{frame}
+
+% 18
+\begin{frame}[fragile]{Maximum 의사코드}
+  \large
+  \begin{algorithmic}[1]
+    \Procedure{Maximum}{$A[1..n]$}
+      \Require{$n\ge 1$}
+      \State $v \gets A[1]$ \Comment{지금까지 본 원소의 최댓값}
+      \For{$i \gets 2$ \textbf{to} $n$}
+        \If{$A[i] > v$}
+          \State $v \gets A[i]$
+        \EndIf
+      \EndFor
+      \State \Return $v$
+    \EndProcedure
+  \end{algorithmic}
+  \vfill
+  변수 $v$의 의미를 한 문장으로 설명할 수 있어야 코드를 추적할 수 있다.
+\end{frame}
+
+% 19
+\begin{frame}{Maximum을 손으로 실행해 보자}
+  \begin{center}
+  \begin{tikzpicture}
+    \foreach \x/\val in {0/7,1/12,2/3,3/15,4/8}{
+      \node[cell] (c\x) at (1.25*\x,0) {\val};
+      \node[note] at (1.25*\x,-.65) {$A[\the\numexpr\x+1\relax]$};
+    }
+    \draw[decorate,decoration={brace,amplitude=5pt,mirror},AlgoOrange,thick]
+      (-.52,-1.0)--(4.27,-1.0) node[midway,below=5pt,text=AlgoBlue] {처리한 prefix};
+  \end{tikzpicture}
+  \end{center}
+  \begin{tabular}{@{}c c c l@{}}
+    \toprule
+    $i$ & \textcolor{AlgoOrangeText}{현재 $A[i]$}
+        & \textcolor{AlgoBlueTwo}{현재 최댓값 $v$} & 비교 결과 \\
+    \midrule
+    1 & \textcolor{AlgoOrangeText}{7}  & -- & 초기화: $v\gets7$ \\
+    2 & \textcolor{AlgoOrangeText}{12} & 7  & \textcolor{AlgoOrangeText}{업데이트: $7\to12$} \\
+    3 & \textcolor{AlgoOrangeText}{3}  & 12 & 유지: $v=12$ \\
+    4 & \textcolor{AlgoOrangeText}{15} & 12 & \textcolor{AlgoOrangeText}{업데이트: $12\to15$} \\
+    5 & \textcolor{AlgoOrangeText}{8}  & 15 & 유지: $v=15$ \\
+    \bottomrule
+  \end{tabular}
+\end{frame}
+
+% 20
+\begin{frame}{왜 Maximum은 맞는가?}
+  \begin{block}{루프 불변식(Loop invariant)}
+    반복의 각 단계가 끝날 때, $v=\max\{A[1],\ldots,A[i]\}$이다.
+  \end{block}
+  \begin{description}
+    \item[초기화] $i=1$일 때 $v=A[1]$이므로 참이다.
+    \item[유지] $A[i]$가 더 크면 바꾸고, 아니면 그대로 둔다.
+    \item[종료] $i=n$까지 처리하면 $v$는 배열 전체의 최댓값이다.
+  \end{description}
+  \muted{정확성 증명은 “몇 번 해 보니 맞았다”보다 강한 보증이다.}
+\end{frame}
+
+% 21
+\begin{frame}{Maximum 정리}
+  \begin{takeaway}
+    \begin{itemize}
+      \item 상태 $v$: 지금까지 본 원소의 최댓값
+      \item 진행: 새 원소와 한 번 비교하고 필요하면 갱신
+      \item 정확성: invariant가 초기화·유지·종료에서 성립
+      \item 다음 질문: 원소가 $n$개면 비교는 몇 번인가?
+    \end{itemize}
+  \end{takeaway}
+  정답: 정확히 $n-1$번. 뒤에서 이를 $\Th(n)$으로 표현한다.\par
+  \muted{Maximum에서 사용한 상태 추적 방법을 탐색 문제에 적용해 보자.}
+\end{frame}

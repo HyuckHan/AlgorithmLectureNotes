@@ -1,0 +1,64 @@
+\section{Part H. 왜 복잡도인가?}
+
+% 31
+\begin{frame}{복잡도는 계산 비용의 함수다}
+  \begin{columns}[T,onlytextwidth]
+    \column{.47\textwidth}
+      \begin{block}{Time complexity}
+        입력 크기 $n$에 따라 필요한 기본 연산 수는 어떻게 변하는가?
+      \end{block}
+    \column{.47\textwidth}
+      \begin{block}{Space complexity}
+        입력 외에 필요한 추가 메모리는 어떻게 변하는가?
+      \end{block}
+  \end{columns}
+  \vfill
+  \begin{alertblock}{오늘의 비용 모델}
+    비교, 대입, 산술 같은 기본 연산 하나는 상수 시간이라고 가정한다.
+  \end{alertblock}
+\end{frame}
+
+% 32
+\begin{frame}{실행 시간만 재면 충분할까?}
+  두 프로그램의 예측 시간이 다음과 같다고 하자.
+  \[
+    T_A(n)=30n+8,\qquad T_B(n)=n^2+1 \quad (\mu s)
+  \]
+  \begin{columns}[T,onlytextwidth]
+    \column{.47\textwidth}
+      \textbf{Benchmark}\par
+      특정 기계·언어·입력에서 실제 성능을 보여 준다.
+    \column{.47\textwidth}
+      \textbf{Analysis}\par
+      구현 세부를 넘어 입력 규모에 따른 추세를 설명한다.
+  \end{columns}
+  \vfill
+  수백만 개를 처리한다면 $T_A$를 선택한다. 작은 $n$의 승자가 큰 $n$에서도 이긴다는 보장은 없다.
+\end{frame}
+
+% 33
+\begin{frame}{비용은 입력에 따라 달라진다}
+  같은 크기 $n$에서도 데이터 배치가 다르면 수행 연산 수가 달라진다.
+  \begin{description}
+    \item[최선 경우(Best case)] 가장 유리한 입력의 비용
+    \item[평균 경우(Average case)] 입력 분포를 가정한 기대 비용
+    \item[최악 경우(Worst case)] 가장 불리한 입력의 비용
+  \end{description}
+  \begin{block}{왜 worst case를 자주 쓰나?}
+    모든 크기-$n$ 입력에 대한 상한을 주며, 별도 확률 분포가 필요 없다.
+  \end{block}
+\end{frame}
+
+% 34
+\begin{frame}{복잡도 정리}
+  분석을 시작할 때 네 가지를 먼저 적는다.
+  \begin{enumerate}
+    \item 입력 크기 $n$은 무엇인가?
+    \item 어떤 연산을 셀 것인가?
+    \item best, average, worst 중 무엇인가?
+    \item 시간과 공간 중 무엇을 분석하는가?
+  \end{enumerate}
+  \begin{takeaway}
+    복잡도는 초 단위 측정값이 아니라, \textbf{입력 크기에 따른 자원 증가 함수}다.
+  \end{takeaway}
+\end{frame}

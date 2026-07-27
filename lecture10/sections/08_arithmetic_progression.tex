@@ -1,0 +1,63 @@
+\subsection{Arithmetic Progression 추가 예제}
+\begin{frame}{문제 계약을 먼저 고정한다 \hfill \ssoptional[선택 심화]}
+\[
+S=\{4,1,3,5,7\}\quad\to\quad A=[1,3,4,5,7].
+\]
+\begin{itemize}
+\item 정렬 후 index가 증가하는 subset을 선택한다; 원래 순서 subsequence가 아니다.
+\item 입력 값은 distinct라고 가정한다.
+\item 길이 1과 2도 등차수열이다.
+\item objective는 maximum length; deterministic tie-break로 한 해를 반환한다.
+\end{itemize}
+\end{frame}
+\begin{frame}{AP Search State와 두 Pruning}
+\begin{description}
+\item[State] next \(i\), selected sequence, difference \(d\) 또는 unset, incumbent.
+\item[Feasibility] length \(<2\)면 선택 가능; 이후 \(A[i]-last=d\).
+\item[Objective UB] \(selectedCount+(n-i)\).
+\end{description}
+\[
+selectedCount+(n-i)\le incumbent\quad\Longrightarrow\quad P.
+\]
+\end{frame}
+\begin{frame}{왜 \([1,3,4]\)는 즉시 Prune인가?}
+\[
+3-1=2,\qquad 4-3=1.
+\]
+이미 선택한 prefix의 adjacent difference가 다르다. 이후 값을 추가해도 기존 두 차이는 바뀌지 않는다.
+\begin{alertblock}{원본 교정}\([1,3,4,5]\)까지 확장한 뒤 판정하지 않고, \([1,3,4]\)에서 즉시 feasibility prune한다.\end{alertblock}
+\end{frame}
+\begin{frame}{등차수열 Trace}
+\centering\begin{tikzpicture}
+\node[ssbox]at(0,1.25){\only<1|handout:0>{choose 1: \([1]\)}\only<2|handout:0>{choose 3: \([1,3],d=2\)}\only<3|handout:0>{try 4: differences \(2,1\Rightarrow P\)}\only<4|handout:0>{choose 5,7: \([1,3,5,7]\)}\only<5|handout:1>{complete feasible: \(INC\gets4\)}};
+\node[ssnote]at(0,0){\only<1|handout:0>{difference unset}\only<2|handout:0>{difference fixed}\only<3|handout:0>{constraint prune}\only<4|handout:0>{same difference 2}\only<5|handout:1>{\(\incbadge{4}\)}};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Incumbent 이후 Bound Pruning}
+\[
+\incbadge{4}
+\]
+예를 들어 selected length가 1이고 남은 원소가 3개라면 최대 길이는 \(1+3=4\).
+\[
+1+3\le4\quad\Rightarrow\quad
+\text{동률만 가능, 더 긴 해는 불가능}\quad\Rightarrow P.
+\]
+\end{frame}
+\begin{frame}{Feasibility와 Objective Bound를 섞지 않는다}
+\small\begin{tabular}{lll}\toprule
+Pruning&질문&예\\\midrule
+Backtracking feasibility&해가 존재할 수 있는가?&\([1,3,4]\)\\
+B\&B objective bound&incumbent보다 좋아질 수 있는가?&length UB \(\le4\)\\\bottomrule
+\end{tabular}
+\end{frame}
+\begin{frame}{이 문제의 더 좋은 해법: DP}
+\[
+dp[i][d]=\text{index }i\text{에서 끝나고 difference }d\text{인 최대 길이}.
+\]
+hash map을 사용한 일반적 구현은 \(O(n^2)\) time.
+\begin{block}{교훈}원본 예제는 pruning을 설명하는 도구이지, Longest Arithmetic Subsequence의 최선 알고리즘이라는 주장이 아니다.\end{block}
+\end{frame}
+\begin{frame}{Arithmetic Progression Checkpoint}
+\begin{enumerate}\item \([1,3,4]\)는 어느 pruning인가?\item \(INC=4\), selected 2개, remaining 2개이면?\end{enumerate}
+\begin{exampleblock}{답}feasibility pruning; upper bound \(2+2=4\)라 개선 불가, objective-bound pruning.\end{exampleblock}
+\end{frame}

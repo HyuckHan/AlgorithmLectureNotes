@@ -1,0 +1,50 @@
+\subsection{Appendix}
+\begin{frame}{Sentinel Failure Convention}
+\[
+failure[0]=-1,\qquad j\gets failure[j]
+\]
+방식도 올바르게 구현할 수 있다. 그러나 standard LPS와 table 크기·index 의미·pseudocode를 섞으면 out-of-bounds와 fallback 오류가 난다.
+\begin{block}{Lecture 9}본문과 Java/C 구현은 \(lps[0]=0\) convention만 사용한다.\end{block}
+\end{frame}
+\begin{frame}{Arbitrary-Precision Rolling Value}
+modulus 없이 \(d^m\) 크기의 정수를 유지하면 digit 수가 \(m\)과 함께 증가한다. 이때 곱셈·덧셈을 unit-cost로 보는 \(O(1)\) rolling update는 bit complexity 관점에서 성립하지 않을 수 있다.
+\begin{block}{세 층을 구분}수학적 modular arithmetic, fixed-width machine implementation의 intermediate overflow, arbitrary-precision bit complexity는 서로 다른 문제다.\end{block}
+\end{frame}
+\begin{frame}{BuildLPS의 연속 Fallback}
+\[
+P=\texttt{AAAAABAAAAAC}
+\]
+\[
+lps=[0,1,2,3,4,0,1,2,3,4,5,0].
+\]
+마지막 \texttt{C}에서 \(len=5\)로 시작하면
+\[
+5\to lps[4]=4\to lps[3]=3\to lps[2]=2\to lps[1]=1\to lps[0]=0.
+\]
+\begin{block}{왜 loop인가?}한 번 fallback한 후보도 mismatch일 수 있으므로 같은 \(P[i]\)를 더 짧은 border들과 연속 비교해야 한다.\end{block}
+\end{frame}
+\begin{frame}{Unicode Detail}
+\begin{itemize}\item UTF-16 surrogate pair는 두 \texttt{char} code units다.\item UTF-8 code point는 1--4 bytes다.\item grapheme cluster는 여러 code points일 수 있다.\item canonical normalization 전에는 시각적 동등성과 byte/code-unit equality가 다를 수 있다.\end{itemize}
+\end{frame}
+\begin{frame}{Multi-Pattern · 2D Preview}
+\begin{itemize}\item equal-length pattern hashes를 set으로 묶어 한 scan에서 candidate를 찾을 수 있다.\item Aho--Corasick은 여러 pattern의 prefix automaton을 공유한다.\item 2D Rabin--Karp는 row/column rolling fingerprint로 확장할 수 있다.\end{itemize}
+\end{frame}
+\begin{frame}{Formal Output Invariant}
+모든 all-match 결과 \(s_0<s_1<\cdots\)는
+\[
+\forall k,\quad T[s_k..s_k+m-1]=P
+\]
+를 만족하며, 정책상 가능한 모든 valid occurrence를 포함한다.
+\begin{alertblock}{검증 전략}Naive를 작은 input의 trusted oracle로 두고 세 optimized matcher와 differential test한다.\end{alertblock}
+\end{frame}
+\begin{frame}{Code Validation Report}
+\small\begin{itemize}
+\item \(\texttt{cad}=53\), original Rabin--Karp hash sequence 재생성
+\item LPS \([0,0,0,1,2,1,2,3]\)와 \(5\to4\to3\to2\to1\to0\) chain 검증
+\item TIGER/RATIONAL table, Horspool mismatch progress 검증
+\item Unicode code-unit/byte 사례와 모든 matcher output 검증
+\item Java/C strict compiler, 6,000 fixed-seed random cases
+\item C ASan/UBSan bounds/undefined-behavior run
+\end{itemize}
+\stakeaway{String matching trace는 index, preprocessing convention, candidate verification을 코드와 함께 검증한다.}
+\end{frame}

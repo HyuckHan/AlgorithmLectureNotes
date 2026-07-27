@@ -1,0 +1,46 @@
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{theme/beamerthemealgorithms}
+\definecolor{AlgoOrangeText}{HTML}{B45309}
+\setbeamercolor{alerted text}{fg=AlgoOrangeText}
+\renewcommand{\keyterm}[1]{\textcolor{AlgoOrangeText}{\bfseries #1}}
+\setsansfont{Noto Sans}[Scale=0.98,AutoFakeSlant=0.15]
+\setmainfont{Noto Sans}[Scale=0.98,AutoFakeSlant=0.15]
+\setmonofont{Noto Sans Mono}[Scale=0.90]
+\newfontfamily\lecturefooterfont{Noto Sans}
+\usepackage{kotex,amsmath,amssymb,mathtools,booktabs,array,multirow}
+\setsanshangulfont{Noto Sans CJK KR}[Scale=0.98,AutoFakeSlant=0.15]
+\setmainhangulfont{Noto Sans CJK KR}[Scale=0.98,AutoFakeSlant=0.15]
+\setmonohangulfont{Noto Sans Mono CJK KR}[Scale=0.90]
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,trees,patterns,decorations.pathreplacing,matrix,backgrounds}
+\usepackage{pgfplots}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\algrenewcommand\textproc[1]{\textbf{#1}}
+\input{lecture02/common.tex}
+\input{lecture03/common.tex}
+\input{lecture04/common.tex}
+\pgfplotsset{compat=1.18,compat/show suggested version=false}
+\title{선택과 순서통계량 · Selection and Order Statistics}
+\subtitle{Quickselect에서 Median of Medians까지}
+\author{Algorithm Lecture Notes}
+\date{}
+\setbeamertemplate{frame numbering}{\lecturefooterfont\insertframenumber/\inserttotalframenumber}
+\mode<handout>{\AtBeginSection[]{}}
+\begin{document}
+\input{lecture04/sections/01_motivation.tex}
+\input{lecture04/sections/02_order_statistics.tex}
+\input{lecture04/sections/03_sort_then_select.tex}
+\input{lecture04/sections/04_quickselect_idea.tex}
+\input{lecture04/sections/05_quickselect_trace.tex}
+\input{lecture04/sections/06_quickselect_correctness.tex}
+\input{lecture04/sections/07_quickselect_analysis.tex}
+\input{lecture04/sections/08_randomized_select.tex}
+\input{lecture04/sections/09_median_of_medians_intro.tex}
+\input{lecture04/sections/10_group_of_five.tex}
+\input{lecture04/sections/11_pivot_guarantee.tex}
+\input{lecture04/sections/12_bfprt_recurrence.tex}
+\input{lecture04/sections/13_comparison.tex}
+\input{lecture04/sections/14_summary_quiz.tex}
+\input{lecture04/sections/15_appendix.tex}
+\end{document}

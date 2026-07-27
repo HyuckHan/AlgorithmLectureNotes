@@ -1,0 +1,46 @@
+\section{Part B. Balanced Search Tree와 Rotation}
+\begin{frame}{정렬 입력이 만드는 Degenerate BST}
+\centering\begin{tikzpicture}[x=.95cm,y=.72cm]
+\coordinate(n1)at(0,0); \coordinate(n2)at(1,-1); \coordinate(n3)at(2,-2);
+\coordinate(n4)at(3,-3); \coordinate(n5)at(4,-4); \coordinate(n6)at(5,-5); \coordinate(n7)at(6,-6);
+\only<1|handout:0>{\node[st current]at(n1){1};\node[callout]at(5.2,-.3){after insert 1\\edge-height $=0$};}
+\only<2|handout:0>{\node[st done](a1)at(n1){1};\node[st current](a2)at(n2){2};\draw[st edge](a1)--(a2);
+\node[callout]at(5.2,-.3){after insert 2\\edge-height $=1$};}
+\only<3|handout:0>{\node[st done](a1)at(n1){1};\node[st done](a2)at(n2){2};\node[st current](a3)at(n3){3};
+\draw[st edge](a1)--(a2)--(a3);\node[callout]at(5.2,-.3){after insert 3\\search path가 계속 길어짐};}
+\only<4|handout:0>{\node[st done](a1)at(n1){1};\node[st done](a2)at(n2){2};\node[st done](a3)at(n3){3};
+\node[st done](a4)at(n4){4};\node[st current](a5)at(n5){5};\draw[st edge](a1)--(a2)--(a3)--(a4)--(a5);
+\node[callout]at(5.2,-.3){after inserts 4, 5\\latest node 5};}
+\only<5|handout:1>{\node[st done](a1)at(n1){1};\node[st done](a2)at(n2){2};\node[st done](a3)at(n3){3};
+\node[st done](a4)at(n4){4};\node[st done](a5)at(n5){5};\node[st done](a6)at(n6){6};\node[st current](a7)at(n7){7};
+\draw[st edge](a1)--(a2)--(a3)--(a4)--(a5)--(a6)--(a7);
+\node[callout]at(5.0,-.3){after inserts 6, 7\\edge-height $=6$\\operations worst-case $\Theta(n)$};}
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{같은 Key Set, 다른 Shape}
+\begin{columns}[T]\column{.48\textwidth}\begin{block}{1,2,3,4,5,6,7}height 6, operations $\Theta(n)$\end{block}
+\column{.48\textwidth}\begin{block}{4,2,6,1,3,5,7}height 2, operations $\Theta(\log n)$\end{block}\end{columns}
+\sttakeaway{Plain BST는 input order에 따라 shape가 바뀌며 balance를 보장하지 않는다.}
+\end{frame}
+\begin{frame}{Balanced Search Tree의 목표}
+\mission{모든 INSERT/DELETE 뒤 height를 $O(\log n)$으로 유지한다.}
+\begin{itemize}
+\item AVL: height difference를 엄격히 제한
+\item RB Tree: color invariant로 더 느슨하게 제한
+\item 둘 다 같은 left/right rotation으로 inorder order를 보존
+\end{itemize}
+\begin{block}{공통 primitive, 다른 repair policy}
+Rotation의 pointer 변환은 같다. 차이는 \textbf{언제} rotation을 실행하고,
+height/BF 또는 color/black-height 중 \textbf{어떤 invariant}를 복구하는가에 있다.
+\end{block}
+\begin{center}\small
+\textcolor{AlgoOrange}{\bfseries orange: current/rotation}\quad
+\textcolor{red!75!black}{\bfseries red: violation}\quad
+\textcolor{AlgoBlueTwo}{\bfseries navy: repaired}\quad
+\textcolor{AlgoGray}{gray: inactive}
+\end{center}
+\end{frame}
+\begin{frame}{Balance Preview Checkpoint}
+random insertion의 평균적 모양이 괜찮을 수 있어도 왜 balanced tree가 필요한가?
+\begin{exampleblock}{답}확률적·입력 의존 직관은 worst-case guarantee가 아니다. adversarial 또는 정렬 입력에도 $O(\log n)$ height가 필요하다.\end{exampleblock}
+\end{frame}

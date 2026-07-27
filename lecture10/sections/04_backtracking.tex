@@ -1,0 +1,61 @@
+\section{Part B. Backtracking}
+\begin{frame}{Backtracking의 정의}
+\ssmission{Partial solution을 보통 DFS로 확장하되, constraint상 feasible descendant가 불가능하면 subtree를 제거한다.}
+\begin{itemize}
+\item “깊이 간다”만으로 Backtracking이 되는 것은 아니다.
+\item 핵심은 feasibility를 보존하는 \textbf{promising predicate}다.
+\end{itemize}
+\end{frame}
+\begin{frame}{Backtracking Skeleton}
+\scriptsize\begin{algorithmic}[1]
+\Procedure{Backtrack}{$state$}
+\If{\Call{IsComplete}{state}}
+  \If{\Call{IsFeasible}{state}}\State \Call{Report}{state}\EndIf
+  \State\Return
+\EndIf
+\ForAll{\(decision\in\Call{Candidates}{state}\)}
+  \State \Call{Apply}{state,decision}
+  \If{\Call{IsPromising}{state}}\State \Call{Backtrack}{state}\EndIf
+  \State \Call{Undo}{state,decision}
+\EndFor
+\EndProcedure
+\end{algorithmic}
+\end{frame}
+\begin{frame}{Apply와 Undo의 대칭}
+\centering\begin{tikzpicture}
+\node[ssbox](s)at(-3,1){state \(S\)};\node[sscurrent](c)at(0,1){\(S+d\)};\node[ssbox](r)at(3,1){recursive result};
+\draw[ssactiveedge](s)--node[above,font=\small]{Apply \(d\)}(c);
+\draw[ssactiveedge](c)--node[above,font=\small]{Recurse}(r);
+\draw[ssactiveedge](r)to[bend left=35]node[below,font=\small]{Undo \(d\): exactly \(S\)}(s);
+\node[ssnote]at(0,-.5){\only<1|handout:0>{decision을 state에 반영}\only<2|handout:0>{promising이면 재귀}\only<3|handout:1>{return 후 Undo: sibling은 동일한 parent state에서 시작}};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Promising의 정확한 의미}
+\[
+\neg Promising(s)\ \Longrightarrow\
+\text{descendants}(s)\text{에 feasible solution이 없다.}
+\]
+\begin{alertblock}{오해 금지}\(Promising(s)\)는 “해가 반드시 있다”가 아니라 “해 가능성을 아직 배제할 수 없다”이다.\end{alertblock}
+\end{frame}
+\begin{frame}{False Negative와 False Positive}
+\small\begin{tabular}{lll}\toprule
+판정 오류&결과&영향\\\midrule
+false negative&실제 해가 있는 subtree prune&incorrect\\
+false positive&해 없는 subtree를 계속 탐색&correct but slower\\\bottomrule
+\end{tabular}
+\begin{block}{Trade-off}강한 조건은 pruning이 많지만 soundness 증명이 어렵고, 약한 조건은 안전하지만 느릴 수 있다.\end{block}
+\end{frame}
+\begin{frame}{Backtracking Correctness Template}
+\begin{enumerate}
+\item pruning 없는 search는 모든 candidate를 열거한다.
+\item prune node의 descendants에는 feasible solution이 없음을 증명한다.
+\item 따라서 pruning은 valid solution을 잃지 않는다.
+\item report된 complete state는 feasibility 검사를 통과한다.
+\end{enumerate}
+\[
+\therefore\quad\text{모든 해를 빠짐없이, 잘못된 해 없이 보고한다.}
+\]
+\end{frame}
+\begin{frame}{Backtracking Takeaway}
+\sstakeaway{Backtracking의 correctness는 DFS 자체가 아니라 Apply/Undo invariant와 sound promising predicate에서 나온다.}
+\end{frame}

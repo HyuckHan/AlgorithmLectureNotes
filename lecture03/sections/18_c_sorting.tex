@@ -1,0 +1,42 @@
+\begin{frame}[fragile]{함수 포인터는 Callback이다}
+\optional[선택 심화]\hfill
+\begin{lstlisting}[style=ccode]
+int compare_int(const void *a, const void *b);
+int (*cmp)(const void *, const void *) = compare_int;
+\end{lstlisting}
+정렬 함수는 원소 type을 모르므로, 두 원소의 순서를 결정하는 함수를 인자로 받는다.
+\end{frame}
+\begin{frame}[fragile]{qsort의 시그니처}
+\begin{lstlisting}[style=ccode]
+void qsort(void *base, size_t count, size_t size,
+           int (*compar)(const void *, const void *));
+
+qsort(values, n, sizeof values[0], compare_int);
+\end{lstlisting}
+\begin{description}\item[base] 첫 원소 주소\item[count] 원소 수\item[size] 원소 하나의 byte 크기\end{description}
+\end{frame}
+\begin{frame}[fragile]{Overflow-safe 정수 Comparator}
+\begin{lstlisting}[style=ccode]
+static int compare_int(const void *pa, const void *pb) {
+    int a = *(const int *)pa;
+    int b = *(const int *)pb;
+    return (a > b) - (a < b);
+}
+\end{lstlisting}
+\alert{금지 습관:} \texttt{return a - b;}는 signed overflow를 일으킬 수 있다.
+\end{frame}
+\begin{frame}[fragile]{Struct와 Multi-key Comparator}
+\begin{lstlisting}[style=ccode,basicstyle=\ttfamily\small]
+static int compare_fruit(const void *pa, const void *pb) {
+    const Fruit *a = pa, *b = pb;
+    int q = (a->quantity > b->quantity)
+          - (a->quantity < b->quantity);
+    return q != 0 ? q : strcmp(a->name, b->name);
+}
+\end{lstlisting}
+quantity 오름차순, 동점이면 name 사전순이다.
+\end{frame}
+\begin{frame}{C Comparator Contract}
+\begin{itemize}\item $a$가 앞이면 음수, equivalent면 0, 뒤이면 양수를 반환한다.\item 결과는 호출마다 일관되고 transitive해야 한다.\item \texttt{const void *}를 실제 element type의 \texttt{const} pointer로 변환한다.\item \texttt{strcmp}는 부호만 사용하며 정확히 $-1,0,1$이라고 가정하지 않는다.\item C 표준은 \texttt{qsort}의 stability를 보장하지 않는다.\end{itemize}
+\sortingtakeaway{비교 함수도 알고리즘의 일부다. overflow와 동점 규칙을 테스트하라.}
+\end{frame}

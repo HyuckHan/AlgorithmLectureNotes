@@ -1,0 +1,64 @@
+\subsection{완전탐색과 탐색 순서}
+\begin{frame}{Implicit Tree: 전체를 만들지 않는다}
+\begin{itemize}
+\item 현재 state에서 필요한 child만 생성한다.
+\item DFS는 recursion stack, BFS/best-first는 frontier에 live node를 저장한다.
+\item prune된 subtree는 node 자체를 만들지 않을 수 있다.
+\end{itemize}
+\[
+\text{binary depth }n:\ 2^n\text{ leaves},\quad 2^{n+1}-1\text{ nodes}
+\qquad
+\text{permutation leaves}:n!
+\]
+\end{frame}
+\begin{frame}{State-Space Expansion}
+\centering\begin{tikzpicture}
+\node[sscurrent](root)at(0,2){R};
+\only<2-|handout:1>{\node[sscurrent](left)at(-2,.6){L};\node[ssopen](right)at(2,.6){R};
+\draw[ssactiveedge](root)--(left);\draw[ssedge](root)--(right);}
+\only<3-|handout:1>{\node[ssvalid](ll)at(-3,-.8){LL};\node[ssdead](lr)at(-1,-.8){LR};
+\draw[ssactiveedge](left)--(ll);\draw[ssedge](left)--(lr);}
+\only<4-|handout:1>{\node[ssvalid](rl)at(1,-.8){RL};\node[ssbound](rr)at(3,-.8){RR};
+\draw[ssedge](right)--(rl);\draw[ssedge](right)--(rr);}
+\node[ssnote]at(0,-3){\only<1|handout:0>{root만 생성}\only<2|handout:0>{필요한 두 child 생성}\only<3|handout:0>{DFS는 L subtree부터}\only<4|handout:1>{prune node의 후손은 생성하지 않음}};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{DFS, BFS, Best-First}
+\small
+\begin{tabular}{llll}\toprule
+Order&Container&장점&위험\\\midrule
+DFS&recursion/stack&memory \(\Theta(\text{depth})\)&깊은 나쁜 branch\\
+BFS&queue&shallow solution 먼저&큰 frontier\\
+Best-first&priority queue&유망 node 집중&평가·memory 비용\\\bottomrule
+\end{tabular}
+\begin{block}{중요}Backtracking과 Branch-and-Bound의 차이는 DFS/BFS가 아니라 pruning의 의미다.\end{block}
+\end{frame}
+\begin{frame}{같은 Tree, 다른 방문 순서}
+\centering\begin{tikzpicture}
+\node[ssnode](r)at(0,2){R};\node[ssnode](a)at(-2,.7){A};\node[ssnode](b)at(2,.7){B};
+\node[ssnode](c)at(-3,-.7){C};\node[ssnode](d)at(-1,-.7){D};\node[ssnode](e)at(1,-.7){E};\node[ssnode](f)at(3,-.7){F};
+\foreach \u/\v in{r/a,r/b,a/c,a/d,b/e,b/f}\draw[ssedge](\u)--(\v);
+\node[ssbox]at(0,-1.8){\only<1|handout:0>{DFS: R,A,C,D,B,E,F}\only<2|handout:0>{BFS: R,A,B,C,D,E,F}\only<3|handout:1>{Best-first는 score가 결정: tree는 같고 frontier 정책만 다름}};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{완전탐색과 Pruning}
+\[
+\text{complete enumeration}
+\quad+\quad
+\text{sound pruning}
+\quad=\quad
+\text{정답을 보존한 state-space search}
+\]
+\begin{itemize}
+\item pruning이 전혀 작동하지 않으면 원래 exponential tree를 탐색한다.
+\item pruning effectiveness는 입력과 state/bound 설계에 의존한다.
+\end{itemize}
+\end{frame}
+\begin{frame}{탐색 순서 Checkpoint}
+\begin{enumerate}
+\item 전체 tree를 memory에 materialize해야 하는가?
+\item BFS의 frontier가 DFS보다 커질 수 있는 이유는?
+\item best-first가 항상 polynomial인가?
+\end{enumerate}
+\begin{exampleblock}{답}아니다; 한 level의 많은 live node를 보관하기 때문; 아니다, 최악에는 exponential이다.\end{exampleblock}
+\end{frame}

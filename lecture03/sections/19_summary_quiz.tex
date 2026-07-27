@@ -1,0 +1,62 @@
+\begin{frame}{정렬 개념 Map}
+\centering\begin{tikzpicture}[x=1cm,y=1cm,every node/.style={tree node,font=\small,align=center}]
+\node[chosen,minimum width=20mm](s)at(0,2.5){Sorting};
+\node[minimum width=27mm](p)at(-4.2,1.35){Properties};
+\node[minimum width=32mm](cmp)at(0,1.35){Comparison sorting};
+\node[minimum width=35mm](key)at(4.2,1.35){Key-structure /\\Non-comparison};
+\node[minimum width=30mm](pd)at(-4.2,-.25){stable\\in-place / auxiliary space\\adaptive};
+\node[minimum width=25mm](simple)at(-1.35,.05){Simple};
+\node[minimum width=25mm](fast)at(1.35,.05){Efficient};
+\node[minimum width=25mm](sa)at(-1.35,-1.35){Selection\\Bubble\\Insertion};
+\node[minimum width=25mm](fa)at(1.35,-1.35){Merge\\Quick\\Heap};
+\node[minimum width=25mm](na)at(4.2,-.25){Counting\\Radix};
+\foreach \a/\b in {s/p,s/cmp,s/key,p/pd,cmp/simple,cmp/fast,simple/sa,fast/fa,key/na}\draw[-Latex,thick](\a)--(\b);
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{선택 Checklist 요약}
+\begin{enumerate}\item 먼저 표준 라이브러리를 고려한다.\item worst-case, stability, memory 요구를 확인한다.\item 입력 크기·분포·정렬 정도·key range를 확인한다.\item comparator의 total order와 overflow 안전성을 검증한다.\end{enumerate}
+\end{frame}
+\begin{frame}{자주 하는 실수}
+\begin{itemize}\item Big-O 하나만 보고 실제 전제와 worst/expected를 생략\item stable을 “값이 같은 원소를 구별하지 않음”으로 오해\item Heap array/tree index를 0-based와 1-based로 혼용\item BUILD-MAX-HEAP을 $\Theta(n\log n)$이라고 단정\item Quick Sort에서 pivot 양쪽이 아닌 pivot까지 다시 재귀 호출\item comparator에서 단순 뺄셈 사용\end{itemize}
+\end{frame}
+\begin{frame}{Hand Trace Quiz 1: 단순 정렬}
+$A=[5,2_a,4,2_b]$에 대해 답하라.
+\begin{enumerate}\item 최댓값을 오른쪽에 두는 Selection의 첫 pass 결과는?\item Bubble의 왼쪽→오른쪽 첫 pass 결과는?\item Insertion에서 두 번째 2를 삽입할 때 어떤 원소가 shift되는가?\end{enumerate}
+\end{frame}
+\begin{frame}{Hand Trace Quiz 2: Divide와 Heap}
+\begin{enumerate}\item $[2,7]$과 $[3,5]$를 $A[low..high]$에 merge할 때 처음 세 output은?\item Lomuto partition에서 pivot의 반환 index는 무엇을 보장하는가?\item 1-based heap에서 index 4의 parent와 children index는?\item $[4,14,10,8,7,9,3,2,1,0]$을 index 1에서 MAX-HEAPIFY한 결과는?\end{enumerate}
+\end{frame}
+\begin{frame}{복잡도·성질 Quiz}
+\begin{enumerate}\item comparison sort의 worst-case 하한은?\item BUILD-MAX-HEAP의 tight bound는?\item stable이 기본 보장되는 두 알고리즘을 고르라: Quick, Merge, Heap, Insertion\item $k=\Theta(n)$일 때 Counting Sort 시간은?\item Counting과 LSD Radix가 요구하는 key 조건은?\end{enumerate}
+\end{frame}
+\begin{frame}[fragile]{Java/C Code Quiz}
+\begin{lstlisting}[style=ccode]
+return *(const int *)a - *(const int *)b;
+\end{lstlisting}
+무엇이 위험하며 어떻게 고칠까?
+\vspace{3mm}
+\begin{lstlisting}[style=jcode]
+Comparator<Fruit> c =
+    Comparator.comparingInt(f -> f.quantity);
+\end{lstlisting}
+동점일 때 name으로 정렬하려면 무엇을 이어 붙일까?
+\end{frame}
+\begin{frame}{Quiz 정답 I: Trace}
+\begin{itemize}
+\item Selection: $[2_b,2_a,4,5]$로 equal records가 역전될 수 있다. Bubble: $[2_a,4,2_b,5]$. Insertion: 5와 4만 shift하고 $2_a$는 움직이지 않는다.
+\item Merge의 $A[low],A[low+1],A[low+2]$는 $2,3,5$.
+\item Lomuto의 $p$는 pivot의 최종 index이며 왼쪽은 $\le pivot$, 오른쪽은 $>pivot$이다.
+\item Heap index 4의 parent는 2, children은 8·9다.
+\item HEAPIFY 결과는 $[14,8,10,4,7,9,3,2,1,0]$이다.
+\end{itemize}
+\end{frame}
+\begin{frame}{Quiz 정답 II · 다음 강의}
+\begin{itemize}
+\item 비교 하한 $\Omega(n\log n)$; BUILD-MAX-HEAP $\Theta(n)$
+\item Stable: Merge·Insertion; $k=\Theta(n)$인 Counting: $\Theta(n)$
+\item Counting은 작은 finite integer range, LSD Radix는 digit 표현과 stable pass가 필요하다.
+\item C: relational comparison \texttt{(x>y)-(x<y)}
+\item Java: \texttt{.thenComparing(f -> f.name)}
+\end{itemize}
+\begin{takeaway}정렬은 “순서를 만드는 코드”가 아니라 입력 구조와 보장 조건 사이의 선택이다. 다음 강의에서는 이 선택을 다른 자료구조·알고리즘 문제로 확장한다.\end{takeaway}
+\end{frame}

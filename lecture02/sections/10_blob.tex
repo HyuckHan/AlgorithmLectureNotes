@@ -1,0 +1,50 @@
+\begin{frame}{이진 이미지와 Blob}
+\optional[추가 예제]\hfill
+\par\smallskip
+\large 0은 background, 1은 image pixel. 여기서는 \textbf{8-neighbor connectivity}를 사용한다. 대각선까지 연결되면 같은 blob이다.
+\vfill
+\begin{center}
+\tikz{\node[wall,minimum size=5mm]{};\node[anchor=west] at (.45,0){Maze의 wall};\quad
+\node[pixel,minimum size=5mm] at (3.3,0){};\node[anchor=west] at (3.75,0){Blob의 image pixel};}
+\end{center}
+\end{frame}
+\begin{frame}{4-neighbor와 8-neighbor 비교}\centering
+\begin{tikzpicture}[node distance=8mm]
+\node[font=\bfseries\large] at (-3.4,1.8) {4-neighbor};
+\foreach \r in {0,1}{\foreach \c in {0,1}{\node[open,minimum size=1.15cm] at (-4+1.2*\c,-1.2*\r) {};}}
+\node[pixel,minimum size=1.15cm] at (-4,0) {A};
+\node[pixel,minimum size=1.15cm] at (-2.8,-1.2) {B};
+\node[below,font=\bfseries\large,text=AlgoOrangeText] at (-3.4,-2.0) {2 components};
+\node[font=\bfseries\large] at (3.4,1.8) {8-neighbor};
+\draw[AlgoOrange,line width=5pt] (2.8,0)--(4,-1.2);
+\foreach \r in {0,1}{\foreach \c in {0,1}{\node[open,minimum size=1.15cm] at (2.8+1.2*\c,-1.2*\r) {};}}
+\node[pixel,minimum size=1.15cm] at (2.8,0) {A};
+\node[pixel,minimum size=1.15cm] at (4,-1.2) {B};
+\draw[AlgoOrange,line width=2.2pt] (3.08,-.28)--(3.72,-.92);
+\node[below,font=\bfseries\large,text=AlgoOrangeText] at (3.4,-2.0) {1 component};
+\end{tikzpicture}
+\vfill 대각선으로만 맞닿은 두 pixel의 연결 여부가 달라진다.
+\end{frame}
+\begin{frame}{Flood Fill의 Mission}\mission{\large\texttt{count(r,c)}는 $(r,c)$와 8-neighbor로 연결된 아직 세지 않은 image pixel 수를 반환한다.}\vfill\threeparts{범위 밖/0/이미 셈 → 0}{현재를 mark하고 이웃 8개의 count를 합함}{미방문 pixel 수 감소}
+\end{frame}
+\begin{frame}{Blob Flood Fill}\begin{columns}[c,onlytextwidth]
+\column{.60\textwidth}\centering
+\begin{tikzpicture}[scale=1.12,transform shape]
+\foreach \r in {0,...,4}{\foreach \c in {0,...,4}{\gridcell{\r}{\c}{open}}}
+\foreach \r/\c in {0/1,1/1,1/2,2/2,3/2,3/3,4/3}{\gridcell{\r}{\c}{pixel}}
+\only<1|handout:0>{\gridcell{2}{2}{counted}}
+\only<2|handout:0>{\foreach \r/\c in {2/2,1/1,1/2,0/1}{\gridcell{\r}{\c}{counted}}}
+\only<3|handout:1>{\foreach \r/\c in {2/2,1/1,1/2,0/1,3/2,3/3,4/3}{\gridcell{\r}{\c}{counted}}}
+\end{tikzpicture}
+\column{.34\textwidth}
+\only<1|handout:0>{\Huge $count=1$\par\normalsize 시작 pixel을 mark}
+\only<2|handout:0>{\Huge $count=4$\par\normalsize 위쪽 연결 영역을 확장}
+\only<3|handout:1>{\Huge $count=7$\par\normalsize 모든 reachable pixel 완료}
+\end{columns}
+\end{frame}
+\begin{frame}{Flood Fill의 비용과 DFS}8-neighbor로 reachable한 pixel 수를 $k$라 하면 time $O(k)$, 전체 $R\times C$ grid 상한은 $O(RC)$. recursion depth는 최악 $O(k)$. marking은 중복 계산과 cycle을 막는다.
+\begin{takeaway}
+4-neighbor를 사용하면 연결 성분과 $k$가 달라질 수 있다.
+\end{takeaway}
+\muted{Grid의 이웃을 탐색하던 재귀를 선택 공간의 두 branch로 일반화한다.}
+\end{frame}

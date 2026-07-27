@@ -1,0 +1,49 @@
+\subsection{Load Factor와 Expected Cost}
+\begin{frame}{Load Factor}
+\[
+\alpha=\frac{n}{m}.
+\]
+\small\centering\begin{tabular}{lll}\toprule
+&Chaining&Open addressing\\\midrule
+$n$의 의미&entry 수&active entry 수\\
+가능 범위&$\alpha\ge0$, 1 초과 가능&$0\le\alpha<1$\\
+성능 원인&expected chain length&empty slot까지 probe\\
+관리 목표&bounded chain length&충분한 empty capacity\\\bottomrule
+\end{tabular}
+\end{frame}
+\begin{frame}{Expected Cost의 조건}
+\small
+\begin{block}{Resize가 없는 한 operation}
+Suitable hashing과 controlled load 아래 SEARCH, PUT, DELETE는 expected $\Theta(1)$.
+\end{block}
+\begin{block}{Resize까지 포함한 PUT}
+PUT은 amortized expected $\Theta(1)$이지만, resize를 일으킨 individual PUT은 $\Theta(n)$일 수 있다.
+\end{block}
+\begin{alertblock}{Worst case}Collision 집중, 높은 load, adversarial keys에서는 $\Theta(n)$이다.\end{alertblock}
+\end{frame}
+\begin{frame}{Operation별 Expected · Amortized · Worst}
+\small\centering
+\begin{tabular}{lccc}\toprule
+operation&expected, no resize&amortized, resize 포함&worst\\\midrule
+lookup&$\Theta(1)$&$\Theta(1)$&$\Theta(n)$\\
+insert/update&$\Theta(1)$&expected $\Theta(1)$&$\Theta(n)$\\
+delete&$\Theta(1)$&$\Theta(1)$&$\Theta(n)$\\
+resize/rehash&---&operation sequence에 분산&$\Theta(n)$\\\bottomrule
+\end{tabular}
+\begin{alertblock}{필요한 가정}
+suitable hashing, equality/hash contract, controlled logical/probing load,
+bounded probe가 필요하다. Amortized는 개별 resize가 상수 시간이라는 뜻이 아니다.
+\end{alertblock}
+\end{frame}
+\begin{frame}{Threshold는 구현 정책이다}
+\begin{itemize}
+\item chaining은 $\alpha>1$도 허용하며 chain representation과 workload에 따라 threshold가 다르다.
+\item open addressing은 probe 급증을 피하려 더 낮은 $\alpha$를 유지한다.
+\item tombstone 비율도 cleanup/rehash trigger가 될 수 있다.
+\item 0.5나 0.75 같은 숫자는 universal law가 아니다.
+\end{itemize}
+\end{frame}
+\begin{frame}{Load Factor와 Cost Checkpoint}
+\begin{enumerate}\item chaining에서 $\alpha=1.5$가 가능한가?\item OA에서 $\alpha=1$이면 새 insert가 가능한가?\item expected와 worst bound를 함께 말하라.\end{enumerate}
+\begin{exampleblock}{답}가능; EMPTY가 없어 불가능; resize 없는 연산은 suitable hashing/controlled load에서 expected $\Theta(1)$, resize 포함 PUT은 amortized expected $\Theta(1)$, individual resize와 worst case는 $\Theta(n)$.\end{exampleblock}
+\end{frame}

@@ -1,0 +1,33 @@
+\section{Part A. Selection 문제와 Order Statistics}
+\begin{frame}{Order Statistic의 정의}
+multiset $S$를 nondecreasing order로 나열했을 때 $i$번째 값을 \alert{$i$th order statistic}이라 한다.
+\begin{itemize}\item minimum: 1st\item maximum: $n$th\item percentile: 지정한 누적 비율의 rank\end{itemize}
+중복 값도 각각 하나의 원소 instance로 센다. 따라서 여러 rank가 같은 값을 가질 수 있고,
+값을 반환하는 구현은 하나의 원본 record를 유일하게 식별하지 않을 수 있다.
+\end{frame}
+\begin{frame}{Median은 하나의 Convention이 아니다}
+\begin{columns}[T]\column{.47\textwidth}\begin{block}{홀수 $n$}$((n+1)/2)$th order statistic\end{block}\column{.47\textwidth}\begin{block}{짝수 $n$}lower median $n/2$th, upper median $(n/2+1)$th, 또는 통계적 평균\end{block}\end{columns}
+\vspace{4mm}\begin{alertblock}{Selection의 출력}반드시 어떤 rank convention을 반환하는지 명시한다. 두 중앙값의 산술 평균은 입력 원소가 아닐 수 있으므로, 우연히 입력 값과 같지 않은 한 order statistic이 아니다.\end{alertblock}
+\end{frame}
+\begin{frame}{Selection Problem Specification}
+\mission{배열 $A[p..r]$와 $1\le i\le r-p+1$이 주어질 때, 그 subarray에서 $i$번째로 작은 값을 반환하라.}
+\begin{description}
+\item[Input] inclusive range $A[p..r]$, 1-based subarray-relative rank $i$
+\item[Output] multiset $A[p..r]$의 $i$th order-statistic value
+\item[Side effect] partition 기반 구현은 배열과 record 위치를 재배열할 수 있음
+\end{description}
+\vfill\muted{Record identity가 중요하면 key만이 아니라 record 전체를 이동·반환해야 한다.}
+\end{frame}
+\begin{frame}{Rank와 Array Index를 구분하라}
+\centering\begin{tikzpicture}[x=1.12cm]
+\node[anchor=east,font=\small] at (-.7,.55) {physical array};
+\foreach \x/\v in {0/9,1/40,2/7,3/22,4/13}\node[select active]at(\x,.55){\v};
+\foreach \x/\v in {0/6,1/7,2/8,3/9,4/10}\node[font=\small,text=AlgoGray]at(\x,-.05){index \v};
+\node[anchor=east,font=\small] at (-.7,-1.0) {conceptually sorted};
+\foreach \x/\v in {0/7,1/9,2/13,3/22,4/40}\node[select cell]at(\x,-1.0){\v};
+\foreach \x/\v in {0/1,1/2,2/3,3/4,4/5}\node[font=\small,text=AlgoGray]at(\x,-1.58){rank \v};
+\node[select target]at(1,-1.0){9};
+\end{tikzpicture}
+\vspace{2mm}rank 2는 index 2나 $p+1$을 뜻하지 않는다. partition 전 정답은 어떤 physical index에도 있을 수 있다.
+\vfill\muted{전체 순서를 만들 필요가 없다는 직관을, 이제 정확한 rank 문제로 정의했다. 다음은 가장 단순한 기준선을 세운다.}
+\end{frame}

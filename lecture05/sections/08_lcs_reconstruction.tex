@@ -1,0 +1,63 @@
+\section{Part D. Advanced DP and Reconstruction}
+\begin{frame}{길이와 실제 LCS는 다르다}
+\begin{columns}[T]\column{.48\textwidth}\begin{block}{Length}$dp[m][n]=4$\end{block}
+\column{.48\textwidth}\begin{block}{Solution}backtracking으로 \texttt{BCBA}\end{block}\end{columns}
+\mission{어떤 문자를 선택했는지 표의 dependency를 거꾸로 추적한다.}
+\end{frame}
+\begin{frame}{Backtracking 규칙}
+\begin{enumerate}\item 문자가 같으면 그 문자를 선택하고 diagonal 이동\item 다르면 큰 DP 값의 방향으로 이동\item 동점이면 위쪽을 우선\end{enumerate}
+\begin{alertblock}{Convention}동점 규칙에 따라 다른 올바른 LCS가 나올 수 있다.\end{alertblock}
+\end{frame}
+\begin{frame}{LCS Backtracking Trace}
+\centering
+\begin{tikzpicture}[
+  lcs table/.style={matrix of nodes,row sep=1.2pt,column sep=1.2pt,
+    nodes={minimum width=8.4mm,minimum height=5.2mm,font=\normalsize,anchor=center},
+    ampersand replacement=\&},
+  lcs header/.style={font=\normalsize\bfseries,text=AlgoBlue},
+  trace move/.style={-Latex,very thick,draw=AlgoBlueTwo},
+  chosen/.style={draw=AlgoOrange,very thick,rounded corners=1pt,inner sep=1pt}
+]
+\matrix[lcs table] (lcs) {
+  |[lcs header]|{} \& |[lcs header]|{$\boldsymbol{\epsilon}$} \& |[lcs header]|{B} \& |[lcs header]|{D} \& |[lcs header]|{C} \& |[lcs header]|{A} \& |[lcs header]|{B} \& |[lcs header]|{A}\\
+  |[lcs header]|{$\boldsymbol{\epsilon}$} \& 0\&0\&0\&0\&0\&0\&0\\
+  |[lcs header]|{A} \&0\&0\&0\&0\&1\&1\&1\\
+  |[lcs header]|{B} \&0\&1\&1\&1\&1\&2\&2\\
+  |[lcs header]|{C} \&0\&1\&1\&2\&2\&2\&2\\
+  |[lcs header]|{B} \&0\&1\&1\&2\&2\&3\&3\\
+  |[lcs header]|{D} \&0\&1\&2\&2\&2\&3\&3\\
+  |[lcs header]|{A} \&0\&1\&2\&2\&3\&3\&4\\
+  |[lcs header]|{B} \&0\&1\&2\&2\&3\&4\&4\\
+};
+\draw[trace move] (lcs-9-8.north) -- (lcs-8-8.south);
+\draw[trace move] (lcs-8-8.north west) -- (lcs-7-7.south east);
+\draw[trace move] (lcs-7-7.north) -- (lcs-6-7.south);
+\draw[trace move] (lcs-6-7.north west) -- (lcs-5-6.south east);
+\draw[trace move] (lcs-5-6.west) -- (lcs-5-5.east);
+\draw[trace move] (lcs-5-5.north west) -- (lcs-4-4.south east);
+\draw[trace move] (lcs-4-4.west) -- (lcs-4-3.east);
+\draw[trace move] (lcs-4-3.north west) -- (lcs-3-2.south east);
+\foreach \r/\c/\ch in {8/8/A,6/7/B,5/5/C,4/3/B}{
+  \node[chosen,fit=(lcs-\r-\c)] {};
+}
+\node[font=\scriptsize,text=AlgoGray,align=left,right=4mm of lcs-7-8]{
+$(7,6)\uparrow(6,6)\nwarrow_{\!A}(5,5)$\\
+$\uparrow(4,5)\nwarrow_{\!B}(3,4)\leftarrow(3,3)$\\
+$\nwarrow_{\!C}(2,2)\leftarrow(2,1)\nwarrow_{\!B}(1,0)$};
+\end{tikzpicture}
+\vspace{1mm}
+\[
+\text{selected backward: }\texttt{A,B,C,B}
+\qquad\xrightarrow{\text{reverse}}\qquad
+\textcolor{green!45!black}{\textbf{\texttt{BCBA}}}
+\]
+\end{frame}
+\begin{frame}{복원 결과 검증}
+\begin{itemize}\item \texttt{BCBA}는 $X=\texttt{ABCBDAB}$의 subsequence\item \texttt{BCBA}는 $Y=\texttt{BDCABA}$의 subsequence\item 길이 4는 $dp[7][6]$과 일치\end{itemize}
+\end{frame}
+\begin{frame}{LCS Space Optimization}
+\optional[선택 심화]\hfill
+\begin{itemize}\item 길이만 필요: previous/current 두 row → $\Theta(\min(m,n))$ auxiliary space\item time은 여전히 $\Theta(mn)$\item full table을 버리면 단순 backtracking 정보도 사라짐\end{itemize}
+\begin{block}{Appendix preview}Hirschberg는 선형 공간으로 sequence를 복원하지만 추가 divide-and-conquer가 필요하다.\end{block}
+\vfill\muted{LCS는 2차원 prefix state였다. 다음 문제에서는 1차원 suffix state와 전체 답을 분리한다.}
+\end{frame}

@@ -1,0 +1,63 @@
+\subsection{Linear Probing}
+\begin{frame}{Linear Probing}
+\[
+h(k,i)=\bigl(h'(k)+i\bigr)\bmod m.
+\]
+\begin{itemize}\item contiguous slots를 순서대로 방문해 cache locality가 좋다.\item wrap-around를 포함해 모든 slot을 방문한다.\item occupied run이 커지는 primary clustering에 취약하다.\end{itemize}
+\end{frame}
+\begin{frame}{Linear Trace I: 첫 Collision}
+\centering\begin{tikzpicture}[x=.78cm]
+\foreach \i in {0,...,12}{\node[ht empty,minimum width=8mm](s\i)at(\i,0){E};\node[font=\tiny,text=AlgoGray]at(\i,-.5){\i};}
+\node[ht occupied,minimum width=8mm]at(s12){25};\node[ht occupied,minimum width=8mm]at(s0){13};
+\node[ht occupied,minimum width=8mm]at(s3){16};\node[ht occupied,minimum width=8mm]at(s2){15};\node[ht occupied,minimum width=8mm]at(s7){7};
+\only<1|handout:0>{\node[callout]at(6,1.2){25,13,16,15,7: 모두 home slot};}
+\only<2|handout:0>{\node[ht collision,minimum width=8mm]at(s2){15};\node[callout]at(6,1.2){28 home $=2$: occupied};}
+\only<3|handout:1>{\node[ht collision,minimum width=8mm]at(s2){15};\node[ht collision,minimum width=8mm]at(s3){16};\node[ht probe,minimum width=8mm]at(s4){28};\node[callout]at(6,1.2){probe $2\to3\to4$};}
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Linear Trace II: Wrap-Around}
+\centering\begin{tikzpicture}[x=.78cm]
+\foreach \i in {0,...,12}{\node[ht empty,minimum width=8mm](s\i)at(\i,0){E};\node[font=\tiny,text=AlgoGray]at(\i,-.5){\i};}
+\foreach \i/\v in {0/13,1/1,2/15,3/16,4/28,5/31,7/7,8/20,12/25}{\node[ht occupied,minimum width=8mm]at(s\i){\v};}
+\only<1|handout:0>{\node[ht collision,minimum width=8mm]at(s12){25};\node[callout]at(6,1.2){38 home $=12$};}
+\only<2|handout:0>{\foreach \i/\v in {12/25,0/13,1/1,2/15,3/16,4/28,5/31}{\node[ht collision,minimum width=8mm]at(s\i){\v};}\node[callout]at(6,1.2){$12\to0\to1\to\cdots\to5$ occupied};}
+\only<3|handout:1>{\node[ht probe,minimum width=8mm]at(s6){38};\draw[probe arrow] (s12.north) to[bend left=35] node[above,font=\scriptsize]{wrap} (s0.north);\node[callout]at(6,1.2){first EMPTY $=6$};}
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Linear Probing Final Table}
+\centering
+\begin{tabular}{c|cccccccccc}\toprule
+key&25&13&16&15&7&28&31&20&1&38\\
+home&12&0&3&2&7&2&5&7&1&12\\
+final&12&0&3&2&7&4&5&8&1&6\\\bottomrule
+\end{tabular}
+\vspace{5mm}
+\htrowthirteen{13,1,15,16,28,31,38,7,20,E,E,E,25}
+\end{frame}
+\begin{frame}{Primary Clustering: 자기 강화}
+\centering\begin{tikzpicture}[x=.9cm]
+\foreach \i in {0,...,10}{\node[ht empty](s\i)at(\i,0){E};\node[font=\tiny,text=AlgoGray]at(\i,-.5){\i};}
+\only<1|handout:0>{\foreach \i/\v in {3/a,4/b,5/c}{\node[ht occupied]at(s\i){\v};}\draw[decorate,decoration={brace,mirror,amplitude=5pt},AlgoOrange,thick](s3.south west)--node[below=5pt,font=\small]{cluster length 3}(s5.south east);}
+\only<2|handout:0>{\foreach \i/\v in {3/a,4/b,5/c}{\node[ht occupied]at(s\i){\v};}\node[ht collision]at(s4){b};\node[callout]at(7,1){home 4인 새 key가 run 끝까지 probe};}
+\only<3|handout:1>{\foreach \i/\v in {3/a,4/b,5/c,6/d}{\node[ht occupied]at(s\i){\v};}\draw[decorate,decoration={brace,mirror,amplitude=5pt},AlgoOrange,thick](s3.south west)--node[below=5pt,font=\small]{cluster length 4}(s6.south east);}
+\end{tikzpicture}
+\httakeaway{run 앞이나 내부로 hash된 key가 끝에 붙고, 더 긴 run은 더 넓은 home range의 key를 흡수한다.}
+\end{frame}
+\begin{frame}{Load가 Probe Cost에 미치는 영향}
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=10.5cm,height=5.3cm,xmin=0,xmax=.95,ymin=1,ymax=12,
+xlabel={load factor $\alpha$},ylabel={expected probes},grid=major,
+legend style={font=\scriptsize,at={(.03,.97)},anchor=north west}]
+\addplot[AlgoBlue,very thick,domain=0:.9,samples=100]{0.5*(1+1/(1-x))};
+\addlegendentry{successful: $\frac12(1+\frac1{1-\alpha})$}
+\addplot[AlgoOrange,very thick,domain=0:.9,samples=100]{0.5*(1+1/(1-x)^2)};
+\addlegendentry{unsuccessful: $\frac12(1+\frac1{(1-\alpha)^2})$}
+\end{axis}
+\end{tikzpicture}
+\begin{center}\scriptsize 위 식으로 직접 plot한 고전적 linear-probing formulas이다. arbitrary open addressing의 general uniform-hashing bounds가 아니며, $\alpha\to1$에서 급격히 증가한다.\end{center}
+\end{frame}
+\begin{frame}{Linear Probing Checkpoint}
+\begin{enumerate}\item key 38의 probe sequence와 final slot은?\item primary cluster가 자기 강화되는 이유는?\item unsuccessful search는 언제 종료하는가?\end{enumerate}
+\begin{exampleblock}{답}$12,0,1,2,3,4,5,6$에서 6; run에 닿은 key가 끝에 붙어 run을 키움; EMPTY를 만나거나 $m$번 probe 후.\end{exampleblock}
+\end{frame}

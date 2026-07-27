@@ -1,0 +1,47 @@
+\subsection{KMP Preprocessing}
+\begin{frame}{BuildLPS Pseudocode}
+\scriptsize\begin{algorithmic}[1]
+\Procedure{BuildLPS}{$P$}\State \(m\gets|P|;\ lps[0]\gets0;\ len\gets0;\ i\gets1\)
+\While{\(i<m\)}
+\If{\(P[i]=P[len]\)}\State \(len\gets len+1;\ lps[i]\gets len;\ i\gets i+1\)
+\ElsIf{\(len>0\)}\State \(len\gets lps[len-1]\)
+\Else\State \(lps[i]\gets0;\ i\gets i+1\)\EndIf
+\EndWhile\State\Return \(lps\)\EndProcedure
+\end{algorithmic}
+\end{frame}
+\begin{frame}{\(i\)와 \(len\)의 역할}
+\begin{description}
+\item[\(i\)]지금 \(lps[i]\)를 채울 prefix ending position
+\item[\(len\)]현재 시도하는 valid border length
+\end{description}
+\begin{block}{Invariant}\(lps[i]\)를 채우기 전 \(len\)은 \(P[0..i-1]\)의 유효한 border 길이다.\end{block}
+\end{frame}
+\begin{frame}{LPS Construction Trace}
+\centering\begin{tikzpicture}[x=.75cm,y=.72cm]
+\smindices{2.8}{0,1,2,3,4,5,6,7}
+\smrow{2.0}{P}{B,A,A,B,A,B,A,A}
+\node[smhash,text width=.78\linewidth]at(3.5,.65){%
+\only<1|handout:0>{\(i=1,2:\ A\ne B\Rightarrow lps[1]=lps[2]=0\)}%
+\only<2|handout:0>{\(i=3:\ B=B\Rightarrow lps[3]=1\)}%
+\only<3|handout:0>{\(i=4:\ A=A\Rightarrow lps[4]=2\)}%
+\only<4|handout:0>{\(i=5:\ B\ne A,\ len:2\to0,\ B=B\Rightarrow1\)}%
+\only<5|handout:0>{\(i=6:\ A=A\Rightarrow2\)}%
+\only<6|handout:1>{\(i=7:\ A=A\Rightarrow3\)}};
+\node[smnote]at(3.5,-.5){\only<1|handout:0>{\([0,0,0]\)}\only<2|handout:0>{\([0,0,0,1]\)}\only<3|handout:0>{\([0,0,0,1,2]\)}\only<4|handout:0>{\([0,0,0,1,2,1]\)}\only<5|handout:0>{\([0,0,0,1,2,1,2]\)}\only<6|handout:1>{\([0,0,0,1,2,1,2,3]\)}};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Mismatch에서 \(i\)를 유지하는 이유}
+\[
+P[i]\ne P[len],\ len>0
+\quad\Rightarrow\quad
+len\gets lps[len-1].
+\]
+같은 \(P[i]\)를 더 짧은 border 후보와 아직 비교해야 한다. 후보가 0까지 사라진 뒤에만 \(lps[i]=0\)으로 확정하고 \(i\)를 증가시킨다.
+\end{frame}
+\begin{frame}{BuildLPS Complexity와 Checkpoint}
+\[
+\Theta(m)\text{ time},\qquad\Theta(m)\text{ table space}.
+\]
+\begin{enumerate}\item \texttt{AAAAA}의 LPS는?\item \texttt{ABCDABD}의 마지막 LPS는?\end{enumerate}
+\begin{exampleblock}{답}\([0,1,2,3,4]\); 0.\end{exampleblock}
+\end{frame}

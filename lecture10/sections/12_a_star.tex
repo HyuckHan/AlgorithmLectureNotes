@@ -1,0 +1,108 @@
+\section{Part E. A* Search}
+\begin{frame}{A*: Goal-Directed Best-First Search}
+\[
+g(n)=\text{start부터 알려진 path cost},\quad
+h(n)=\text{남은 최적 비용 추정},
+\]
+\[
+f(n)=g(n)+h(n).
+\]
+OPEN에서 \(f\)가 최소인 state를 확장한다. 본문은 nonnegative edge cost와 consistent heuristic을 기본 전제로 한다.
+\end{frame}
+\begin{frame}{Graph-Search A* Pseudocode}
+\tiny\begin{algorithmic}[1]
+\Procedure{AStar}{$start,goal$}
+\State \(g[*]\gets\infty;\ parent[*]\gets NIL;\ closed\gets\varnothing\)
+\State \(g[start]\gets0\)
+\State \(open\gets\) min-PQ; insert \((h(start),0,start)\)
+\While{\(open\ne\varnothing\)}
+\State \((key,entryG,u)\gets ExtractMin(open)\)
+\If{\(entryG\ne g[u]\)}\State\textbf{continue}\Comment stale \(g\) snapshot\EndIf
+\If{\(u\in closed\)}\State\textbf{continue}\EndIf
+\State \(closed\gets closed\cup\{u\}\)
+\If{\(u=goal\)}\State\Return \Call{Reconstruct}{parent,goal}\EndIf
+\ForAll{\((u,v,w)\in Adj[u]\)}
+\If{\(v\in closed\)}\State\textbf{continue}\EndIf
+\State \(tentative\gets g[u]+w\)
+\If{\(tentative<g[v]\)}\State \(g[v]\gets tentative;\ parent[v]\gets u\)
+\State insert \((g[v]+h(v),g[v],v)\)\EndIf
+\EndFor\EndWhile
+\State\Return NO\_PATH
+\EndProcedure
+\end{algorithmic}
+\vspace{-3mm}\tiny\textbf{본문 정책:}\quad integer edge cost와 integer \(h\), nonnegative cost, consistent \(h\). 일반 floating-point 구현은 exact \(f\) equality 대신 저장한 \(g\) snapshot 또는 version을 검사한다.
+\end{frame}
+\begin{frame}{Grid와 Manhattan Heuristic}
+4-neighbor, unit cost grid에서
+\[
+h(r,c)=|r-r_G|+|c-c_G|.
+\]
+\centering\begin{tikzpicture}[x=.72cm,y=.72cm]
+\foreach \r in{0,...,4}\foreach \c in{0,...,6}\node[board]at(\c,4-\r){};
+\foreach \r/\c in{0/3,1/3,2/1,2/2,2/3,3/5}\node[obstacle]at(\c,4-\r){\(\blacksquare\)};
+\node[pathcell]at(0,4){S};\node[pathcell]at(6,0){G};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{A* OPEN/CLOSED Trace}
+\centering\begin{tikzpicture}[x=.7cm,y=.7cm]
+\foreach \r in{0,...,4}\foreach \c in{0,...,6}\node[board]at(\c,4-\r){};
+\foreach \r/\c in{0/3,1/3,2/1,2/2,2/3,3/5}\node[obstacle]at(\c,4-\r){\(\blacksquare\)};
+\only<1|handout:0>{\node[opencell]at(0,4){S};}
+\only<2|handout:0>{\node[closedcell]at(0,4){S};\node[opencell]at(1,4){O};\node[opencell]at(0,3){O};}
+\only<3|handout:0>{\node[closedcell]at(0,4){S};\node[opencell,ultra thick]at(1,4){C};\node[opencell]at(0,3){O};\node[opencell]at(2,4){O};\node[opencell]at(1,3){O};}
+\only<4|handout:0>{\foreach \r/\c in{0/0,0/1,0/2,1/0,1/1,1/2,2/0}\node[closedcell]at(\c,4-\r){C};\node[opencell]at(0,1){O};\node[opencell]at(2,1){O};}
+\only<5|handout:0>{\foreach \r/\c in{0/0,1/0,2/0,3/0,4/0,4/1,4/2,4/3,4/4,4/5}\node[closedcell]at(\c,4-\r){C};\node[opencell]at(6,0){G};}
+\only<6|handout:1>{\foreach \r/\c in{0/0,1/0,2/0,3/0,4/0,4/1,4/2,4/3,4/4,4/5,4/6}\node[pathcell]at(\c,4-\r){\(\checkmark\)};\node[pathcell]at(0,4){S};\node[pathcell]at(6,0){G};}
+\node[ssbox,text width=.38\linewidth]at(9,2.7){\only<1|handout:0>{S: \(g=0,h=10,f=10\)}\only<2|handout:0>{Extract S; add S to CLOSED}\only<3|handout:0>{current minimum \(f\); tie: row, then column}\only<4|handout:0>{wall이 frontier를 아래로 유도}\only<5|handout:0>{goal discovered: \(g=10\)}\only<6|handout:1>{Extract current G; add G to CLOSED}};
+\node[ssnote,text width=.38\linewidth]at(9,1){\only<1|handout:0>{OPEN=\{S\}, CLOSED=\(\varnothing\)}\only<2|handout:0>{neighbors enter OPEN}\only<3|handout:0>{OPEN key는 \(g+h\)}\only<4|handout:0>{CLOSED는 reopen하지 않음}\only<5|handout:0>{goal 발견 \(\ne\) 종료}\only<6|handout:1>{non-stale minimum key; optimal cost 10}};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Path Reconstruction}
+\centering\begin{tikzpicture}[x=.72cm,y=.72cm]
+\foreach \r in{0,...,4}\foreach \c in{0,...,6}\node[board]at(\c,4-\r){};
+\foreach \r/\c in{0/3,1/3,2/1,2/2,2/3,3/5}\node[obstacle]at(\c,4-\r){};
+\only<1|handout:0>{\node[pathcell]at(6,0){G};\node[ssnote]at(9,2){goal에서 parent 추적};}
+\only<2|handout:0>{\foreach \r/\c in{4/6,4/5,4/4,4/3,4/2,4/1}\node[pathcell]at(\c,4-\r){\(\leftarrow\)};\foreach \r in{1,2,3,4}\node[pathcell]at(0,4-\r){\(\uparrow\)};\node[pathcell]at(0,4){S};\node[ssnote]at(9,2){goal부터 전체 parent chain을 역추적};}
+\only<3|handout:1>{\foreach \r/\c in{0/0,1/0,2/0,3/0,4/0,4/1,4/2,4/3,4/4,4/5,4/6}\node[pathcell]at(\c,4-\r){\(\checkmark\)};\node[pathcell]at(0,4){S};\node[pathcell]at(6,0){G};}
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Admissible Heuristic}
+\[
+0\le h(n)\le h^*(n),\qquad h(goal)=0.
+\]
+남은 실제 optimal cost를 과대평가하지 않는다.
+\begin{block}{직관}optimal path의 frontier node는 실제 optimum보다 큰 \(f\)로 밀려나지 않으므로, tree-search A*가 더 비싼 goal을 먼저 확정하지 않는다.\end{block}
+\end{frame}
+\begin{frame}{Consistent Heuristic}
+\[
+h(u)\le w(u,v)+h(v)\qquad\text{for every edge }(u,v).
+\]
+\[
+f_{\mathrm{via}\ u}(v)
+=g(u)+w(u,v)+h(v)
+\]
+\[
+g(u)+h(u)
+\le g(u)+w(u,v)+h(v)
+=f_{\mathrm{via}\ u}(v).
+\]
+\begin{alertblock}{구분}기존 best-known \(g(v)\)는 이미 더 작을 수 있다. 위 식은 \(u\)를 거치는 \textbf{tentative candidate path}의 \(f\)-value가 \(f(u)\)보다 작지 않음을 말한다.\end{alertblock}
+\end{frame}
+\begin{frame}{Admissible but Inconsistent \hfill \ssoptional[Advanced]}
+admissibility만 있고 consistency가 없으면 더 좋은 path가 이미 closed된 node에 나중에 도착할 수 있다.
+\begin{itemize}
+\item 본문 pseudocode와 Java/C 구현: consistent \(h\), permanent CLOSED, reopening 없음.
+\item admissible but inconsistent \(h\): 더 작은 \(g\)가 발견되면 CLOSED node를 reopen하거나 permanent closure가 없는 formulation을 사용해야 한다.
+\end{itemize}
+\begin{alertblock}{구분}admissibility만으로 no-reopening graph-search A*의 optimality가 보장되지는 않는다.\end{alertblock}
+\end{frame}
+\begin{frame}{\(h=0\): A*와 Dijkstra}
+\[
+h(n)=0\quad\Rightarrow\quad f(n)=g(n).
+\]
+따라서 동일한 tie-breaking에서 expansion priority는 Dijkstra와 같다.
+\begin{block}{좋은 heuristic}optimality를 보존하면서 goal과 무관한 state 확장을 줄일 수 있다.\end{block}
+\end{frame}
+\begin{frame}{A* Takeaway}
+\sstakeaway{A*는 \(g+h\)로 frontier를 정렬하며 goal을 current minimum으로 extract할 때 종료한다. consistent \(h\)에서는 CLOSED reopening이 필요 없다.}
+\end{frame}

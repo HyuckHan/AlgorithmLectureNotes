@@ -1,0 +1,56 @@
+\subsection{Hashing의 기본 모델}
+\begin{frame}{Hash Table의 추상 모델}
+\[
+U=\text{key universe},\qquad K\subseteq U,\qquad |T|=m
+\]
+\[
+h:U\longrightarrow\{0,1,\ldots,m-1\}
+\]
+\begin{itemize}\item $U$: 가능한 모든 key, $K$: 현재 저장된 key\item slot/bucket index는 0부터 $m-1$\item table에는 key만이 아니라 보통 key--value entry가 저장된다.\end{itemize}
+\end{frame}
+\begin{frame}{Key $\rightarrow$ Hash Code $\rightarrow$ Compression $\rightarrow$ Bucket}
+\centering\begin{tikzpicture}[node distance=6mm and 6mm,scale=.96,transform shape]
+\node[hash box](k){key object\\\texttt{"john"}};
+\node[hash box,right=of k](c){integer hash code\\$c$};
+\node[hash box,right=of c](i){compression\\$j=C_m(c)\in[0,m)$};
+\node[hash box,right=of i](e){bucket/slot\\entry 확인};
+\draw[probe arrow](k)--node[above,font=\scriptsize]{hash-code function}(c);
+\draw[probe arrow](c)--node[above,font=\scriptsize]{compression function}(i);
+\draw[probe arrow](i)--(e);
+\end{tikzpicture}
+\httakeaway{Hash-code 계산과 compression은 서로 다른 단계다. 같은 hash code라도 capacity가 바뀌면 bucket index가 달라질 수 있다.}
+\end{frame}
+\begin{frame}{Direct Addressing}
+\begin{columns}[T]\column{.48\textwidth}
+\begin{block}{작고 dense한 universe}
+key 자체를 index로 사용한다. SEARCH/INSERT/DELETE는 $\Theta(1)$.
+\end{block}
+\column{.48\textwidth}
+\begin{alertblock}{큰 sparse universe}
+$U=0\ldots999999$인데 저장 key가 20개뿐이면 거의 모든 공간을 낭비한다.
+\end{alertblock}
+\end{columns}
+\begin{center}\small Direct address: $|T|=|U|$\qquad Hashing: large $U$를 smaller $m=13$으로 compress\end{center}
+\end{frame}
+\begin{frame}{Hashing은 후보 Bucket을 정한다}
+\centering\begin{tikzpicture}
+\node[hash box](a)at(-4,0){key $k$};
+\node[hash box](h)at(-1.4,0){$h(k)$};
+\node[ht home](b)at(1.2,0){bucket $j$};
+\node[chain node](x)at(4,0){$(k,v)$};
+\draw[probe arrow](a)--(h);\draw[probe arrow](h)--(b);\draw[chain edge](b)--(x);
+\end{tikzpicture}
+\begin{alertblock}{표현 교정}“원소 값이 저장 자리를 결정한다”보다 “key에서 계산한 hash value가 후보 bucket을 결정하고, collision 정책이 실제 위치를 결정한다”가 정확하다.\end{alertblock}
+\end{frame}
+\begin{frame}{Map Semantics}
+\begin{description}
+\item[\texttt{put(k,v)}] key가 없으면 insert, 있으면 value update
+\item[\texttt{get(k)}] equal key의 value 또는 NOT\_FOUND
+\item[\texttt{remove(k)}] entry 제거와 size 감소
+\end{description}
+\begin{block}{Duplicate policy}같은 logical key의 재삽입은 collision entry 추가가 아니라 update다. 서로 다른 key가 같은 index를 얻는 것이 collision이다.\end{block}
+\end{frame}
+\begin{frame}{Hashing Model Checkpoint}
+\begin{enumerate}\item capacity가 16일 때 유효 index 범위는?\item equal key의 hash code가 같아야 하는 이유는?\item resize가 단순 memory copy가 아닌 이유는?\end{enumerate}
+\begin{exampleblock}{답}$0\ldots15$; 같은 lookup path를 만들어야 한다; index가 capacity에 의존해 모든 active entry를 재배치해야 한다.\end{exampleblock}
+\end{frame}

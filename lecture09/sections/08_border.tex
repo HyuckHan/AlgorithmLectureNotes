@@ -1,0 +1,39 @@
+\section{Part C. Knuth--Morris--Pratt}
+\begin{frame}{Prefix · Suffix · Proper Prefix}
+길이 \(k\)인 \(X\)에서 길이 \(r\)에 대해
+\[
+prefix_r=X[0..r-1],\qquad suffix_r=X[k-r..k-1].
+\]
+\begin{block}{Proper prefix}\textcolor{AlgoOrange}{전체 \(X\)보다 짧은 prefix}, 즉 \(0\le r<k\).\end{block}
+\begin{block}{Border convention}\textcolor{AlgoOrange}{proper prefix}이면서 \textcolor{AlgoBlue}{suffix}인 문자열. LPS 길이는 없으면 0이며 empty border를 허용한다.\end{block}
+\end{frame}
+\begin{frame}{\texttt{BAABABAA}의 Border}
+\[
+\underbrace{\textcolor{AlgoOrange}{\texttt{BAA}}}_{\text{prefix}}\texttt{BAB}
+\underbrace{\textcolor{AlgoBlue}{\texttt{BAA}}}_{\text{suffix}}
+\]
+\[
+\text{borders}=\{\epsilon,\texttt{BAA}\},\qquad LPS=3.
+\]
+\begin{alertblock}{주의}전체 문자열 자신은 proper prefix가 아니므로 border 후보에서 제외한다.\end{alertblock}
+\end{frame}
+\begin{frame}{Prefix별 LPS 발견}
+\centering\begin{tikzpicture}
+\node[smhash]at(0,1){\only<1|handout:0>{\texttt{BAAB}: border \texttt{B}, LPS 1}\only<2|handout:0>{\texttt{BAABA}: border \texttt{BA}, LPS 2}\only<3|handout:1>{\texttt{BAABABAA}: border \texttt{BAA}, LPS 3}};
+\node[smnote]at(0,0){prefix와 suffix가 같아도 전체 prefix보다 짧아야 한다};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Standard LPS Table}
+\[
+\begin{array}{c|rrrrrrrr}
+i&0&1&2&3&4&5&6&7\\\hline
+P[i]&B&A&A&B&A&B&A&A\\
+lps[i]&0&0&0&1&2&1&2&3
+\end{array}
+\]
+\begin{block}{검증}각 \(lps[i]\)는 \(P[0..i]\)의 longest proper prefix that is also suffix 길이다.\end{block}
+\end{frame}
+\begin{frame}{Border와 LPS Checkpoint}
+\begin{enumerate}\item \(\texttt{BAABA}\)의 LPS 길이는?\item 전체 문자열은 자신의 border인가?\item standard \(lps[0]\)은?\end{enumerate}
+\begin{exampleblock}{답}2; 아니다; 0.\end{exampleblock}
+\end{frame}

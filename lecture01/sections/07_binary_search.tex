@@ -1,0 +1,111 @@
+\section{Part G. 이진 탐색(Binary Search)}
+
+% 26
+\begin{frame}{이진 탐색의 전제: 정렬과 임의 접근}
+  중간값과 비교해서 절반을 버리려면 배열이 \keyterm{오름차순 정렬}되어 있어야 한다.
+  \begin{center}
+    \begin{tikzpicture}[scale=1.10,transform shape]
+      \foreach \x/\val in {0/3,1/6,2/9,3/12,4/15,5/18,6/21,7/24}{\node[cell] at (1.16*\x,0) {\val};}
+      \draw[flow] (0,-.75)--(8.1,-.75) node[right,note] {값 증가};
+    \end{tikzpicture}
+  \end{center}
+  정렬되지 않은 배열에서 ``중간값보다 작다''는 사실은 왼쪽/오른쪽 위치에 대한 정보를 주지 않는다.
+  \begin{alertblock}{계약}
+    Precondition: $A[1]\le A[2]\le\cdots\le A[n]$이고,
+    $A[i]$에 효율적인 임의 접근(random access)이 가능하다.
+  \end{alertblock}
+\end{frame}
+
+% 27
+\begin{frame}[fragile]{이진 탐색(Binary Search)}
+  \begin{algorithmic}[1]
+    \Procedure{BinarySearch}{$A[1..n],x$}
+      \State $low\gets1,\; high\gets n$
+      \While{$low\le high$}
+        \State $mid\gets low+\lfloor(high-low)/2\rfloor$
+        \If{$A[mid]=x$} \State \Return $mid$
+        \ElsIf{$A[mid]<x$} \State $low\gets mid+1$
+        \Else \State $high\gets mid-1$
+        \EndIf
+      \EndWhile
+      \State \Return $\NotFound$
+    \EndProcedure
+  \end{algorithmic}
+\end{frame}
+
+% 28
+\begin{frame}{이진 탐색: $x=18$ 찾기}
+  \begin{center}
+  \begin{tikzpicture}[scale=1.10,transform shape]
+    \foreach \x/\val in {0/3,1/6,2/9,3/12,4/15,5/18,6/21,7/24}{
+      \ifnum\x<4
+        \alt<2->{\node[discarded] (b\x) at (1.16*\x,0) {\val};}{\node[cell] (b\x) at (1.16*\x,0) {\val};}
+      \else
+        \node[cell] (b\x) at (1.16*\x,0) {\val};
+      \fi
+    }
+    \only<1|handout:0>{
+      \node[active] at (3.48,0) {12};
+      \node[note,below=5mm of b0] {$low=1$};
+      \node[note,below=5mm of b3] {$mid=4$};
+      \node[note,below=5mm of b7] {$high=8$};
+    }
+    \only<2|handout:0>{
+      \draw[decorate,decoration={brace,amplitude=5pt},AlgoOrange,thick]
+        (-.48,.65)--(3.96,.65)
+        node[midway,above=5pt,text=AlgoOrangeText] {$mid=4,\;A[1..4]$ 제거};
+      \node[note,below=5mm of b4] {$low=5$};
+      \node[note,below=5mm of b7] {$high=8$};
+    }
+    \only<3|handout:0>{
+      \node[active] at (5.8,0) {18};
+      \node[note,below=5mm of b4] {$low=5$};
+      \node[note,below=5mm of b7] {$high=8$};
+      \node[font=\small,text=AlgoOrangeText,above=5mm of b5] {$mid=6$: $18=18$};
+    }
+    \only<4|handout:1>{
+      \node[active] at (5.8,0) {18};
+      \node[note,below=5mm of b4] {$low=5$};
+      \node[note,below=5mm of b7] {$high=8$};
+      \node[font=\small,text=AlgoOrangeText,above=5mm of b5] {$mid=6$: 인덱스 6 반환};
+    }
+  \end{tikzpicture}
+  \end{center}
+  \only<1|handout:0>{$A[mid]=12<18$을 확인한다.}
+  \only<2|handout:0>{$A[mid]<x\Rightarrow$ 정렬 때문에 왼쪽 구간 $A[low..mid]$에는 $x$가 없다.}
+  \only<3|handout:0>{새 구간 $[5,8]$의 중간 원소에서 발견한다.}
+  \only<4|handout:1>{8개 원소에서 비교는 2번뿐이었다.}
+  \vfill
+  \muted{매 단계에서 $x$가 있을 수 있는 구간 $A[low..high]$만 유지한다. 이것이 다음 슬라이드의 invariant다.}
+\end{frame}
+
+% 29
+\begin{frame}{탐색 구간 invariant}
+  \begin{block}{Invariant}
+    $x$가 배열에 있다면, 매 반복 시작 시 $x$는 $A[low..high]$ 안에 있다.
+  \end{block}
+  \begin{itemize}
+    \item $A[mid]<x$: 정렬 때문에 $mid$ 이하에는 $x$가 없다.
+    \item $A[mid]>x$: 정렬 때문에 $mid$ 이상에는 $x$가 없다.
+    \item 매번 후보 구간이 절반가량 줄어든다.
+  \end{itemize}
+  $low>high$가 되면 후보가 없으므로 $\NotFound$가 정확하다.
+\end{frame}
+
+% 30
+\begin{frame}{탐색 선택 Checkpoint}
+  \begin{tabular}{@{}p{.39\textwidth}cc@{}}
+    \toprule
+    상황 & Linear & Binary \\
+    \midrule
+    정렬되지 않은 작은 배열, 한 번 탐색 & \alert{적합} & 정렬 비용 필요 \\
+    정렬된 큰 배열, 반복 탐색 & 가능 & \alert{적합} \\
+    연결 리스트에서 임의 중간 접근 불가 & \alert{적합} & 부적합 \\
+    \bottomrule
+  \end{tabular}
+  \vfill
+  \begin{takeaway}
+    더 빠른 성장률만 보지 말고 \textbf{전제조건, 자료구조, 준비 비용, 탐색 횟수}를 함께 본다.
+  \end{takeaway}
+  \muted{더 빨라 보인다는 직관을 연산 수의 함수로 표현해 보자.}
+\end{frame}

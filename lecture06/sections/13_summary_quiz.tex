@@ -1,0 +1,56 @@
+\subsection{Summary와 Quiz}
+\begin{frame}{Lecture 6 Concept Map}
+\centering\begin{tikzpicture}[node distance=11mm,tree node/.append style={font=\normalsize,minimum height=8mm,inner sep=4pt}]
+\node[callout](s){Search Trees};
+\node[tree node,below left=of s](b){BST\\$\Theta(h)$};
+\node[tree node,below=of s](a){Balanced\\AVL / RB};
+\node[tree node,below right=of s](t){B-Tree\\page index};
+\node[tree node,below=of b](o){order\\traversal};
+\node[tree node,below=of a](r){rotation\\invariant};
+\node[tree node,below=of t](p){split\\borrow/merge};
+\draw[st edge](s)--(b)(s)--(a)(s)--(t)(b)--(o)(a)--(r)(t)--(p);
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Tree Basics Quiz}
+\begin{enumerate}\item 9-node tree의 edge 수는?\item root depth와 leaf height convention은?\item full/perfect/complete 차이는?\item edge-height 3 perfect tree의 node 수는?\end{enumerate}
+\end{frame}
+\begin{frame}{Traversal Quiz}
+fixed tree A(B(D,E),C(F,G))에 대해
+\begin{enumerate}\item preorder, inorder, postorder, level-order는?\item DFS stack과 BFS queue space는?\item expression tree의 정확한 infix에 괄호가 필요한 이유는?\end{enumerate}
+\end{frame}
+\begin{frame}{BST Quiz}
+\small\begin{enumerate}
+\item search(13)의 path는?
+\item successor(15), predecessor(15)는?
+\item INSERT의 $x/y$ 역할은?
+\item INSERT 12의 마지막 non-NIL parent는?
+\item 왜 고정 BST에서 key 14를 successful insertion 예제로 사용할 수 없는가?
+\item DELETE case 3에서 successor의 left가 NIL인 이유는?
+\end{enumerate}
+\end{frame}
+\begin{frame}{AVL · RB Quiz}
+\begin{enumerate}\item $BF=left-right$에서 sequence 30,10,20은 어떤 case인가?\item rotation이 보존하는 key order는?\item RB insert에서 uncle red이면?\item $n$ internal nodes인 RB height bound는?\end{enumerate}
+\end{frame}
+\begin{frame}{B-Tree Quiz}
+\begin{enumerate}\item $t=2$ node의 최대 key 수는?\item split에서 어느 key가 promotion되는가?\item minimum child로 내려가기 전 가능한 두 repair는?\item large fan-out이 중요한 이유는?\end{enumerate}
+\end{frame}
+\begin{frame}{Quiz 정답 I}
+\small\begin{itemize}
+\item edge 8; root depth 0, leaf height 0; perfect node $2^{4}-1=15$.
+\item preorder A B D E C F G; inorder D B E A F C G.
+\item postorder D E B F G C A; level-order A B C D E F G.
+\item DFS $O(h)$, BFS $O(w)$; 괄호가 operator grouping을 보존.
+\item search path $15\to6\to7\to13$; successor/predecessor는 17/14.
+\end{itemize}
+\end{frame}
+\begin{frame}{Quiz 정답 II}
+\small\begin{itemize}
+\item INSERT: $x$ search cursor, $y$ parent 후보; INSERT 12의 마지막 parent는 9.
+\item 14는 이미 존재하며 distinct-key 정책이 duplicate를 거부하므로 successful insertion 예제가 될 수 없다.
+\item successor는 right subtree minimum이라 left가 NIL.
+\item 30,10,20은 LR; rotation 전후 inorder 동일.
+\item uncle red: parent/uncle black, grandparent red, violation을 위로.
+\item RB height $h\le2\log_2(n+1)$.
+\item $t=2$ 최대 3 keys; median promotion; borrow 또는 merge; page I/O를 줄이기 위해.
+\end{itemize}
+\end{frame}

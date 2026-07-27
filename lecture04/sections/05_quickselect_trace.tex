@@ -1,0 +1,144 @@
+\begin{frame}{공통 첫 Partition: Fixed Pivot 15}
+\textbf{입력:}\quad $A=[31,8,48,73,11,3,20,29,65,15]$
+
+\vspace{2mm}\textbf{$A[r]=15$로 Lomuto Partition 후:}
+\centering
+\begin{tikzpicture}[x=.91cm]
+\foreach \x/\v in {0/8,1/11,2/3}\node[select active]at(\x,0){\v};
+\node[select pivot]at(3,0){15};
+\foreach \x/\v in {4/31,5/48,6/20,7/29,8/65,9/73}\node[select active]at(\x,0){\v};
+\node[callout]at(4.5,-1.05){$p=1,\ r=10,\ i\in\{2,7\},\ q=4,\ k=4$};
+\end{tikzpicture}
+\begin{block}{두 trace의 pivot policy}\small
+Example 1은 매 call에서 $A[r]$를 쓰는 \textbf{Fixed-pivot Quickselect}다.
+Example 2는 선택한 index $s$를 $A[r]$와 교환한 뒤 같은 Lomuto Partition을 쓰는
+\textbf{RandomizedSelect trace}다. 첫 draw는 $s=r=10$이라 swap이 no-op이다.
+\end{block}
+\end{frame}
+
+\begin{frame}{Example 1: Fixed-pivot로 2번째 값 찾기}
+\centering
+\begin{tikzpicture}[x=.91cm]
+\only<1|handout:0>{
+  \foreach \x/\v in {0/8,1/11,2/3}\node[select active]at(\x,0){\v};
+  \foreach \x/\v in {3/15,4/31,5/48,6/20,7/29,8/65,9/73}\node[select discard]at(\x,0){\v};
+  \node[callout]at(4.5,-1.1){$p=1,\ r=3,\ i=2,\ pivot=A[r]=3$};
+}
+\only<2|handout:0>{
+  \node[select pivot]at(0,0){3};\foreach \x/\v in {1/11,2/8}\node[select active]at(\x,0){\v};
+  \foreach \x/\v in {3/15,4/31,5/48,6/20,7/29,8/65,9/73}\node[select discard]at(\x,0){\v};
+  \node[callout]at(4.5,-1.1){partition: $q=1,\ k=1< i$; retain $A[2..3]$, new $i=1$};
+}
+\only<3|handout:0>{
+  \node[select discard]at(0,0){3};\foreach \x/\v in {1/11,2/8}\node[select active]at(\x,0){\v};
+  \foreach \x/\v in {3/15,4/31,5/48,6/20,7/29,8/65,9/73}\node[select discard]at(\x,0){\v};
+  \node[callout]at(4.5,-1.1){$p=2,\ r=3,\ i=1,\ pivot=A[r]=8$};
+}
+\only<4|handout:0>{
+  \node[select discard]at(0,0){3};\node[select pivot]at(1,0){8};\node[select active]at(2,0){11};
+  \foreach \x/\v in {3/15,4/31,5/48,6/20,7/29,8/65,9/73}\node[select discard]at(\x,0){\v};
+  \node[callout]at(4.5,-1.1){partition: $q=2,\ k=q-p+1=1=i$};
+}
+\only<5|handout:1>{
+  \foreach \x/\v in {0/3,2/11,3/15,4/31,5/48,6/20,7/29,8/65,9/73}\node[select discard]at(\x,0){\v};
+  \node[select target]at(1,0){8};
+  \node[callout]at(4.5,-1.1){answer $=8$};
+}
+\end{tikzpicture}
+\vspace{2mm}
+\only<1|handout:0>{현재 last element 3 외에 다른 pivot을 고르지 않는다.}
+\only<2|handout:0>{더 작은 pivot instance 하나를 제거했으므로 rank $2-1=1$.}
+\only<3|handout:0>{새 subarray에서도 fixed policy는 마지막 원소 8을 사용한다.}
+\only<4|handout:0>{pivot 8의 subarray-relative rank가 목표 rank와 같다.}
+\only<5|handout:1>{원래 배열의 2nd order-statistic value는 8이다.}
+\mode<handout>{\par\smallskip\muted{요약: pivot 3으로 $k=1$을 제거해
+$A[2..3]$의 rank 1로 갱신하고, fixed pivot 8에서 $k=i=1$이 되어 종료한다.}}
+\end{frame}
+
+\begin{frame}{Example 2: RandomizedSelect로 7번째 값 찾기}
+\optional[추가 예제]\hfill
+\centering
+\begin{tikzpicture}[x=.91cm]
+\only<1|handout:0>{
+  \foreach \x/\v in {0/8,1/11,2/3,3/15}\node[select discard]at(\x,0){\v};
+  \foreach \x/\v in {4/31,5/48,6/20,7/29,8/65,9/73}\node[select active]at(\x,0){\v};
+  \node[callout]at(6.5,-1.1){$p=5,\ r=10,\ i=7-4=3$; draw $s=8$, pivot 29};
+}
+\only<2|handout:0>{
+  \foreach \x/\v in {0/8,1/11,2/3,3/15}\node[select discard]at(\x,0){\v};
+  \foreach \x/\v in {4/31,5/48,6/20,7/73,8/65}\node[select active]at(\x,0){\v};
+  \node[select pivot]at(9,0){29};
+  \node[callout]at(6.5,-1.1){Swap $A[s]\leftrightarrow A[r]$: $[31,48,20,73,65,29]$};
+}
+\only<3|handout:0>{
+  \foreach \x/\v in {0/8,1/11,2/3,3/15}\node[select discard]at(\x,0){\v};
+  \node[select active]at(4,0){20};\node[select pivot]at(5,0){29};
+  \foreach \x/\v in {6/31,7/73,8/65,9/48}\node[select active]at(\x,0){\v};
+  \node[callout]at(6.5,-1.1){Lomuto: $q=6,\ k=2<i$; retain $A[7..10]$, new $i=1$};
+}
+\only<4|handout:0>{
+  \foreach \x/\v in {0/8,1/11,2/3,3/15,4/20,5/29}\node[select discard]at(\x,0){\v};
+  \foreach \x/\v in {6/31,7/73,8/65,9/48}\node[select active]at(\x,0){\v};
+  \node[callout]at(7.5,-1.1){$p=7,\ r=10,\ i=1$; draw $s=7$, pivot 31};
+}
+\only<5|handout:0>{
+  \foreach \x/\v in {0/8,1/11,2/3,3/15,4/20,5/29}\node[select discard]at(\x,0){\v};
+  \foreach \x/\v in {6/48,7/73,8/65}\node[select active]at(\x,0){\v};
+  \node[select pivot]at(9,0){31};
+  \node[callout]at(7.5,-1.1){Swap $A[s]\leftrightarrow A[r]$: $[48,73,65,31]$};
+}
+\only<6|handout:0>{
+  \foreach \x/\v in {0/8,1/11,2/3,3/15,4/20,5/29}\node[select discard]at(\x,0){\v};
+  \node[select pivot]at(6,0){31};
+  \foreach \x/\v in {7/73,8/65,9/48}\node[select active]at(\x,0){\v};
+  \node[callout]at(7.5,-1.1){Lomuto: $q=7,\ k=q-p+1=1=i$};
+}
+\only<7|handout:1>{
+  \foreach \x/\v in {0/8,1/11,2/3,3/15,4/20,5/29}\node[select discard]at(\x,0){\v};
+  \node[select target]at(6,0){31};
+  \foreach \x/\v in {7/73,8/65,9/48}\node[select discard]at(\x,0){\v};
+  \node[callout]at(7.5,-1.1){answer $=31$};
+}
+\end{tikzpicture}
+\vspace{2mm}
+\only<1|handout:0>{선택한 pivot index와 value를 먼저 명시한다.}
+\only<2|handout:0>{임의 내부 pivot은 반드시 Lomuto 위치 $A[r]$로 옮긴다.}
+\only<3|handout:0>{더 작은 두 instance를 제거하므로 rank $3-2=1$.}
+\only<4|handout:0>{다음 random draw는 현재 subarray 안에서 다시 이루어진다.}
+\only<5|handout:0>{31을 $A[r]$로 옮긴 뒤에만 Lomuto를 호출한다.}
+\only<6|handout:0>{$k=i$이므로 pivot instance가 정답이다.}
+\only<7|handout:1>{원래 배열의 7th order-statistic value는 31이다.}
+\mode<handout>{\par\smallskip\muted{요약: pivot 29와 31은 각각 선택된 index에서
+$A[r]$로 swap한 뒤 Lomuto Partition을 적용했다. 두 단계의 새 rank는 $3-2=1$, $1$이다.}}
+\end{frame}
+
+\begin{frame}{두 Trace의 Pivot Policy 비교}
+\begin{columns}[T]
+\column{.47\textwidth}
+\begin{block}{Fixed-pivot Quickselect}
+매 call의 $A[r]$ 사용\\
+$[8,11,3]$: pivot 3\\
+$[11,8]$: pivot 8
+\end{block}
+\column{.47\textwidth}
+\begin{block}{RandomizedSelect}
+uniform index $s$ 선택\\
+$A[s]\leftrightarrow A[r]$\\
+그 뒤 같은 Lomuto 적용
+\end{block}
+\end{columns}
+\selecttakeaway{Quickselect는 한쪽만 남기는 구조이고, pivot을 고르는 정책은 별도의 알고리즘 설계 결정이다.}
+\end{frame}
+
+\begin{frame}{Quickselect Trace Checkpoint}
+$A[p..r]=[2,5,7,\boxed{9},12,18]$, $p=1$, $q=4$라 하자.
+\[
+k=q-p+1=4
+\]
+\begin{enumerate}
+\item $i=2$이면 $A[p..q-1]$에서 rank 2를 찾는다.
+\item $i=4$이면 pivot 9를 반환한다.
+\item $i=6$이면 $A[q+1..r]$에서 rank $6-4=2$를 찾는다.
+\end{enumerate}
+\vfill\muted{$p\ne1$인 경우에도 full-array 시작점이 아니라 반드시 $q-p+1$로 계산한다.}
+\end{frame}

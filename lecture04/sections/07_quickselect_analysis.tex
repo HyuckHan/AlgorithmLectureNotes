@@ -1,0 +1,26 @@
+\begin{frame}{Partition은 선형, 재귀는 한쪽}
+한 call의 partition은 $\Theta(n)$이고 다음 call은 한쪽뿐이다.
+\[T(n)=T(s)+\Theta(n),\qquad 0\le s\le n-1\]
+$s$는 실제로 목표 rank를 포함해 \alert{유지한 한쪽의 크기}다. 항상 더 큰 partition을 뜻하지는 않으며 pivot policy와 목표 rank에 따라 달라진다.
+\end{frame}
+\begin{frame}{Balanced Case}
+\[T(n)=T(n/2)+\Theta(n)\]
+\begin{alertblock}{Quick Sort와 다르다}$2T(n/2)$가 아니다. 목표 rank가 없는 절반은 즉시 버린다.\end{alertblock}
+\end{frame}
+\begin{frame}{Geometric Series로 보면 $\Theta(n)$}
+\[cn+c\frac n2+c\frac n4+\cdots<2cn=\Theta(n)\]
+\centering\begin{tikzpicture}\node[select active,minimum width=8cm]at(0,0){$n$};\node[select active,minimum width=4cm]at(0,-.72){$n/2$};\node[select active,minimum width=2cm]at(0,-1.44){$n/4$};\node[select active,minimum width=1cm]at(0,-2.16){$n/8$};\end{tikzpicture}
+\end{frame}
+\begin{frame}{Worst Case는 $\Theta(n^2)$}
+매번 smallest 또는 largest pivot이면
+\[T(n)=T(n-1)+\Theta(n)=\Theta(n^2).\]
+distinct keys가 정렬 또는 역정렬된 입력에서 last-element pivot을 고정하면 이런 상황이 반복될 수 있다.
+\end{frame}
+\begin{frame}{Fixed-pivot Quickselect 정리}
+\begin{tabular}{lcc}\toprule retained side&recurrence&time\\\midrule
+balanced&$T(n/2)+\Theta(n)$&$\Theta(n)$\\
+maximally unbalanced&$T(n-1)+\Theta(n)$&$\Theta(n^2)$\\\bottomrule
+\end{tabular}
+\selecttakeaway{Balanced case는 가능한 좋은 실행이지, fixed rule의 average-case 보장이 아니다.}
+\vfill\muted{고정된 pivot 규칙은 입력에 취약할 수 있다. Pivot rank를 무작위화해 입력 배열과 나쁜 선택의 상관관계를 끊는다.}
+\end{frame}

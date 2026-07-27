@@ -1,0 +1,78 @@
+\section{Part B. 재귀 알고리즘의 분석}
+\begin{frame}{왜 수행시간이 점화식인가?}현재 호출의 시간은 \textbf{작은 호출들의 시간+현재 호출의 일}이다.\[T(n)=\sum T(\text{subproblem size})+\text{local work}.\]
+\vfill\muted{점화식에는 재귀가 멈추는 base cost도 함께 둔다. 예: $T(1)=\Th(1)$.}
+\end{frame}
+\begin{frame}{선형 재귀와 분기 재귀}\begin{columns}[T]\column{.46\textwidth}$T(n)=T(n-1)+\Th(1)$\par 호출 경로 하나\column{.46\textwidth}$T(n)=T(n-1)+T(n-2)+\Th(1)$\par 호출 트리가 분기\end{columns}\vfill 깊이만 보고 시간을 판단하면 안 된다.
+\end{frame}
+\begin{frame}{반복대치: $T(n)=T(n-1)+n$}
+\[
+T(1)=\Th(1)
+\]
+\Large
+\begin{align*}
+T(n)&=T(n-1)+n\\
+&=T(n-2)+(n-1)+n\\
+&=T(1)+2+\cdots+n\\
+&=\frac{n(n+1)}2=\Th(n^2).
+\end{align*}
+\normalsize 패턴이 base case에 닿을 때까지 펼친다.
+\end{frame}
+\begin{frame}{반복대치: $2T(n/2)+n$}
+\[
+T(1)=\Th(1),\qquad T(n)=2T(n/2)+n
+\]
+\begin{align*}
+T(n)&=2^2T(n/2^2)+2n\\
+&=2^kT(n/2^k)+kn.
+\end{align*}
+$n$을 2의 거듭제곱으로 두면 $k=\log_2n$이고,
+$T(n)=nT(1)+n\log_2n=\Th(n\log n)$.
+\vfill\muted{일반적인 $n$의 floor/ceiling은 점근적 결과를 바꾸지 않는다.}
+\end{frame}
+\begin{frame}{재귀 트리: $T(n)=2T(n/2)+n$}
+\begin{columns}[c,onlytextwidth]
+\column{.61\textwidth}\centering
+\begin{tikzpicture}[scale=.83,transform shape,
+  level distance=16mm,
+  level 1/.style={sibling distance=61mm},
+  level 2/.style={sibling distance=27mm},
+  every node/.style={draw=AlgoBlue,fill=AlgoLight,rounded corners,minimum width=16mm,minimum height=8mm,font=\normalsize},
+  edge from parent/.style={draw=AlgoGray,thick}
+]
+\node{$n$}
+	child{
+		node{$n/2$} 
+		child{node{$n/4$}} 
+		child{node{$n/4$}}
+	} 
+	child{
+		node{$n/2$} 
+		child{node{$n/4$}} 
+		child{node{$n/4$}}
+	};
+\end{tikzpicture}
+\column{.37\textwidth}
+\begin{align*}
+\text{Level 0: }&1\cdot n=n\\
+\text{Level 1: }&2\cdot(n/2)=n\\
+\text{Level 2: }&4\cdot(n/4)=n\\
+&\vdots\\[-1mm]
+\text{levels: }&\log_2 n
+\end{align*}
+\end{columns}
+\vfill
+\begin{takeaway}
+네 개의 $n/4$는 서로 다른 호출이다.
+$n\log_2n+\text{leaf cost}=\Th(n\log n)$.
+\end{takeaway}
+\end{frame}
+\begin{frame}{추정 후 증명}\textbf{Guess:} $T(n)\le cn\log n$.\[T(n)\le2c\frac n2\log\frac n2+n=cn\log n-cn+n.\]$c\ge1$이면 원하는 상한을 얻는다. base case와 충분히 큰 $n$도 확인한다.
+\end{frame}
+\begin{frame}{왜 귀납가정을 강화하나?}
+\optional[Advanced]\hfill
+\[T(1)=\Th(1),\qquad T(n)=2T(n/2)+1.\]
+단순히 $T(n)\le cn$을 넣으면 $cn+1$이 남는다. $T(n)\le cn-2$로 강화하면
+\[T(n)\le2(cn/2-2)+1=cn-3<cn-2.\]
+\end{frame}
+\begin{frame}{어떤 방법을 쓸까?}\begin{tabular}{@{}lll@{}}\toprule 방법&잘 맞는 경우&장점\\\midrule 반복대치&패턴이 단순&정확한 합\\재귀 트리&level별 일이 보임&직관\\추정+증명&답을 예상 가능&엄밀한 확인\\Master&표준 분할형&빠른 분류\\\bottomrule\end{tabular}
+\end{frame}

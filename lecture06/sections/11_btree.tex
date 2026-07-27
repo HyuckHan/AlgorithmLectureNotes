@@ -1,0 +1,139 @@
+\section{Part E. B-Tree와 Search Tree 비교}
+\begin{frame}{왜 B-Tree인가?}
+\small
+\begin{columns}[T]\column{.48\textwidth}
+\begin{block}{Storage reality}disk·SSD·database는 block/page 단위로 접근하고 I/O가 CPU comparison보다 훨씬 비싸다.\end{block}
+\column{.48\textwidth}
+\begin{block}{Design response}한 page에 많은 key/child를 저장해 fan-out을 키우고 height와 page access를 줄인다.\end{block}
+\end{columns}
+\begin{block}{4 KB internal page의 규모 예}
+metadata를 32 B, key와 child pointer를 각각 8 B라 하면
+\[
+32+8k+8(k+1)\le4096
+\]
+따라서 약 253 keys와 254 children이 들어간다. 절반 occupancy에서도 fan-out은 약 127이므로 몇 level로 수백만 key 영역을 가를 수 있다.
+\end{block}
+\end{frame}
+\begin{frame}{Minimum Degree \texorpdfstring{$t$}{t} Convention}
+B-Tree의 minimum degree가 $t\ge2$일 때
+\begin{itemize}
+\item node당 최대 $2t-1$ keys, internal node당 최대 $2t$ children
+\item root 제외 node는 최소 $t-1$ keys
+\item non-root internal node는 최소 $t$ children
+\item nonempty root는 최소 1 key, 모든 leaf는 같은 depth
+\end{itemize}
+\end{frame}
+\begin{frame}{\texorpdfstring{$t=2$}{t=2}: 2-3-4 Tree}
+\begin{itemize}\item node key 수: 1–3\item internal child 수: key 수 + 1\item 모든 leaf depth 동일\item split할 full node는 3 keys\end{itemize}
+\begin{block}{본문 예제}capacity를 눈으로 확인하기 쉬운 $t=2$를 사용한다.\end{block}
+\end{frame}
+\begin{frame}{Multiway Search Node의 Range Invariant}
+\centering\begin{tikzpicture}[x=1.5cm]
+\node[bnode](x)at(0,0){$k_1\mid k_2\mid\cdots\mid k_r$};
+\node[page mark](czero)at(-2.5,-1.3){$c_0<k_1$};
+\node[page mark](cmid)at(-1,-1.3){$k_1<c_i<k_2$};
+\node[page mark](cdots)at(1,-1.3){$\cdots$};
+\node[page mark](clast)at(2.5,-1.3){$c_r>k_r$};
+\draw[st edge](x)--(czero)(x)--(cmid)(x)--(cdots)(x)--(clast);
+\end{tikzpicture}
+\begin{itemize}\item node 안 key는 strictly sorted\item record pointer와 child page pointer는 다른 역할\end{itemize}
+\end{frame}
+\begin{frame}{B-Tree SEARCH}
+\small\begin{algorithmic}[1]
+\Procedure{BTreeSearch}{$x,k$}
+\State node 안에서 첫 $k\le x.key[i]$ 위치를 찾음
+\If{$i$가 존재하고 $k=x.key[i]$}\State\Return $(x,i)$\EndIf
+\If{$x.leaf$}\State\Return $\NIL$\EndIf
+\State child page $x.child[i]$를 읽음
+\State\Return \Call{BTreeSearch}{$x.child[i],k$}
+\EndProcedure
+\end{algorithmic}
+\end{frame}
+\begin{frame}{B-Tree Search Animation: Key 17}
+\centering\begin{tikzpicture}[x=1.4cm,y=1cm]
+\node[bnode,alt=<1|handout:0>{bcurrent}{bnode}](r)at(0,0){10 $\mid$ 20};
+\node[bnode](a)at(-3,-1.4){5 $\mid$ 6 $\mid$ 7};
+\node[bnode,alt=<2|handout:1>{bcurrent}{bnode}](b)at(0,-1.4){12 $\mid$ 17};
+\node[bnode](c)at(3,-1.4){30};
+\draw[st edge](r)--(a)(r)--(b)(r)--(c);
+\only<1|handout:0>{\node[callout]at(4.8,0){$10<17<20$\\middle page 선택};}
+\only<2|handout:1>{\node[callout]at(4.8,0){page 안에서 17 발견\\2 page accesses};}
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{SEARCH Cost: CPU와 I/O를 분리}
+\begin{itemize}
+\item fixed minimum degree $t$와 occupancy invariant 아래 worst-case height: $\Theta(\log_t n)$
+\item worst-case page access: root cache를 제외해도 $\Theta(\log_t n)$
+\item node 내부: linear scan 또는 binary search 가능
+\item 큰 $t$는 height를 줄이지만 page 내부 comparison은 늘 수 있음
+\end{itemize}
+\end{frame}
+\begin{frame}{SplitChild의 핵심}
+full child $y=[a\mid m\mid b]$를 내려가기 전에
+\[
+[a\mid m\mid b]\quad\Longrightarrow\quad [a]\ \uparrow m\ [b].
+\]
+\begin{itemize}\item median $m$을 parent로 promotion\item left half는 $y$, right half는 새 node $z$\item leaf가 아니면 child pointer도 함께 분할\end{itemize}
+\end{frame}
+\begin{frame}{Split-Before-Descend}
+\small\begin{algorithmic}[1]
+\Procedure{BTreeInsert}{$T,k$}
+\If{$T.root$ is full}
+\State 새 root $s$ 생성; $s.child[0]\gets T.root$
+\State \Call{SplitChild}{$s,0$}; $T.root\gets s$
+\EndIf
+\State \Call{InsertNonFull}{$T.root,k$}
+\EndProcedure
+\end{algorithmic}
+\sttakeaway{내려갈 child가 full이면 먼저 split하므로 leaf 도착 시 항상 여유가 있다.}
+\end{frame}
+\begin{frame}{Insert 10, 20, 5, 6}
+\centering
+\only<1|handout:0>{\begin{tikzpicture}\node[bcurrent]{10};\end{tikzpicture}}
+\only<2|handout:0>{\begin{tikzpicture}\node[bcurrent]{10 $\mid$ 20};\end{tikzpicture}}
+\only<3|handout:0>{\begin{tikzpicture}\node[bcurrent]{5 $\mid$ 10 $\mid$ 20};\node[callout]at(4,0){root full};\end{tikzpicture}}
+\only<4|handout:1>{\begin{tikzpicture}[x=1.5cm]\node[bpromote](r)at(0,0){10};\node[bcurrent](l)at(-1.5,-1.2){5 $\mid$ 6};\node[bnode](q)at(1.5,-1.2){20};\draw[st edge](r)--(l)(r)--(q);\node[callout]at(4,0){10 promotion 후 6 삽입};\end{tikzpicture}}
+\end{frame}
+\begin{frame}{Insert 12, 30, 7, 17}
+\centering
+\only<1|handout:0>{\begin{tikzpicture}[x=1.5cm]\node[bnode](r)at(0,0){10};\node[bnode](l)at(-1.5,-1.2){5 $\mid$ 6 $\mid$ 7};\node[bcurrent](q)at(1.5,-1.2){12 $\mid$ 20 $\mid$ 30};\draw[st edge](r)--(l)(r)--(q);\end{tikzpicture}}
+\only<2|handout:1>{\begin{tikzpicture}[x=1.6cm]\node[bpromote](r)at(0,0){10 $\mid$ 20};\node[bnode](l)at(-2.5,-1.2){5 $\mid$ 6 $\mid$ 7};\node[bcurrent](m)at(0,-1.2){12 $\mid$ 17};\node[bnode](q)at(2.5,-1.2){30};\draw[st edge](r)--(l)(r)--(m)(r)--(q);\node[callout]at(4.2,0){split before descent\\20 up, then insert 17};\end{tikzpicture}}
+\end{frame}
+\begin{frame}{Final B-Tree Invariant Check}
+\centering\begin{tikzpicture}[x=1.6cm]
+\node[bnode](r)at(0,0){10 $\mid$ 20};
+\node[bnode](l)at(-2.5,-1.2){5 $\mid$ 6 $\mid$ 7};
+\node[bnode](m)at(0,-1.2){12 $\mid$ 17};
+\node[bnode](q)at(2.5,-1.2){30};
+\draw[st edge](r)--(l)(r)--(m)(r)--(q);
+\end{tikzpicture}
+\begin{itemize}\item 각 node 1–3 keys, sorted\item internal child count = key count + 1\item child ranges와 leaf depth 일치\end{itemize}
+\end{frame}
+\begin{frame}{B-Tree DELETE Preview: Borrow와 Merge}
+\scriptsize\begin{enumerate}
+\item key가 leaf에 있으면 직접 삭제
+\item key가 internal node에 있으면
+  \begin{itemize}\scriptsize\item left child에 $\ge t$ keys: predecessor\item right child에 $\ge t$ keys: successor\item 둘 다 $t-1$: separator와 merge 후 재귀\end{itemize}
+\item key가 현재 node에 없으면 내려갈 child가 $t-1$일 때 먼저 borrow 또는 merge
+\end{enumerate}
+\begin{alertblock}{이번 강의의 범위}
+전체 deletion pseudocode와 모든 경계 case를 구현하지 않는다. 핵심은 descent 전에 occupancy를 확보하는 \textbf{borrow/redistribution}와 \textbf{merge}이며, insertion보다 pointer·separator 갱신이 훨씬 복잡하다는 점이다.
+\end{alertblock}
+\end{frame}
+\begin{frame}{Borrow from Right Sibling}
+\centering
+\only<1|handout:0>{\begin{tikzpicture}[x=1.8cm]\node[bnode](p)at(0,0){10 $\mid$ 20};\node[bcurrent](a)at(-2,-1.2){5};\node[bnode](b)at(0,-1.2){12 $\mid$ 15};\node[bnode](c)at(2,-1.2){30};\draw[st edge](p)--(a)(p)--(b)(p)--(c);\node[callout]at(4.0,0){before: [5] has $t-1$ keys};\end{tikzpicture}}
+\only<2|handout:1>{\begin{tikzpicture}[x=1.8cm]\node[bpromote](p)at(0,0){12 $\mid$ 20};\node[bmerge](a)at(-2,-1.2){5 $\mid$ 10};\node[bnode](b)at(0,-1.2){15};\node[bnode](c)at(2,-1.2){30};\draw[st edge](p)--(a)(p)--(b)(p)--(c);\node[callout]at(4.0,0){after borrowing};\end{tikzpicture}}
+\begin{block}{Separator movement}parent key 10 moves down; right sibling's smallest key 12 moves up.\end{block}
+\end{frame}
+\begin{frame}{Merge와 Root Shrink}
+\centering
+\only<1|handout:0>{\begin{tikzpicture}[x=1.8cm]\node[bnode](p)at(0,0){10};\node[bcurrent](a)at(-1.5,-1.2){5};\node[bcurrent](b)at(1.5,-1.2){15};\draw[st edge](p)--(a)(p)--(b);\node[callout]at(4,0){둘 다 $t-1$ keys};\end{tikzpicture}}
+\only<2|handout:1>{\begin{tikzpicture}\node[bmerge]{5 $\mid$ 10 $\mid$ 15};\node[callout]at(4,0){merge → old root는 empty\\유일한 child가 new root};\end{tikzpicture}}
+\sttakeaway{Merge 뒤 root가 key 0개이고 child 1개면 그 child가 새 root다.}
+\end{frame}
+\begin{frame}{B-Tree Checkpoint}
+\begin{enumerate}\item $t=3$인 non-root node의 key 수 범위는?\item search I/O가 무엇에 비례하는가?\item borrow에서 parent separator는 어떻게 움직이는가?\item merge 후 root가 비면?\end{enumerate}
+\begin{exampleblock}{답}2–5; worst-case $\Theta(\log_t n)$ page I/O; parent key는 child로 내려가고 sibling key는 올라옴; 유일한 child가 새 root.\end{exampleblock}
+\sttakeaway{이제 CPU path와 page I/O라는 서로 다른 cost model을 실제 workload에 맞춰 비교한다.}
+\end{frame}

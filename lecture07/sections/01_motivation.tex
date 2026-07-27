@@ -1,0 +1,66 @@
+\begin{frame}[plain]
+\vspace*{-8mm}
+\titlepage
+\end{frame}
+\begin{frame}{학습 목표 I}
+\small\begin{itemize}
+\item ordered dictionary와 equality-based dictionary를 구분한다.
+\item key, value, hash code, bucket index를 정확히 구분한다.
+\item division, multiplication, polynomial string hash를 계산한다.
+\item collision의 필연성과 좋은 hash function의 목적을 설명한다.
+\end{itemize}
+\end{frame}
+\begin{frame}{학습 목표 II}
+\small\begin{itemize}
+\item chaining과 세 open-addressing probe를 손으로 추적한다.
+\item EMPTY와 DELETED, logical load와 probing load를 구분한다.
+\item expected, amortized, worst-case 비용을 조건과 함께 말한다.
+\item Java/C 구현의 equality, ownership, resize invariant를 검증한다.
+\end{itemize}
+\end{frame}
+\section{Part A. Hashing Fundamentals}
+\begin{frame}{Exact-Match Workload}
+\begin{columns}[T]\column{.48\textwidth}
+\begin{block}{key $\to$ value}username $\to$ profile\\URL $\to$ cached response\\student ID $\to$ record\end{block}
+\column{.48\textwidth}
+\begin{block}{알고리즘 속 dictionary}compiler symbol table\\memoization cache\\frequency counter\end{block}
+\end{columns}
+\htmission{key의 순서는 필요 없고 exact-match search만 매우 빠르게 하고 싶다면?}
+\end{frame}
+\begin{frame}{Lecture 6에서 이어지는 구조 선택}
+\scriptsize\centering
+\begin{tabular}{lcccc}\toprule
+구조&Equality search&Ordered ops&Worst guarantee&주 cost model\\\midrule
+unsorted list&$\Theta(n)$&약함&$\Theta(n)$&CPU\\
+sorted array&$\Theta(\log n)$&좋음&search $\Theta(\log n)$&CPU\\
+AVL/RB Tree&$\Theta(\log n)$&좋음&$\Theta(\log n)$&CPU\\
+B-Tree&$\Theta(\log_t n)$&좋음&$\Theta(\log_t n)$ page I/O&page\\
+hash table&expected $\Theta(1)$&기본 없음&$\Theta(n)$&CPU/memory\\\bottomrule
+\end{tabular}
+\begin{alertblock}{비교 원칙}B-Tree는 page/block I/O를 줄인다. in-memory tree의 comparison 상수와 같은 cost model로 비교하지 않는다.\end{alertblock}
+\end{frame}
+\begin{frame}{Hash Table의 약속과 한계}
+\small
+\begin{columns}[T]\column{.48\textwidth}
+\begin{block}{강점}
+\begin{itemize}
+\item equality search에 적합
+\item resize가 없으면 suitable hashing과 controlled load 아래 SEARCH/PUT/DELETE expected $\Theta(1)$
+\item resize 포함 PUT은 amortized expected $\Theta(1)$
+\item 단순한 Map API와 좋은 locality 가능
+\end{itemize}
+\end{block}
+\column{.48\textwidth}
+\begin{alertblock}{제약}
+\begin{itemize}\item natural order, range, MIN/MAX 없음\item worst case $\Theta(n)$\item hash quality와 load factor에 민감\item iteration order를 보장하지 않을 수 있음\end{itemize}
+\end{alertblock}
+\end{columns}
+\end{frame}
+\begin{frame}{Hashing Fundamentals Checkpoint}
+\begin{enumerate}
+\item leaderboard의 sorted iteration에는 hash table만으로 충분한가?
+\item username exact lookup에는 왜 좋은 후보인가?
+\item “hash operation은 $\Theta(1)$이다”에서 빠진 조건은?
+\end{enumerate}
+\begin{exampleblock}{답}아니다, order가 필요하다; equality lookup에 적합하다; resize가 없으면 suitable hashing/controlled load 아래 expected $\Theta(1)$, resize 포함 PUT은 amortized expected $\Theta(1)$이며 individual resizing PUT과 worst case는 $\Theta(n)$일 수 있다.\end{exampleblock}
+\end{frame}

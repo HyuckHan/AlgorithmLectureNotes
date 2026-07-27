@@ -1,0 +1,51 @@
+\section{Part D. DFS}
+\begin{frame}{DFS의 Mission}
+\gmission{한 branch를 끝까지 내려가고 backtrack한다. recursion stack과 finish order가 구조 정보를 만든다.}
+\begin{block}{구분}discovery order \(\ne\) finish order \(\ne\) 현재 recursion stack.\end{block}
+\end{frame}
+\begin{frame}{DFS Pseudocode}
+\scriptsize
+\begin{algorithmic}[1]
+\Procedure{DFS}{$G$}\ForAll{$u\in V$}\State $color[u]\gets W,\ parent[u]\gets\NIL$\EndFor
+\State $time\gets0$
+\ForAll{$u\in V$}\If{$color[u]=W$}\State \Call{DFSVisit}{$G,u$}\EndIf\EndFor\EndProcedure
+\Procedure{DFSVisit}{$G,u$}\State $color[u]\gets G,\ discover[u]\gets\Call{PreIncrement}{time}$
+\ForAll{$v\in Adj[u]$}\If{$color[v]=W$}\State $parent[v]\gets u$; \Call{DFSVisit}{$G,v$}\EndIf\EndFor
+\State $color[u]\gets B,\ finish[u]\gets\Call{PreIncrement}{time}$\EndProcedure
+\end{algorithmic}
+\end{frame}
+\begin{frame}{DFS Recursion Trace}
+\centering\begin{tikzpicture}
+\node[pq]at(0,1){Stack: \only<1>{0}\only<2>{0,1,4}\only<3>{0,1,4}\only<4>{0,1,4,7}\only<5>{0,1}\only<6>{empty}};
+\node[callout]at(0,0){Action: \only<1>{discover 0}\only<2>{discover 1, then 4}\only<3>{finish 5, then 2}\only<4>{finish 3, then 6}\only<5>{finish 7, then 4}\only<6>{finish 1, then 0}};
+\node[callout]at(0,-1){Discovery: \only<1>{0}\only<2>{0,1,4}\only<3>{0,1,4,2,5}\only<4-6>{0,1,4,2,5,7,6,3}};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Discovery와 Finish Time}
+\[
+\begin{array}{c|cccccccc}v&0&1&2&3&4&5&6&7\\\hline
+d&1&2&4&10&3&5&9&8\\f&16&15&7&11&14&6&12&13
+\end{array}
+\]
+\begin{block}{Parenthesis theorem}두 DFS interval \([d[u],f[u]]\)는 disjoint이거나 하나가 다른 하나를 포함한다. parent interval은 child interval을 포함한다.\end{block}
+\end{frame}
+\begin{frame}{DFS Forest}
+\begin{itemize}\item outer loop에서 WHITE vertex를 만날 때마다 새 DFS tree가 시작된다.\item disconnected undirected graph에서는 tree 수가 component 수다.\item directed graph에서는 이 forest만으로 SCC를 구하지 못한다.\end{itemize}
+\gtakeaway{DFS tree edge는 parent relation이며 원래 graph의 모든 edge를 뜻하지 않는다.}
+\end{frame}
+\begin{frame}{Iterative DFS: Traversal Variant}
+\footnotesize\begin{algorithmic}[1]\State \Call{Push}{$S,s$}; mark \(s\) discovered
+\While{$S\ne\emptyset$}\State \(u\gets\Call{Pop}{S}\)
+\ForAll{\(v\in Adj[u]\) in reverse order}\If{\(v\) undiscovered}\State mark and \Call{Push}{$S,v$}\EndIf\EndFor\EndWhile\end{algorithmic}
+\begin{alertblock}{정확한 의미}tree나 단순 trace에서는 reverse push로 recursive discovery order를 재현할 수 있다. 일반 graph에서 visited-on-push 방식은 exact recursive DFS tree와 finish behavior를 보장하지 않는다.\end{alertblock}
+\textbf{Exact simulation:} \((vertex,\ next\text{-}neighbor\text{-}index)\) frame으로 recursion의 suspended state를 저장한다.
+\note{\scriptsize Exact iterative DFS: push \((s,0)\), mark \(s\) GRAY. Peek \((u,i)\). If \(i=|Adj[u]|\), pop, mark BLACK, record finish. Otherwise increment the frame index; for a WHITE neighbor \(v\), set parent, mark GRAY, and push \((v,0)\).}
+\end{frame}
+\begin{frame}{DFS Complexity와 Stack}
+\graphcomplexity{\(\Theta(V+E)\)}{\(\Theta(V^2)\)}
+\begin{itemize}\item arrays \(\Theta(V)\)\item recursion stack \(O(depth)\), worst \(O(V)\)\item 매우 깊은 graph는 iterative DFS가 stack overflow를 피하는 데 유리\end{itemize}
+\end{frame}
+\begin{frame}{Part D Checkpoint}
+\begin{enumerate}\item discovery와 finish order가 같은가?\item recursive와 iterative 순서를 맞추려면?\item DFS stack worst-case space는?\end{enumerate}
+\begin{exampleblock}{답}아니다; 단순 trace는 reverse push, exact simulation은 neighbor index를 가진 stack frame; \(O(V)\).\end{exampleblock}
+\end{frame}

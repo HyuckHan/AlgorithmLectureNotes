@@ -1,0 +1,36 @@
+\begin{frame}{카드를 정리하듯 삽입한다}
+\centering\begin{tikzpicture}[x=1.35cm]\foreach \x/\v in {0/10,1/14,2/29,3/13}{\node[sort cell,minimum width=12mm,minimum height=13mm]at(\x,0){\v};}\draw[-Latex,AlgoOrange,very thick] (3,-.8) to[bend right=25] node[below]{insert} (1.5,-.8);\end{tikzpicture}
+\vspace{3mm}\begin{block}{아이디어}새 key를 꺼내고, 큰 원소를 한 칸씩 shift하여 생긴 hole에 넣는다.\end{block}
+\end{frame}
+\begin{frame}{Insertion Sort의 Mission과 Invariant}
+\mission{$A[1..i-1]$가 정렬되었다고 믿고 $A[i]$를 올바른 위치에 삽입한다.}
+\begin{block}{Invariant}각 반복 시작 시 prefix $A[1..i-1]$는 원래 prefix의 정렬된 permutation이다.\end{block}
+\end{frame}
+\begin{frame}{Insertion Sort 의사코드}
+\begin{algorithmic}[1]\Procedure{InsertionSort}{$A[1..n]$}\For{$i\gets2$ to $n$}\State $key\gets A[i]$; $j\gets i-1$\While{$j\ge1$ and $A[j]>key$}\State $A[j+1]\gets A[j]$; $j\gets j-1$\EndWhile\State $A[j+1]\gets key$\EndFor\EndProcedure\end{algorithmic}
+\end{frame}
+\begin{frame}{Insertion Sort: Shift하고 Insert}
+\centering\begin{tikzpicture}[x=1.18cm]
+\only<1>{\def\vals{{10,14,29,13,37}}\def\hole{4}\def\key{13}}
+\only<2>{\def\vals{{10,14,29,29,37}}\def\hole{3}\def\key{13}}
+\only<3>{\def\vals{{10,14,14,29,37}}\def\hole{2}\def\key{13}}
+\only<4>{\def\vals{{10,13,14,29,37}}\def\hole{0}\def\key{13}}
+\only<5>{\def\vals{{10,13,14,29,37}}\def\hole{0}\def\key{0}}
+\foreach \i in {1,...,5}{\pgfmathparse{\vals[\i-1]}\edef\v{\pgfmathresult}\ifnum\i=\hole\node[sort current]at(\i,0){\phantom{00}};\else\ifnum\i<5\node[sort active]at(\i,0){\v};\else\node[sort cell]at(\i,0){\v};\fi\fi}
+\ifnum\key>0\node[callout] at (3,-1.15){key = \key};\fi
+\end{tikzpicture}
+\only<1|handout:0>{key를 꺼내 hole 생성}\only<2|handout:0>{29 shift}\only<3|handout:0>{14 shift}\only<4|handout:0>{13 insert}\only<5|handout:1>{다음 반복 전에 정렬된 prefix 확인}
+\end{frame}
+\begin{frame}{Inversion과 Adaptive 성능}
+\[\text{inversion}=\#\{(i,j):i<j\ \land\ A[i]>A[j]\}\]
+표준 구현에서 \textbf{element shift 수는 inversion 수 $I$와 정확히 같다}.
+\[
+T(n,I)=\Theta(n+I).
+\]
+\begin{itemize}\item best: $I=0\Rightarrow\Theta(n)$\item worst: $I=\Theta(n^2)\Rightarrow\Theta(n^2)$\item 조건 $A[j]>key$가 strict하므로 같은 key는 서로 지나치지 않아 stable이다.\end{itemize}
+\end{frame}
+\begin{frame}{단순 정렬 Checkpoint}
+\begin{tabular}{lccc}\toprule&Selection&Bubble&Insertion\\\midrule best&$\Theta(n^2)$&$\Theta(n)$&$\Theta(n)$\\worst&$\Theta(n^2)$&$\Theta(n^2)$&$\Theta(n^2)$\\stable&No&Yes&Yes\\핵심 이동&최종 swap&인접 swap&shift + insert\\\bottomrule\end{tabular}
+\sortingtakeaway{작고 거의 정렬된 배열에는 Insertion Sort가 실용적이다.}
+\muted{단순 정렬은 최악의 경우 제곱 시간이 필요하다. 이제 재귀적으로 문제를 나누어 $n\log n$ 성능을 얻는 방법을 살펴본다.}
+\end{frame}

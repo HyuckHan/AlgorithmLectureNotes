@@ -1,0 +1,54 @@
+\begin{frame}[plain]
+\vfill{\usebeamerfont{title}\color{AlgoBlue}동적 계획법\par}
+\vspace{1mm}{\Large Dynamic Programming\par}
+\vspace{3mm}{\color{AlgoOrange}\rule{38mm}{1.2pt}\par}
+\vspace{5mm}{\large 중복되는 부분 문제에서 최적해까지\par}
+\vspace{8mm}{\small Algorithm Lecture Notes\par}\vfill
+\end{frame}
+\begin{frame}{학습 목표}
+\begin{itemize}
+\item overlapping subproblems와 optimal substructure가 DP에 필요한 이유를 설명한다.
+\item State → Transition → Base Case → Evaluation Order → Answer 순서로 해법을 설계한다.
+\item memoization과 bottom-up tabulation을 선택하고 구현한다.
+\item state 수 × state당 작업으로 시간·공간 복잡도를 분석한다.
+\item Matrix Path, LCS, Maximum Subarray를 계산하고 필요한 해를 복원한다.
+\end{itemize}
+\end{frame}
+\begin{frame}{올바른 재귀가 왜 느릴 수 있는가?}
+\begin{columns}[T]\column{.48\textwidth}
+\begin{block}{수학적 관계는 맞다}Fibonacci, 최소 경로, 문자열 유사도는 자연스러운 recurrence를 가진다.\end{block}
+\column{.48\textwidth}
+\begin{alertblock}{평가가 문제다}같은 subproblem을 호출할 때마다 다시 풀면 call tree가 폭발한다.\end{alertblock}
+\end{columns}
+\dptakeaway{정답 관계와 그 관계를 계산하는 전략은 서로 다른 설계 결정이다.}
+\end{frame}
+\begin{frame}{Dynamic Programming의 핵심}
+\mission{중복되는 subproblem의 결과를 저장하고 dependency order에 따라 재사용한다.}
+\begin{itemize}\item 문자열 유사도와 sequence alignment\item shortest/minimum path\item resource allocation, knapsack, scheduling preview\end{itemize}
+\begin{alertblock}{DP는 무엇이 아닌가?}단순히 “배열을 채우는 알고리즘”이 아니다. 저장할 \alert{state의 의미}가 먼저다.\end{alertblock}
+\end{frame}
+\begin{frame}{Lecture 5 Road Map}
+\centering
+\begin{tikzpicture}[node distance=9mm and 8mm,every node/.style={tree node,align=center,font=\small,minimum width=27mm}]
+\node[chosen] (dp) {Dynamic\\Programming};
+\node[below left=of dp] (why) {중복 state\\왜 저장하는가};
+\node[below=of dp] (design) {설계 template\\어떻게 계산하는가};
+\node[below right=of dp] (apps) {대표 문제\\어떻게 적용하는가};
+\node[below=of design] (proof) {정확성 · 복원\\복잡도};
+\draw[dp edge](dp)--(why);\draw[dp edge](dp)--(design);
+\draw[dp edge](dp)--(apps);\draw[dp edge](design)--(proof);
+\end{tikzpicture}
+\vfill\muted{Fibonacci에서 중복을 관찰하고, 공통 설계 절차를 세운 뒤 Matrix Path·LCS·Maximum Subarray에 적용한다.}
+\end{frame}
+\section{Part A. Why Dynamic Programming?}
+\begin{frame}{Recurrence · Memoization · Tabulation}
+\centering\begin{tikzpicture}[node distance=8mm and 9mm,every node/.append style={align=center}]
+\node[chosen](r){recurrence\\수학적 관계};
+\node[tree node,below left=of r](m){memoization\\top-down 평가};
+\node[tree node,below right=of r](t){tabulation\\bottom-up 평가};
+\draw[dp edge](r)--(m);\draw[dp edge](r)--(t);
+\node[below=3mm of m,font=\small,draw=none]{필요한 state부터};
+\node[below=3mm of t,font=\small,draw=none]{dependency 순서로};
+\end{tikzpicture}
+\dptakeaway{Memoization과 bottom-up tabulation은 모두 Dynamic Programming 구현 방식이다.}
+\end{frame}

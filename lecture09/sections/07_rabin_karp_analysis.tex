@@ -1,0 +1,69 @@
+\subsection{Rabin--Karp 분석과 활용}
+\begin{frame}{Rabin--Karp Pseudocode}
+\tiny\begin{algorithmic}[1]
+\Procedure{RabinKarp}{$T,P,d,q$}\State \(n\gets|T|,m\gets|P|,result\gets[]\)
+\If{\(m=0\)}\State\Return policy-defined result\EndIf
+\If{\(m>n\)}\State\Return \(result\)\EndIf
+\State \(h\gets d^{m-1}\bmod q;\ pHash,tHash\gets0\)
+\For{\(j\gets0\) to \(m-1\)}\State update \(pHash,tHash\) by Horner modulo \(q\)\EndFor
+\For{\(s\gets0\) to \(n-m\)}
+\If{\(pHash=tHash\) \textbf{ and } \Call{EqualAt}{$T,P,s$}}\State append \(s\)\EndIf
+\If{\(s<n-m\)}\State roll \(tHash\); normalize modulo \(q\)\EndIf
+\EndFor\State\Return \(result\)\EndProcedure
+\end{algorithmic}
+\end{frame}
+\begin{frame}{고정 Rabin--Karp 예제}
+\[
+T=\texttt{acebbceeaabceedb},\quad P=\texttt{eeaab},\quad d=5,\ q=113.
+\]
+\[
+value(P)=3001,\quad pHash=3001\bmod113=63,\quad h=5^4\bmod113=60.
+\]
+\begin{block}{첫 window}\(\texttt{acebb}\): raw 356, \(tHash=17\).\end{block}
+\end{frame}
+\begin{frame}{검증된 Rolling Hash Trace}
+\scriptsize\[
+\begin{array}{c|rrrrrrrrrrrr}
+s&0&1&2&3&4&5&6&7&8&9&10&11\\\hline
+tHash&17&87&65&33&91&42&63&21&39&86&94&58
+\end{array}
+\]
+\begin{block}{한 update}\(s=0\to1:\ (5(17-0\cdot60)+2)\bmod113=87\).\end{block}
+\end{frame}
+\begin{frame}{Candidate에서 Valid Hit까지}
+\centering\begin{tikzpicture}
+\node[smhash]at(0,1){\(s=6:\ tHash=pHash=63\quad\candidatebadge\)};
+\node[smnote]at(0,0){\only<1|handout:0>{verify \texttt{eeaab} vs \texttt{eeaab}}\only<2|handout:1>{all 5 characters equal \(\Rightarrow\verifiedbadge\) occurrence 6}};
+\end{tikzpicture}
+\begin{alertblock}{substring allocation 없음}구현은 \(T[s+j]\)와 \(P[j]\)를 직접 비교한다.\end{alertblock}
+\end{frame}
+\begin{frame}{Rabin--Karp Complexity}
+\[
+\Theta(m)+\Theta(n-m+1)+\Theta(km)
+=\Theta(n+m+km),
+\]
+\(k=z+c\): true occurrences \(z\)와 spurious collision candidates \(c\).
+\[
+\Theta(n+m+(z+c)m).
+\]
+\begin{itemize}
+\item expected \(\Theta(n+m)\)은 expected total verification cost가 linear라는 가정이 필요하다.
+\item low collision probability만으로는 충분하지 않다. all-match에서 true occurrence가 많아도 verification이 반복된다.
+\item worst case \(\Theta(nm)\), extra state \(\Theta(1)\), output 제외.
+\end{itemize}
+\end{frame}
+\begin{frame}{Collision이 없어도 Verification이 많을 수 있다}
+\[
+T=\texttt{AAAAAAAA}\ldots,\qquad P=\texttt{AAAA}\ldots
+\]
+거의 모든 alignment가 true occurrence이면 \(z=\Theta(n)\)이고, 각 candidate를 \(m\) characters 검증한다.
+\[
+\Theta(zm)=\Theta(nm)
+\]
+\begin{alertblock}{정확한 expected 표현}좋은 hashing과 함께 true-match verification 총비용도 linear한 workload 가정이 필요하다.\end{alertblock}
+\end{frame}
+\begin{frame}{언제 Rabin--Karp인가?}
+\begin{itemize}\item 같은 길이의 여러 pattern fingerprint\item duplicate substring, plagiarism signature\item rolling-window comparison, 2D matching preview\end{itemize}
+\begin{alertblock}{구분}rolling hash는 cryptographic hash가 아니다. adversarial collision resistance를 자동으로 제공하지 않는다.\end{alertblock}
+\scheckpoint{single-pattern guaranteed linear이 필요하면 KMP가 더 직접적이다.}
+\end{frame}

@@ -1,0 +1,18 @@
+# Generated lecture PDFs, rendered pages, and compiler caches
+/build/
+
+# LaTeX auxiliary files (in case a local build bypasses latexmkrc)
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.nav
+*.out
+*.snm
+*.synctex.gz
+*.toc
+*.vrb
+
+# Workspace-agent metadata
+/.agents/
+/.codex/

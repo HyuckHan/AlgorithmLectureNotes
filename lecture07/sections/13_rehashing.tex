@@ -1,0 +1,79 @@
+\subsection{Resize, Rehashing, Amortized Analysis}
+\begin{frame}{Resize와 Rehash}
+\begin{description}
+\item[resize] table capacity를 바꾼다.
+\item[rehash] active entries를 새 capacity 기준으로 다시 배치한다.
+\end{description}
+\begin{enumerate}
+\item capacity가 큰 새 table 할당
+\item 새 compression으로 bucket index 재계산
+\item 모든 active entry 재삽입하고 tombstone 제거
+\item 검증 후 old table 폐기
+\end{enumerate}
+\httakeaway{logical key--value contents와 size는 보존하지만 physical bucket은 바뀐다. index가 capacity에 의존하므로 단순 memory copy가 아니다.}
+\end{frame}
+\begin{frame}{Rehash Animation}
+\centering\begin{tikzpicture}[x=.82cm,y=.78cm]
+\only<1|handout:0>{
+  \foreach \i in {0,...,4}{\node[ht empty,minimum width=8mm](o\i)at(\i,0){E};\node[font=\tiny]at(\i,-.55){\i};}
+  \node[ht deleted,minimum width=8mm]at(o1){D};
+  \node[ht occupied,minimum width=8mm]at(o2){2};
+  \node[ht occupied,minimum width=8mm]at(o3){7};
+  \node[ht occupied,minimum width=8mm]at(o4){12};
+  \node[callout]at(9,0){old $m=5$: $h(k)=k\bmod5$\\2: home 2; 7: $2\to3$; 12: $2\to3\to4$\\slot 1: earlier deletion의 tombstone};
+}
+\only<2-3|handout:0>{
+  \foreach \i in {0,...,4}{\node[ht empty,minimum width=8mm](o\i)at(\i,1.2){E};}
+  \node[ht deleted,minimum width=8mm]at(o1){D};
+  \node[ht occupied,minimum width=8mm]at(o2){2};
+  \node[ht occupied,minimum width=8mm]at(o3){7};
+  \node[ht occupied,minimum width=8mm]at(o4){12};
+  \foreach \i in {0,...,10}{\node[ht empty,minimum width=8mm](n\i)at(\i,-1.2){E};}
+}
+\only<2|handout:0>{\node[callout]at(7,1.2){allocate new $m=11$\\active 3, D 1};}
+\only<3|handout:0>{
+  \node[migrated,minimum width=8mm]at(n1){12};
+  \node[migrated,minimum width=8mm]at(n2){2};
+  \node[migrated,minimum width=8mm]at(n7){7};
+  \draw[probe arrow](o2.south)to[bend right=18](n2.north);
+  \draw[probe arrow](o3.south)to[bend right=10](n7.north);
+  \draw[probe arrow](o4.south)to[bend left=16](n1.north);
+  \node[callout]at(8.2,1.2){rehash: $k\bmod11$};
+}
+\only<4|handout:1>{
+  \foreach \i in {0,...,10}{\node[ht empty,minimum width=8mm](n\i)at(\i,0){E};\node[font=\tiny]at(\i,-.55){\i};}
+  \node[ht occupied,minimum width=8mm]at(n1){12};
+  \node[ht occupied,minimum width=8mm]at(n2){2};
+  \node[ht occupied,minimum width=8mm]at(n7){7};
+  \node[callout]at(7,1.15){new $m=11$: $12\to1,\ 2\to2,\ 7\to7$};
+}
+\end{tikzpicture}
+\begin{block}{Lookup validation}
+\small before rehash: \texttt{get(2)}, \texttt{get(7)}, \texttt{get(12)} succeed;\quad
+after rehash: 모두 succeed;\quad size $=3$, tombstones $=0$.
+\end{block}
+\end{frame}
+\begin{frame}{Capacity Growth Policy}
+\begin{itemize}\item power-of-two doubling + bit mixing\item next prime capacity + modulo reduction\item implementation-specific growth factor\end{itemize}
+\begin{alertblock}{공동 설계}capacity policy, hash mixing, index reduction, collision scheme을 독립적으로 정하면 안 된다.\end{alertblock}
+\end{frame}
+\begin{frame}{Resize Cost Sequence}
+\centering\begin{tikzpicture}[x=1cm,y=.42cm]
+\foreach \i/\v in {0/1,1/2,2/4,3/8,4/16,5/32}{\fill[AlgoOrange!55](\i,0)rectangle++(.72,{.11*\v});\node[font=\small]at(\i+.36,-.5){\v};}
+\node[anchor=west]at(6,2){migration costs};
+\end{tikzpicture}
+\[
+1+2+4+\cdots+n<2n.
+\]
+\end{frame}
+\begin{frame}{Amortized Rehashing}
+\begin{itemize}\item 각 individual resizing PUT은 현재 entry 수에 비례해 $\Theta(n)$이다.\item $n$번 PUT 동안 모든 migration의 합은 $O(n)$이다.\item migration의 PUT당 amortized additional cost는 $O(1)$이다.\end{itemize}
+\begin{alertblock}{정확한 결론}Suitable hashing과 controlled load 아래 resize 포함 PUT은 amortized expected $\Theta(1)$이다. 모든 PUT이 worst-case $\Theta(1)$이라는 뜻은 아니다.\end{alertblock}
+\end{frame}
+\begin{frame}{Resize 후 반드시 보존할 Invariant}
+\begin{enumerate}\item 모든 active entry lookup 성공\item size 보존\item 새 capacity와 index 일치\item duplicate 없음\item old tombstone 제거\item load factor 재계산\end{enumerate}
+\end{frame}
+\begin{frame}{Rehashing Checkpoint}
+\begin{enumerate}\item resize가 copy만으로 끝나지 않는 이유는?\item $1+2+\cdots+n$의 geometric sum bound는?\item 한 번의 resize 비용과 amortized insertion 비용은?\end{enumerate}
+\begin{exampleblock}{답}index가 capacity 의존; $<2n$; resizing PUT $\Theta(n)$, 전체 sequence에서는 PUT당 추가 amortized $O(1)$이고 기본 hashing까지 포함하면 amortized expected $\Theta(1)$.\end{exampleblock}
+\end{frame}

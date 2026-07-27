@@ -1,0 +1,12 @@
+\section{Part C. Divide-and-Conquer와 비교 하한}
+\begin{frame}{Divide, Conquer, Combine}
+\begin{enumerate}\item \textbf{Divide}: 문제를 더 작은 부분 문제로 나눈다.\item \textbf{Conquer}: 부분 문제를 재귀적으로 해결한다.\item \textbf{Combine}: 부분 해를 전체 해로 합친다.\end{enumerate}
+\sortingtakeaway{Lecture 2의 재귀 설계와 점화식 분석을 정렬에 적용한다.}
+\end{frame}
+\begin{frame}{Merge Sort와 Quick Sort의 차이}
+\begin{columns}[T]\column{.47\textwidth}\begin{block}{Merge Sort}\centering 나누기는 쉽다\\\alert{합치기}가 핵심\\항상 균형 분할\end{block}\column{.47\textwidth}\begin{block}{Quick Sort}\centering \alert{나누기}가 핵심\\합치기는 거의 무료\\pivot에 따라 균형 변화\end{block}\end{columns}
+\end{frame}
+\begin{frame}{점화식으로 보는 두 알고리즘}
+\begin{align*}T_{merge}(n)&=2T(n/2)+\Theta(n)\\T_{quick}(n)&=T(q)+T(n-q-1)+\Theta(n)\end{align*}
+\begin{block}{분석 질문}부분 문제의 \alert{크기}와 각 level의 \alert{총 작업량}은 무엇인가?\end{block}
+\end{frame}

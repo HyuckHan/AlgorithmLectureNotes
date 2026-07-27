@@ -1,0 +1,78 @@
+\section{Part B. Memoization, Tabulation, and DP Workflow}
+\begin{frame}{Memoization: State를 처음 만났을 때만 계산}
+\small
+\[
+memo[0]\gets0,\quad memo[1]\gets1,\quad
+memo[2..n]\gets\mathtt{UNKNOWN}\quad(n\ge2)
+\]
+\begin{algorithmic}[1]
+\Procedure{FibMemo}{$n,memo$}
+\If{$memo[n]\ne\mathtt{UNKNOWN}$}\State\Return $memo[n]$\Comment{cache hit}\EndIf
+\State $memo[n]\gets\Call{FibMemo}{n-1,memo}+\Call{FibMemo}{n-2,memo}$
+\State\Return $memo[n]$
+\EndProcedure
+\end{algorithmic}
+\begin{alertblock}{호출 전 초기화}$n=0,1$도 이미 저장되어 있으므로 첫 cache lookup에서 정확히 반환한다. Sentinel은 반환 가능한 값과 충돌하지 않아야 한다.\end{alertblock}
+\end{frame}
+\begin{frame}{Memoization Trace: \texorpdfstring{$F(6)$}{F(6)}}
+\centering\begin{tikzpicture}[x=1.2cm]
+\foreach \x in {0,...,6}\node[dp cell]at(\x,0){\x};
+\only<1|handout:0>{\foreach \x/\v in {0/0,1/1}\node[dp done]at(\x,-1){\v};\foreach \x in {2,...,6}\node[dp inactive]at(\x,-1){?};\node[callout]at(3,-2){호출 전 base states 초기화; $F(6)$은 cache miss};}
+\only<2|handout:0>{\foreach \x/\v in {0/0,1/1,2/1}\node[dp done]at(\x,-1){\v};\foreach \x in {3,...,6}\node[dp inactive]at(\x,-1){?};\node[callout]at(3,-2){$F(1)$, $F(0)$은 cache hit; $F(2)$ 저장};}
+\only<3|handout:0>{\foreach \x/\v in {0/0,1/1,2/1,3/2,4/3}\node[dp done]at(\x,-1){\v};\foreach \x in {5,6}\node[dp inactive]at(\x,-1){?};\node[callout]at(3,-2){각 non-base transition을 한 번만 평가};}
+\only<4|handout:1>{\foreach \x/\v in {0/0,1/1,2/1,3/2,4/3,5/5}\node[dp done]at(\x,-1){\v};\node[dp answer]at(6,-1){8};\node[callout]at(3,-2){answer $F(6)=8$; $F(4)$ 재요청은 cache hit};}
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Memoization 복잡도}
+\[
+\underbrace{n+1}_{\text{computed states}}\times
+\underbrace{\Theta(1)}_{\text{transition per state}}=\Theta(n)
+\]
+\begin{itemize}\item base state는 호출 전에 초기화; 각 non-base transition은 한 번 평가\item memo table: $\Theta(n)$\item recursion stack: $\Theta(n)$\end{itemize}
+\dptakeaway{큰 state space에서도 실제 요청된 state만 계산하는 demand-driven 방식이다.}
+\end{frame}
+\begin{frame}{Bottom-Up Fibonacci}
+\small\begin{algorithmic}[1]
+\Procedure{FibBottomUp}{$n$}
+\If{$n\le1$}\State\Return $n$\EndIf
+\State $dp[0]\gets0$; $dp[1]\gets1$
+\For{$i\gets2$ \textbf{to} $n$}
+\State $dp[i]\gets dp[i-1]+dp[i-2]$
+\EndFor
+\State\Return $dp[n]$
+\EndProcedure
+\end{algorithmic}
+\end{frame}
+\begin{frame}{Bottom-Up Table Progression}
+\centering\begin{tikzpicture}[x=1.2cm]
+\foreach \x in {0,...,6}\node[dp cell]at(\x,0){$F(\x)$};
+\only<1|handout:0>{\foreach \x/\v in {0/0,1/1}\node[dp done]at(\x,-1){\v};\foreach \x in {2,...,6}\node[dp inactive]at(\x,-1){?};\node[callout]at(3,-2){base cases};}
+\only<2|handout:0>{\foreach \x/\v in {0/0,1/1,2/1,3/2}\node[dp done]at(\x,-1){\v};\foreach \x in {4,...,6}\node[dp inactive]at(\x,-1){?};\node[callout]at(3,-2){left-to-right dependency order};}
+\only<3|handout:1>{\foreach \x/\v in {0/0,1/1,2/1,3/2,4/3,5/5}\node[dp done]at(\x,-1){\v};\node[dp answer]at(6,-1){8};\node[callout]at(3,-2){answer $F(6)=8$; time $\Theta(n)$};}
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Rolling Variables}
+\[
+\texttt{current}\gets\texttt{prev2}+\texttt{prev1}
+\]
+\begin{columns}[T]\column{.48\textwidth}\begin{block}{유지하는 state}$F(i-2)$와 $F(i-1)$만 다음 transition에 필요\end{block}
+\column{.48\textwidth}\begin{block}{복잡도}time $\Theta(n)$, auxiliary space $\Theta(1)$\end{block}\end{columns}
+\begin{alertblock}{일반화 주의}모든 DP가 $O(1)$ 공간으로 줄어드는 것은 아니다. dependency와 reconstruction 요구가 결정한다.\end{alertblock}
+\end{frame}
+\begin{frame}{Memoization vs Bottom-Up Tabulation}
+\small\centering
+\renewcommand{\arraystretch}{1.24}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{>{\bfseries}p{.20\textwidth}p{.34\textwidth}p{.34\textwidth}}\toprule
+항목&Memoization&Bottom-up\\\midrule
+direction&top-down&dependency order\\
+state discovery&demand driven&보통 전체 table\\
+recursion / stack&있음, $\Theta(n)$ 가능&없음\\
+sparse state&유리&불필요 state 계산 가능\\
+구현 style&recurrence와 가까움&반복문과 table 중심\\
+evaluation order&호출이 dependency를 해결&순서를 직접 설계\\
+space opt.&상대적으로 어려움&rolling에 유리\\
+typical use&도달 state가 적거나 불규칙&순서가 명확하고 dense한 state\\\bottomrule
+\end{tabular}
+\vfill\muted{둘은 같은 state와 transition을 사용하며, state를 발견하고 평가하는 순서가 다르다.}
+\end{frame}

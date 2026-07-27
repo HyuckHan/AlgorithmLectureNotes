@@ -1,0 +1,85 @@
+\section{Part K. Maximum·Linear Search·Binary Search 복잡도}
+
+% 44
+\begin{frame}{Maximum의 복잡도}
+  \renewcommand{\arraystretch}{.92}
+  \begin{tabular}{@{}lcc@{}}
+    \toprule
+    연산 & 실행 횟수 & 비용 \\
+    \midrule
+    $v\gets A[1]$ & 1 & $c_1$ \\
+    $A[i]>v$ 비교 & $n-1$ & $c_2(n-1)$ \\
+    $v\gets A[i]$ & 최대 $n-1$ & $\le c_3(n-1)$ \\
+    return & 1 & $c_4$ \\
+    \bottomrule
+  \end{tabular}
+  \[
+    T(n)\le(c_2+c_3)(n-1)+c_1+c_4\in\Oh(n),
+    \qquad T(n)\in\Om(n).
+  \]
+  따라서 best case와 worst case 모두 $\boxed{T(n)\in\Th(n)}$이다.
+  \begin{block}{비교 모델에서의 하한}
+    비교 한 번은 최대 한 개의 최댓값 후보만 제거한다. 처음에 $n$개의 후보가 있으므로
+    하나만 남기려면 적어도 $n-1$번의 비교가 필요하다.
+  \end{block}
+\end{frame}
+
+% 45
+\begin{frame}{선형 탐색(Linear Search)의 복잡도}
+  핵심 연산을 $A[i]=x$ 비교로 잡는다.
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    경우 & 비교 횟수 & 차수 \\
+    \midrule
+    best case: $x=A[1]$ & 1 & $\Th(1)$ \\
+    worst case: 마지막 또는 없음 & $n$ & $\Th(n)$ \\
+    average case: 각 위치가 균등, 항상 존재 & $(n+1)/2$ & $\Th(n)$ \\
+    \bottomrule
+  \end{tabular}
+  \vfill
+  평균 분석에는 \keyterm{입력 분포 가정}이 필요하다. ``평균''이라는 말만으로는 분석이 완성되지 않는다.
+\end{frame}
+
+% 46
+\begin{frame}{이진 탐색(Binary Search)의 복잡도}
+  첫 비교에서 찾으면 best case time은 $\boxed{\Th(1)}$이다.
+  worst case를 위해 $n=2^k$라고 생각하면 후보 수는 매 반복마다 절반이 된다.
+  \[
+    2^k \to 2^{k-1}\to\cdots\to2^1\to2^0=1.
+  \]
+  $k$번 줄인 뒤 하나가 되므로
+  \[
+    k=\log_2n.
+  \]
+  일반적인 $n$에서도 반복 횟수는 최대 $\lceil\log_2 n\rceil+O(1)$이다.
+  \begin{takeaway}
+    정렬된 임의 접근 배열에서 Binary Search의 worst case time은 $\boxed{\Th(\log n)}$이다.
+  \end{takeaway}
+\end{frame}
+
+% 47
+\begin{frame}{세 알고리즘 비교}
+  \begin{tabular}{@{}llll@{}}
+    \toprule
+    알고리즘 & 핵심 아이디어 & 전제 & worst time \\
+    \midrule
+    Maximum & 후보 1개 유지 & 비어 있지 않음 & $\Th(n)$ \\
+    Linear Search & 왼쪽부터 비교 & 정렬 불필요, 순차 접근 가능 & $\Th(n)$ \\
+    Binary Search & 후보 구간 절반 제거 & 정렬+효율적 임의 접근 & $\Th(\log n)$ \\
+    \bottomrule
+  \end{tabular}
+  \vfill
+  세 분석 모두 \textbf{상태}, \textbf{반복당 일}, \textbf{반복 횟수}를 분리하면 쉬워진다.
+\end{frame}
+
+% 48
+\begin{frame}{복잡도 Checkpoint}
+  다음 주장 중 참인 것을 고르고, 거짓이면 고쳐 보자.
+  \begin{enumerate}
+    \item $n\in\Oh(n^2)$이므로 선형 알고리즘의 정확한 차수는 $\Oh(n^2)$이다.
+    \item Binary Search는 어떤 배열에서도 $\Th(\log n)$이다.
+    \item Maximum은 입력 값과 무관하게 $n-1$번 비교한다.
+  \end{enumerate}
+  \only<1>{\begin{block}{힌트}$\Oh$는 upper bound, $\Th$는 tight bound다. 전제조건도 비용의 일부다.\end{block}}
+  \only<2>{\begin{block}{확인}1 상한으로는 참이나 tight bound는 $\Th(n)$ \quad 2 거짓: 정렬·임의 접근에서 best case $\Th(1)$, worst case $\Th(\log n)$ \quad 3 참\end{block}}
+\end{frame}

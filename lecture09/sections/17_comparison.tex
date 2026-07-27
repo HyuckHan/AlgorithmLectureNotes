@@ -1,0 +1,41 @@
+\section{Part E. Comparison, Implementation, and Summary}
+\begin{frame}{String Matcher 비교: 비용과 보장}
+\scriptsize\centering\setlength{\tabcolsep}{3pt}\begin{tabular}{llllll}\toprule
+Algorithm&Preprocess&Worst search&Expected/practical&Space&Key idea\\\midrule
+Naive&\(\Theta(1)\)&\(\Theta(nm)\)&tiny input&\(\Theta(1)\)&all alignments\\
+Rabin--Karp&\(\Theta(m)\)&\(\Theta(nm)\)&conditional \(\Theta(n+m)\)&\(\Theta(1)\)&rolling hash\\
+KMP&\(\Theta(m)\)&\(\Theta(n)\)&guaranteed&\(\Theta(m)\)&border reuse\\
+Horspool&\(\Theta(|\Sigma|+m)\)&\(\Theta(nm)\)&often skips&table&bad-character\\\bottomrule
+\end{tabular}
+\begin{block}{조건}\(m\le n\)이면 candidate alignment 수는 \(n-m+1\). Rabin--Karp의 expected linear bound는 expected verification 총비용도 linear라는 가정이 필요하다.\end{block}
+\end{frame}
+\begin{frame}{When to Use: 기본 선택}
+\small\begin{tabular}{ll}\toprule
+workload&자연스러운 선택\\\midrule
+짧은 text, 한 번 검색&Naive\\
+adversarial input, linear guarantee&KMP\\
+많은 equal-length fingerprint&Rabin--Karp\\
+ASCII prose, 긴 pattern&Horspool\\
+same pattern repeated&KMP/Horspool preprocessing reuse\\\bottomrule
+\end{tabular}
+\end{frame}
+\begin{frame}{When to Use: 특수 조건}
+\begin{description}
+\item[Streaming]KMP state를 이어가기 쉽다.
+\item[Collision adversary]single small-modulus Rabin--Karp를 피하거나 verification과 stronger hashing을 쓴다.
+\item[Approximate]이 네 exact matcher만으로 edit distance를 해결하지 않는다.
+\item[Multi-pattern]Aho--Corasick나 grouped fingerprints를 고려한다.
+\end{description}
+\end{frame}
+\begin{frame}{Unicode에서 ``Character''란?}
+\begin{columns}[T]\column{.48\textwidth}
+\begin{block}{Java String}UTF-16 code units. \texttt{char} index와 code point index가 다를 수 있다.\end{block}
+\column{.48\textwidth}
+\begin{block}{C UTF-8}byte sequence. byte matching과 user-visible character matching은 다르다.\end{block}
+\end{columns}
+\begin{alertblock}{Normalization}눈에 같은 문자열도 code-point sequence가 다를 수 있다. Unicode-aware search는 normalization/tokenization 정책이 필요하다.\end{alertblock}
+\end{frame}
+\begin{frame}{알고리즘 선택 Checkpoint}
+\begin{enumerate}\item worst-case linear이 필수면?\item 여러 equal-length fingerprint면?\item large alphabet의 긴 pattern이면?\item Unicode에서 byte match가 충분한가?\end{enumerate}
+\begin{exampleblock}{답}KMP; Rabin--Karp; Horspool 후보; 요구 semantics에 따라 다르다.\end{exampleblock}
+\end{frame}

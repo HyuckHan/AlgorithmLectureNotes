@@ -1,0 +1,88 @@
+\section{Part I. 성장 차수(Orders of Growth)}
+
+% 35
+\begin{frame}{어느 함수가 더 빨리 자라는가?}
+  \begin{columns}[c,onlytextwidth]
+    \column{.65\textwidth}
+    \begin{tikzpicture}
+      \begin{axis}[
+        width=8.3cm,height=5.5cm,axis lines=left,
+        xlabel={$n$},ylabel={cost},xmin=0,xmax=42,ymin=0,ymax=1800,
+        xtick={0,10,20,30,40},ytick={0,600,1200,1800},
+        tick label style={font=\small},label style={font=\small},
+        legend style={draw=none,fill=none,font=\small,at={(.03,.97)},anchor=north west}]
+        \addplot[AlgoBlue,very thick,domain=0:42,samples=50]{30*x+8};
+        \addlegendentry{$30n+8$}
+        \addplot[AlgoOrange,very thick,domain=0:42,samples=50]{x^2+1};
+        \addlegendentry{$n^2+1$}
+      \end{axis}
+    \end{tikzpicture}
+    \column{.31\textwidth}
+      $n^2+1$이 처음에는 작아도 결국 $30n+8$을 넘어선다.
+      \begin{takeaway}
+        충분히 큰 $n$에서는 최고차항의 성장률이 지배한다.
+      \end{takeaway}
+  \end{columns}
+\end{frame}
+
+% 36
+\begin{frame}{자주 만나는 성장률}
+  \[
+    1 \;<\; \log n \;<\; n \;<\; n\log n \;<\; n^2 \;<\; c^n \;<\; n!
+    \qquad(\text{충분히 큰 }n,\;\text{고정된 }c>1)
+  \]
+  \begin{tabular}{@{}ll@{}}
+    \toprule
+    표기 & 이름 \\
+    \midrule
+    $\Th(1)$ / $\Th(\log n)$ & constant / logarithmic \\
+    $\Th(n)$ / $\Th(n\log n)$ & linear / linearithmic \\
+    $\Th(n^k)$ & polynomial ($k>0$ 상수) \\
+    $\Th(c^n)$ / $\Th(n!)$ & exponential / factorial \\
+    \bottomrule
+  \end{tabular}
+  \vfill
+  로그의 밑은 상수배 차이이므로 점근적 차수에는 영향을 주지 않는다.
+\end{frame}
+
+% 37
+\begin{frame}{1 ns 연산: 다항식까지의 성장}
+  \textbf{가정:} 기본 연산 하나가 정확히 $1\,\mathrm{ns}$ 걸린다.\par\medskip
+  \renewcommand{\arraystretch}{1.30}
+  \begin{tabular}{@{}lccc@{}}
+    \toprule
+    복잡도 & 작은 입력 & 중간 입력 & 큰 입력 \\
+    \midrule
+    $\log_2 n$ & $n=10$: $3.32$ ns & $n=10^3$: $9.97$ ns & $n=10^6$: $19.93$ ns \\
+    $n$ & $n=10$: $10$ ns & $n=10^3$: $1\,\mu$s & $n=10^6$: $1$ ms \\
+    $n\log_2 n$ & $n=10$: $33.2$ ns & $n=10^3$: $9.97\,\mu$s & $n=10^6$: $19.93$ ms \\
+    $n^2$ & $n=10$: $100$ ns & $n=10^3$: $1$ ms
+      & $n=10^6$: \alert{$16$분 $40$초} \\
+    \bottomrule
+  \end{tabular}
+  \vfill
+  \begin{takeaway}
+    선형과 $n\log n$은 큰 입력도 다루지만, $n^2$은 같은 입력에서 급격히 무거워진다.
+  \end{takeaway}
+\end{frame}
+
+\begin{frame}{1 ns 연산: 지수·팩토리얼의 벽}
+  \textbf{같은 가정:} 기본 연산 하나가 정확히 $1\,\mathrm{ns}$ 걸린다.\par\medskip
+  \renewcommand{\arraystretch}{1.45}
+  \begin{tabular}{@{}lccc@{}}
+    \toprule
+    복잡도 & 작은 입력 & 중간 입력 & 큰 입력 \\
+    \midrule
+    $2^n$ & $n=10$: $1.024\,\mu$s
+      & $n=30$: \alert{$1.074$초}
+      & $n=50$: \alert{$13.0$일} \\
+    $n!$ & $n=10$: $3.63$ ms
+      & $n=15$: \alert{$21$분 $48$초}
+      & $n=20$: \alert{$77.1$년} \\
+    \bottomrule
+  \end{tabular}
+  \vfill
+  \begin{takeaway}
+    하드웨어가 빨라도 지수·팩토리얼 성장은 곧 압도한다. 성장률은 실용성의 1차 필터다.
+  \end{takeaway}
+\end{frame}

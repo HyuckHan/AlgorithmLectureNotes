@@ -1,0 +1,73 @@
+\subsection{Binary Tree 구현}
+\begin{frame}{BinaryTree API Contract}
+\begin{itemize}
+\item generic data는 non-null
+\item empty tree height $=-1$, leaf height $=0$
+\item constructor의 subtree는 deep copy하여 ownership을 분리
+\item traversal은 immutable \texttt{List<E>}를 반환
+\end{itemize}
+\end{frame}
+\begin{frame}[fragile]{Generic Node}
+\begin{lstlisting}[style=jcode]
+static final class Node<E> {
+    E data;
+    Node<E> left, right;
+    Node(E data) {
+        this.data = Objects.requireNonNull(data);
+    }
+}
+\end{lstlisting}
+\begin{block}{Null 정책}empty tree는 root가 null이지만, 저장 data는 null을 허용하지 않는다.\end{block}
+\end{frame}
+\begin{frame}[fragile]{Constructor와 Ownership}
+\begin{lstlisting}[style=jcode]
+public BinaryTree(E data,
+                  BinaryTree<E> left,
+                  BinaryTree<E> right) {
+    root = new Node<>(requireNonNull(data));
+    root.left  = copy(left  == null ? null : left.root);
+    root.right = copy(right == null ? null : right.root);
+}
+\end{lstlisting}
+\sttakeaway{원본처럼 subtree root를 공유하면 한 tree의 변경이 다른 tree에 보일 수 있다.}
+\end{frame}
+\begin{frame}[fragile]{Traversal 중심 API}
+\begin{lstlisting}[style=jcode]
+public List<E> inorder() {
+    List<E> out = new ArrayList<>();
+    inorder(root, out);
+    return List.copyOf(out);
+}
+private static <E> void inorder(Node<E> x, List<E> out) {
+    if (x == null) return;
+    inorder(x.left, out);
+    out.add(x.data);
+    inorder(x.right, out);
+}
+\end{lstlisting}
+\end{frame}
+\begin{frame}{Size와 Height는 다른 질문}
+\[
+\operatorname{size}(x)=1+\operatorname{size}(x.left)+\operatorname{size}(x.right)
+\]
+\[
+\operatorname{height}(x)=1+\max(h(x.left),h(x.right)),\qquad h(\NIL)=-1
+\]
+\begin{itemize}\item 둘 다 모든 node를 보면 $\Theta(n)$\item height를 자주 쓰는 balanced tree는 node에 저장하고 update한다.\end{itemize}
+\end{frame}
+\begin{frame}{Subtree API의 두 선택}
+\begin{columns}[T]\column{.48\textwidth}\begin{block}{Shared view}빠르지만 mutation aliasing과 lifetime contract가 필요\end{block}
+\column{.48\textwidth}\begin{block}{Deep copy}비용 $\Theta(k)$지만 ownership이 명확\end{block}\end{columns}
+\begin{alertblock}{이 구현}교육용 안전성을 위해 \texttt{leftSubtree()}와 \texttt{rightSubtree()}는 deep copy를 반환한다.\end{alertblock}
+\end{frame}
+\begin{frame}{BinaryTree Code Checkpoint}
+\begin{itemize}
+\item empty/root/subtree constructor test
+\item four traversal 결과 test
+\item size와 edge-height test
+\item null data rejection test
+\item subtree copy independence test
+\end{itemize}
+\begin{block}{파일}\texttt{BinaryTree.java}, \texttt{BinaryTreeDemo.java}\end{block}
+\sttakeaway{Tree의 표현과 traversal을 익혔다. 이제 이 구조로 \textbf{Dictionary ADT의 동적 연산}을 어떻게 구현할지 연결한다.}
+\end{frame}

@@ -1,0 +1,109 @@
+\section{Part C. Bounding and Optimization}
+\begin{frame}{Branch-and-Bound의 정의}
+\ssmission{최적화 state-space tree에서 optimistic objective bound를 계산하고, incumbent를 개선할 수 없는 subtree를 prune한다.}
+\begin{description}
+\item[Incumbent] 지금까지 찾은 best feasible solution.
+\item[Live node] frontier에 있어 향후 확장할 node.
+\item[Expanded node] frontier에서 꺼내 child를 만든 node.
+\item[Dead node] infeasible, bounded, 또는 확장이 끝난 node.
+\end{description}
+\end{frame}
+\begin{frame}{Backtracking vs Branch-and-Bound}
+\small
+\begin{columns}[T]
+\column{.48\linewidth}
+\begin{block}{Backtracking}
+\begin{itemize}
+\item 목표: feasible solution 탐색
+\item prune 증거: feasible descendant 없음
+\item 핵심: feasibility / \textbf{promising}
+\item 흔히 DFS지만 correctness는 DFS에 의존하지 않음
+\end{itemize}
+\end{block}
+\column{.48\linewidth}
+\begin{block}{Branch-and-Bound}
+\begin{itemize}
+\item 목표: optimal solution 탐색
+\item prune 증거: incumbent 개선 불가
+\item 핵심: objective, incumbent, safe bound
+\item FIFO, LIFO, best-first 모두 가능
+\end{itemize}
+\end{block}
+\end{columns}
+\begin{alertblock}{용어 정책}이 강의에서 \textbf{promising}은 feasibility 가능성만 뜻한다. 최적화 prune은 ``bound can improve incumbent''로 표현한다.\end{alertblock}
+\end{frame}
+\begin{frame}{Max와 Min의 Prune 부등호}
+\begin{columns}
+\column{.48\linewidth}
+\begin{block}{Maximization}
+\[
+UB(node)\ge OPT_{\mathrm{desc}}(node)
+\]
+\[
+UB(node)\le INC\Rightarrow P
+\]
+\end{block}
+\column{.48\linewidth}
+\begin{block}{Minimization}
+\[
+LB(node)\le OPT_{\mathrm{desc}}(node)
+\]
+\[
+LB(node)\ge INC\Rightarrow P
+\]
+\end{block}
+\end{columns}
+\begin{exampleblock}{Safe-bound proof}Prune 조건이 성립하면 모든 feasible descendant도 incumbent보다 좋을 수 없으므로, 더 나은 해는 제거되지 않는다.\end{exampleblock}
+\end{frame}
+\begin{frame}{Optimistic Bound가 필요한 이유}
+\begin{itemize}
+\item Maximization UB가 실제 가능한 최고값보다 작으면 optimal branch를 잘못 제거할 수 있다.
+\item Minimization LB가 실제 가능한 최저값보다 크면 같은 문제가 생긴다.
+\item loose하지만 safe한 bound는 correct, tight하지만 unsafe한 bound는 incorrect.
+\end{itemize}
+\end{frame}
+\begin{frame}{Maximization Best-First Skeleton}
+\tiny\begin{algorithmic}[1]
+\Procedure{BranchAndBound}{$root$}
+\State \(incumbentValue\gets-\infty;\ PQ\gets\) max-heap by upperBound
+\State compute \(root.upperBound\); insert \(root\)
+\While{\(PQ\ne\varnothing\)}
+\State \(node\gets ExtractMax(PQ)\)
+\If{\(node.upperBound\le incumbentValue\)}\State\textbf{continue}\EndIf
+\If{\Call{RepresentsFeasibleSolution}{node} and \(node.value>incumbentValue\)}
+\State update incumbent
+\EndIf
+\If{\Call{IsComplete}{node}}\State\textbf{continue}\EndIf
+\ForAll{\(child\in Expand(node)\)}
+\If{\Call{FeasibilityPossible}{child}}\State compute bound
+\If{\(child.upperBound>incumbentValue\)}\State insert child\EndIf\EndIf
+\EndFor
+\EndWhile
+\State\Return incumbent
+\EndProcedure
+\end{algorithmic}
+\end{frame}
+\begin{frame}{Bound-Based Pruning Animation}
+\centering\begin{tikzpicture}
+\node[sscurrent](r)at(0,2){UB 20};\node[ssopen](a)at(-2,.5){UB 16};\node[ssopen](b)at(2,.5){UB 12};
+\draw[ssedge](r)--(a);\draw[ssedge](r)--(b);
+\only<2-|handout:1>{\node[ssvalid](f)at(-2,-1){value 14};\draw[ssedge](a)--(f);}
+\only<3-|handout:1>{\node[ssinc]at(0,-2){INC = 14};}
+\only<4-|handout:1>{\node[ssbound]at(2,.5){P};\node[font=\scriptsize,text=violet]at(3.5,.5){UB 12 \(\le14\)};}
+\node[ssnote]at(0,-3){\only<1|handout:0>{root 확장}\only<2|handout:0>{feasible solution 발견}\only<3|handout:0>{incumbent 갱신}\only<4|handout:1>{더 좋아질 수 없는 B subtree prune}};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Bound Quality}
+\[
+\text{total work}\approx
+\text{expanded nodes}\times\text{bound cost}.
+\]
+\small\begin{tabular}{lll}\toprule
+Bound&장점&단점\\\midrule
+loose&계산이 빠름&pruning 적음\\
+tight&pruning 많음&계산이 비쌀 수 있음\\\bottomrule
+\end{tabular}
+\end{frame}
+\begin{frame}{Branch-and-Bound Takeaway}
+\sstakeaway{Branch-and-Bound는 탐색 순서가 아니라 incumbent와 safe objective bound의 관계로 정의된다.}
+\end{frame}

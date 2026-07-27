@@ -1,0 +1,40 @@
+\begin{frame}{Quick Sort: Partition이 핵심}
+\mission{pivot을 골라 $\le pivot$과 $>pivot$ 구간으로 분할하고 각 구간만 재귀 정렬한다.}
+\[\boxed{\le p}\quad\boxed{p}\quad\boxed{>p}\]
+합치기 단계에는 별도 merge가 필요 없다.
+\end{frame}
+\begin{frame}{QUICKSORT 의사코드}
+\begin{algorithmic}[1]\Procedure{QuickSort}{$A,low,high$}\If{$low<high$}\State $p\gets\Call{Partition}{A,low,high}$\State \Call{QuickSort}{$A,low,p-1$}\State \Call{QuickSort}{$A,p+1,high$}\EndIf\EndProcedure\end{algorithmic}
+\end{frame}
+\begin{frame}{Lomuto PARTITION 의사코드}
+\small\begin{algorithmic}[1]\Procedure{Partition}{$A,low,high$}\State $pivot\gets A[high]$; $i\gets low-1$\For{$j\gets low$ to $high-1$}\If{$A[j]\le pivot$}\State $i\gets i+1$; \Call{Swap}{$A[i],A[j]$}\EndIf\EndFor\State \Call{Swap}{$A[i+1],A[high]$}\State \Return $i+1$\EndProcedure\end{algorithmic}
+\vfill\muted{Scan invariant: $A[low..i]\le pivot$,\;
+$A[i+1..j-1]>pivot$,\; $A[j..high-1]$은 미처리,\; $A[high]$는 pivot.}
+\end{frame}
+\begin{frame}{Partition: 선택된 한쪽씩만 확정한다}
+\centering\begin{tikzpicture}[x=.94cm]
+\only<1>{\def\vals{{31,8,48,73,11,3,20,29,65,15}}\def\i{0}\def\j{1}\def\done{0}}
+\only<2>{\def\vals{{8,31,48,73,11,3,20,29,65,15}}\def\i{1}\def\j{5}\def\done{0}}
+\only<3>{\def\vals{{8,11,3,73,31,48,20,29,65,15}}\def\i{3}\def\j{9}\def\done{0}}
+\only<4>{\def\vals{{8,11,3,15,31,48,20,29,65,73}}\def\i{4}\def\j{0}\def\done{1}}
+\foreach \k in {1,...,10}{\pgfmathparse{\vals[\k-1]}\edef\v{\pgfmathresult}\ifnum\k=10\ifnum\done=0\node[sort pivot,minimum width=8mm]at(\k,0){\v};\else\node[sort cell,minimum width=8mm]at(\k,0){\v};\fi\else\ifnum\k=\i\node[sort current,minimum width=8mm]at(\k,0){\v};\else\node[sort cell,minimum width=8mm]at(\k,0){\v};\fi\fi}
+\ifnum\done=1\node[sort pivot,minimum width=8mm]at(4,0){15};\draw[decorate,decoration={brace,mirror,amplitude=5pt},AlgoOrange](.55,-.65)--(4.45,-.65)node[midway,below=5pt]{partition 완료};\fi
+\end{tikzpicture}
+\vspace{3mm}\only<1|handout:0>{pivot=15, scan 시작}\only<2|handout:0>{8은 왼쪽 경계 안으로}\only<3|handout:0>{11과 3까지 왼쪽으로}\only<4|handout:1>{pivot은 index 4에서 최종 위치}
+\end{frame}
+\begin{frame}{균형이 성능을 결정한다}
+\begin{columns}\column{.48\textwidth}\only<1>{\begin{block}{Balanced}$n/2$와 $n/2$\\높이 $\Theta(\log n)$\end{block}}\only<2->{\begin{block}{Unbalanced}$0$과 $n-1$\\높이 $\Theta(n)$\end{block}}\column{.48\textwidth}\only<1>{\[T(n)=2T(n/2)+\Theta(n)\]}\only<2->{\[T(n)=T(n-1)+\Theta(n)\]}\end{columns}
+\end{frame}
+\begin{frame}{Quick Sort의 경우별 시간}
+\begin{tabular}{lcc}\toprule 경우&분할&시간\\\midrule best&계속 균형&$\Theta(n\log n)$\\expected&randomized pivot&$\Theta(n\log n)$\\worst&계속 $0:n-1$&$\Theta(n^2)$\\\bottomrule\end{tabular}
+\vspace{4mm}\begin{block}{중요}“average”를 말하려면 입력 분포나 randomized pivot이라는 확률 가정이 필요하다.\end{block}
+\end{frame}
+\begin{frame}{Pivot 선택과 중복 Key}
+\optional[선택 심화]\hfill
+\begin{itemize}\item random pivot: adversarial pattern을 확률적으로 피한다.\item median-of-three: 작은 비용으로 극단 pivot을 줄인다.\item 현재 Lomuto의 $A[j]\le pivot$은 같은 key가 많을 때 한쪽으로 몰릴 수 있다.\item 이 경우 3-way partition $(<,=,>)$이 효과적이다.\end{itemize}
+\end{frame}
+\begin{frame}{Quick Sort Takeaway}
+\begin{itemize}\item cache locality가 좋고 expected time이 $\Theta(n\log n)$이다.\item 기본 구현은 unstable; recursion stack은 expected $\Theta(\log n)$, worst $\Theta(n)$.\item worst-case 보장이 필요하면 Heap/Merge 또는 introspective sort를 고려한다.\end{itemize}
+\sortingtakeaway{pivot의 최종 위치만 확정되며, 두 재귀 호출은 서로 겹치지 않는다.}
+\muted{Merge와 Quick에서 반복해서 등장한 $n\log n$이 comparison sorting에서 어떤 의미를 갖는지 결정 트리로 확인한다.}
+\end{frame}

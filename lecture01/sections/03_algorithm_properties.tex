@@ -1,0 +1,81 @@
+\section{Part C. 알고리즘의 성질}
+
+% 9
+\begin{frame}{좋은 알고리즘의 일곱 조건}
+  \begin{columns}[T,onlytextwidth]
+    \column{.30\textwidth}
+      \begin{block}{입출력 계약}
+        \textbf{Input}\\[-1mm]
+        0개 이상의 입력\par\medskip
+        \textbf{Output}\\[-1mm]
+        1개 이상의 결과
+      \end{block}
+    \column{.34\textwidth}
+      \begin{block}{실행 가능성}
+        \textbf{Definiteness}\\[-1mm]
+        각 단계가 모호하지 않음\par\smallskip
+        \textbf{Finiteness}\\[-1mm]
+        유한 단계 후 종료\par\smallskip
+        \textbf{Effectiveness}\\[-1mm]
+        각 단계가 실제 수행 가능
+      \end{block}
+    \column{.30\textwidth}
+      \begin{block}{문제 해결 품질}
+        \textbf{Correctness}\\[-1mm]
+        허용된 모든 입력에 올바른 결과\par\medskip
+        \textbf{Generality}\\[-1mm]
+        특정 예가 아닌 문제 부류에 적용
+      \end{block}
+  \end{columns}
+  \vfill
+  \muted{교재마다 분류 방식은 다를 수 있다. 이 강의에서는 실행 가능성과 문제 해결 품질을 함께 보기 위해 일곱 항목으로 정리한다.}
+\end{frame}
+
+% 10
+\begin{frame}{멈춘다 ≠ 맞는다}
+  \begin{columns}[T,onlytextwidth]
+    \column{.47\textwidth}
+      \begin{alertblock}{항상 멈추지만 틀림}
+        입력과 무관하게 0을 반환하는 maximum 절차.
+      \end{alertblock}
+    \column{.47\textwidth}
+      \begin{alertblock}{맞을 수 있지만 안 멈춤}
+        정답을 찾은 뒤에도 무한 반복하는 절차.
+      \end{alertblock}
+  \end{columns}
+  \begin{description}
+    \item[부분 정확성(Partial correctness)] 종료한다면 postcondition이 참이다.
+    \item[종료성(Termination)] 알고리즘이 실제로 유한 단계 후 멈춘다.
+    \item[전체 정확성(Total correctness)] 부분 정확성과 종료성이 모두 성립한다.
+  \end{description}
+  \begin{block}{이 강의의 초점: 전체 정확성}
+    \[
+      \text{precondition이 참}
+      \Longrightarrow \text{종료하며 postcondition이 참}
+    \]
+  \end{block}
+\end{frame}
+
+% 11
+\begin{frame}{알고리즘 성질 Checkpoint}
+  \begin{enumerate}
+    \item ``리스트에서 적당히 큰 값을 고른다.''
+    \item 양의 정수 $n$에 대해 $n,n-1,n-2,\ldots$를 계속 출력한다.
+    \item 예제 $[7,12,3]$에서는 맞지만 음수만 있는 입력에는 0을 반환한다.
+  \end{enumerate}
+  \vfill
+  \only<1>{\begin{block}{생각하기}각 사례에서 가장 직접적으로 위반한 성질을 골라 보자.\end{block}}
+  \only<2>{\begin{block}{확인}1 Definiteness \quad 2 Finiteness \quad 3 Correctness/Generality\end{block}}
+\end{frame}
+
+% 12
+\begin{frame}{여기까지의 핵심}
+  \begin{takeaway}
+    \begin{itemize}
+      \item 알고리즘은 언어와 독립적인 \textbf{유한한 문제 해결 절차}다.
+      \item 프로그램은 그 알고리즘의 \textbf{구체적 구현}이다.
+      \item 좋은 알고리즘은 명확성, 정확성, 유한성을 포함한 기준을 만족한다.
+    \end{itemize}
+  \end{takeaway}
+  다음 단계: 자연어보다 정확하고 코드보다 가벼운 표현을 만들자.
+\end{frame}

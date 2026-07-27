@@ -1,0 +1,54 @@
+\section{Part B. Hash Functions}
+\begin{frame}{좋은 Hash Function의 조건}
+\begin{enumerate}
+\item deterministic: 같은 key는 같은 hash value
+\item fast to compute
+\item stored keys를 table 전체에 가능한 한 균등하게 분산
+\item key의 모든 관련 bit/character를 사용하고 pattern을 섞는 mixing
+\item equal keys must hash equally
+\end{enumerate}
+\httakeaway{목표는 collision 제거가 아니라 빈도와 집중을 줄이는 것이다. 유한 table에서는 collision이 필연적이며 resolution policy가 반드시 필요하다.}
+\end{frame}
+\begin{frame}{Distribution을 눈으로 보기}
+\centering\begin{tikzpicture}[x=.72cm,y=.55cm]
+\foreach \i in {0,...,12}{\draw[AlgoRule,thick](\i,0)rectangle++(.7,.35);}
+\foreach \i/\h in {0/1,1/7,2/1,3/6,4/2,5/1,6/5,7/1,8/2,9/1,10/1,11/1,12/1}{\fill[AlgoOrange!55](\i,0)rectangle++(.7,{.22*\h});}
+\node[font=\small]at(4.4,2.2){pattern을 보존한 나쁜 분산};
+\begin{scope}[yshift=-2.2cm]
+\foreach \i in {0,...,12}{\draw[AlgoRule,thick](\i,0)rectangle++(.7,.35);}
+\foreach \i/\h in {0/2,1/3,2/2,3/2,4/3,5/2,6/2,7/2,8/3,9/2,10/2,11/3,12/2}{\fill[AlgoBlue!35](\i,0)rectangle++(.7,{.22*\h});}
+\node[font=\small]at(4.4,-.65){table 전체로 분산};
+\end{scope}
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{일반 Hash와 Cryptographic Hash}
+\centering\begin{tabular}{lll}\toprule
+목적&일반 hash table hash&cryptographic hash\\\midrule
+우선순위&속도, 분산, equality lookup&보안 성질\\
+대표 성질&낮은 practical collision rate&preimage/collision resistance\\
+비용&매우 낮게 설계&더 높은 계산 비용 가능\\
+필수 관계&equal key $\Rightarrow$ equal hash&보안 모델에 따른 요구\\\bottomrule
+\end{tabular}
+\begin{alertblock}{주의}SHA-256을 모든 일반 hash table에 반드시 사용할 필요는 없다. workload와 threat model이 다르다.\end{alertblock}
+\end{frame}
+\begin{frame}{Simple Uniform Hashing Assumption}
+\[
+\Pr[h(k)=j]=\frac1m\qquad (j=0,\ldots,m-1)
+\]
+\begin{block}{분석 모델}각 key가 각 bucket에 독립적·균등하게 배정된다고 이상화한다. 실제 함수가 완전히 random이라는 주장이 아니다.\end{block}
+\htmission{가정이 성립하고 $\alpha=n/m$을 bounded constant로 유지할 때 expected cost를 분석한다.}
+\end{frame}
+\begin{frame}{Average · Expected · Amortized · Worst}
+\small\centering\begin{tabular}{ll}\toprule
+용어&무엇에 대해 평균을 내는가?\\\midrule
+average-case&명시한 input distribution\\
+expected&randomized hashing/algorithm의 randomness\\
+amortized&어떤 operation sequence 전체의 총비용\\
+worst-case&허용된 가장 나쁜 input/state\\\bottomrule
+\end{tabular}
+\begin{alertblock}{Lecture 4와 연결}RandomizedSelect처럼 expected는 probability model이 필요하다. resize amortization은 probability 없이 operation sequence의 비용을 합한다.\end{alertblock}
+\end{frame}
+\begin{frame}{Hash Function Checkpoint}
+\begin{enumerate}\item deterministic과 uniform distribution은 같은 뜻인가?\item cryptographic collision resistance가 일반 table hash의 필수 조건인가?\item expected와 amortized를 한 문장으로 구분하라.\end{enumerate}
+\begin{exampleblock}{답}아니다; 아니다; expected는 randomness에 대한 기댓값, amortized는 연산열 총비용의 평균이다.\end{exampleblock}
+\end{frame}

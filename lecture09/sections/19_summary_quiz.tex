@@ -1,0 +1,31 @@
+\subsection{Summary와 Quiz}
+\begin{frame}{Lecture 9 Summary I}
+\begin{itemize}\item occurrence는 모든 pattern character가 일치한 valid shift다.\item Naive best는 \(\Theta(n-m+1)=O(n)\), worst는 \(\Theta((n-m+1)m)\)이다.\item Rabin--Karp는 rolling fingerprint와 exact verification을 결합한다.\item \(k=z+c\)이면 \(\Theta(n+m+(z+c)m)\); expected verification 총비용이 linear일 때만 expected \(\Theta(n+m)\)이다.\end{itemize}
+\end{frame}
+\begin{frame}{Lecture 9 Summary II}
+\begin{itemize}\item 발전 흐름은 직접 비교 \(\rightarrow\) rolling hash \(\rightarrow\) prefix/suffix 재사용 \(\rightarrow\) character skip이다.\item LPS는 prefix마다 longest proper prefix=suffix 길이다.\item KMP는 \(i\)를 되돌리지 않고 \(j\)를 fallback한다.\item Horspool은 오른쪽부터 비교하고 match/mismatch 뒤 모두 양의 shift를 적용한다.\item all-match는 occurrence를 추가하고 계속한다. first-match는 별도 wrapper 정책이다.\item matcher 선택은 guarantee, alphabet, workload, string unit에 의존한다.\end{itemize}
+\end{frame}
+\begin{frame}{Problem · Naive Quiz}
+\small\begin{enumerate}\item valid shift 범위는?\item occurrence와 alignment 차이는?\item \(T=\texttt{AAAAA},P=\texttt{AAA}\) 결과는?\item Naive worst와 best time은?\item empty pattern first-match policy는?\end{enumerate}
+\end{frame}
+\begin{frame}{Rabin--Karp Quiz}
+\small\begin{enumerate}\item base 5에서 \texttt{cad} 값은?\item rolling update의 세 단계는?\item hash가 같으면 바로 match인가?\item expected와 worst time은?\item negative remainder는 어떻게 처리하는가?\end{enumerate}
+\end{frame}
+\begin{frame}{Border · KMP Quiz}
+\small\begin{enumerate}\item proper prefix란?\item \texttt{BAABABAA}의 LPS는?\item mismatch \(j>0\)에서 \(i,j\)는?\item match 후 overlap을 위한 \(j\)는?\item total complexity는?\end{enumerate}
+\end{frame}
+\begin{frame}{Horspool · Design Quiz}
+\small\begin{enumerate}\item \texttt{TIGER}에서 \(shift[I]\)는?\item absent character shift는?\item \texttt{RATIONAL}에서 \(shift[A]\)는?\item full BM과 Horspool의 차이는?\item worst-case linear guarantee가 필요하면?\end{enumerate}
+\end{frame}
+\begin{frame}{Quiz 정답 I}
+\small\begin{enumerate}\item \(0\le s\le n-m\)\item candidate 위치 vs 완전 일치 위치\item \([0,1,2]\)\item worst \(\Theta((n-m+1)m)\); best \(\Theta(n-m+1)=O(n)\)\item 0\end{enumerate}
+\end{frame}
+\begin{frame}{Quiz 정답 II}
+\small\begin{enumerate}\item 53\item leading 제거, base shift, trailing 추가\item verification 필요\item \(\Theta(n+m+(z+c)m)\); verification 총비용이 linear이면 expected \(\Theta(n+m)\), worst \(\Theta(nm)\)\item normalized modulo/unsigned subtraction\end{enumerate}
+\end{frame}
+\begin{frame}{Quiz 정답 III}
+\small\begin{enumerate}\item 전체보다 짧은 prefix\item \([0,0,0,1,2,1,2,3]\)\item \(i\) 유지, \(j=lps[j-1]\)\item \(lps[m-1]\)\item \(\Theta(n+m)\)\end{enumerate}
+\end{frame}
+\begin{frame}{Quiz 정답 IV}
+\small\begin{enumerate}\item 3\item \(m=5\)\item 1\item full BM은 good-suffix도 사용; Horspool은 window-last bad-character만\item KMP\end{enumerate}
+\end{frame}

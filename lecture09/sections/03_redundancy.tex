@@ -1,0 +1,29 @@
+\subsection{중복 비교와 정보 재사용}
+\begin{frame}{같은 Text Character를 다시 보는 이유}
+\begin{columns}[T]\column{.48\textwidth}
+\begin{alertblock}{Naive}shift마다 \(j=0\)으로 재시작하여 이전 matched prefix를 잊는다.\end{alertblock}
+\column{.48\textwidth}
+\begin{block}{재사용 방향}Rabin--Karp는 window hash를, KMP는 border 정보를 재사용한다.\end{block}
+\end{columns}
+\end{frame}
+\begin{frame}{두 가지 재사용 전략}
+\centering
+\footnotesize
+\textbf{Naive 직접 비교}
+\(\longrightarrow\)
+\textbf{Rolling Hash}
+\(\longrightarrow\)
+\textbf{Prefix/Suffix 재사용}
+\(\longrightarrow\)
+\textbf{Character Skip}
+\vspace{2mm}
+
+\small\begin{tabular}{lll}\toprule
+질문&Rabin--Karp&KMP\\\midrule
+무엇을 저장?&window fingerprint&matched prefix의 border\\
+어떻게 건너뜀?&hash 불일치 즉시 제외&pattern index fallback\\
+추가 확인?&hash hit verification&직접 character match\\
+보장&expected linear 조건부&worst-case linear\\\bottomrule
+\end{tabular}
+\scheckpoint{Rolling Hash는 window 값을, KMP는 prefix/suffix를, Horspool은 mismatch character를 이용한다.}
+\end{frame}

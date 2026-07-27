@@ -1,0 +1,15 @@
+\section{Part D. 재귀와 반복, 요약과 Quiz}
+\begin{frame}{비교표}\small\begin{tabular}{@{}lll@{}}\toprule 기준&Recursion&Iteration\\\midrule 표현&구조를 직접 반영&상태 전이 명시\\호출 overhead&있음&작음\\stack&암시적 call stack&보통 $O(1)$ 또는 explicit\\깊이 위험&stack overflow&명시적 메모리 관리\\\bottomrule\end{tabular}
+\end{frame}
+\begin{frame}{꼬리 재귀(Tail Recursion)}\textbf{Tail call}: 재귀 호출 뒤 할 일이 없는 호출. 일부 언어/컴파일러는 frame을 재사용할 수 있지만 C/C++에서 최적화는 보장되지 않는다. 시스템 stack 제한을 설계 근거로 삼지 말자.
+\end{frame}
+\begin{frame}{모든 재귀는 반복으로 바꿀 수 있다}
+\begin{itemize}
+  \item 단순 선형 재귀는 loop로 바꾸어 extra space $O(1)$이 될 수 있다.
+  \item tree traversal·DFS·backtracking은 pending work를 기억할 명시적 stack 또는 동등한 구조가 필요하다.
+  \item 재귀 문법을 없앤다고 점근적 메모리 요구가 자동으로 사라지지는 않는다.
+\end{itemize}
+\sectiontakeaway{call stack의 역할을 loop 상태나 자료구조로 명시하는 변환이다.}
+\end{frame}
+\begin{frame}{언제 무엇을 선택할까?}\begin{columns}[T]\column{.46\textwidth}\textbf{재귀가 자연스러움}: tree, divide-and-conquer, backtracking, DFS\column{.46\textwidth}\textbf{반복이 유리}: 단순 선형 순회, 매우 깊은 호출, stack 제한 시스템\end{columns}\vfill 정확성·명확성·시간·공간을 함께 비교한다.
+\end{frame}

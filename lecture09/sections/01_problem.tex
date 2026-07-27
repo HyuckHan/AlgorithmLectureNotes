@@ -1,0 +1,71 @@
+\begin{frame}[plain]\vspace*{-8mm}\titlepage\end{frame}
+\begin{frame}{학습 목표 I}
+\small\begin{enumerate}
+\item text, pattern, alphabet, occurrence와 shift를 정의한다.
+\item Naive의 alignment와 comparison 수를 구분한다.
+\item rolling hash, collision, verification을 설명한다.
+\item prefix, suffix, proper prefix, border를 구분한다.
+\item LPS를 만들고 KMP fallback을 추적한다.
+\end{enumerate}
+\end{frame}
+\begin{frame}{학습 목표 II}
+\small\begin{enumerate}\setcounter{enumi}{5}
+\item KMP의 \(\Theta(n+m)\) 보장을 설명한다.
+\item full Boyer--Moore와 Horspool을 구분한다.
+\item Horspool shift table과 오른쪽부터의 비교를 추적한다.
+\item workload와 alphabet에 맞는 matcher를 선택한다.
+\item code unit, code point, grapheme의 차이를 인식한다.
+\end{enumerate}
+\end{frame}
+\section{Part A. Pattern Matching Fundamentals}
+\begin{frame}{왜 String Matching인가?}
+\begin{columns}[T]\column{.48\textwidth}
+\begin{block}{검색}editor find, grep, log scan, document index\end{block}
+\begin{block}{분석}DNA, plagiarism, signature detection\end{block}
+\column{.48\textwidth}
+\begin{block}{시스템}lexer, intrusion signature, monitoring\end{block}
+\begin{block}{확장}multi-pattern, approximate, 2D matching\end{block}
+\end{columns}
+\smission{이미 비교한 정보를 재사용하여 불필요한 character comparison을 줄일 수 있는가?}
+\end{frame}
+\begin{frame}{Text · Pattern · Alphabet}
+\[
+T[0..n-1],\qquad P[0..m-1],\qquad T[i],P[j]\in\Sigma.
+\]
+\begin{description}
+\item[Text index \(i\)]현재 읽는 text 위치
+\item[Pattern index \(j\)]현재 비교하는 pattern 위치
+\item[Shift \(s\)]pattern 시작을 \(T[s]\)에 맞춘 alignment
+\end{description}
+\stakeaway{구현과 trace는 0-based indexing으로 통일한다.}
+\end{frame}
+\begin{frame}{Exact Occurrence의 정의}
+\[
+P\text{ occurs at }s
+\iff
+\forall j\in\{0,\ldots,m-1\},\quad T[s+j]=P[j].
+\]
+\[
+0\le s\le n-m,\qquad\text{alignment 수}=n-m+1\quad(m\le n).
+\]
+\begin{alertblock}{구분}alignment는 검사할 후보 위치이고, occurrence는 모든 문자가 실제로 일치한 alignment다.\end{alertblock}
+\end{frame}
+\begin{frame}{API Policy를 먼저 정하자}
+\small\begin{tabular}{ll}\toprule
+상황&Lecture 9 policy\\\midrule
+first match, empty pattern&0\\
+all matches, empty pattern&\([0]\)로 문서화\\
+\(m>n\)&no match\\
+first match 없음&\(-1\) / C에서는 \texttt{SIZE\_MAX}\\
+all matches 없음&empty list\\
+\bottomrule\end{tabular}
+\begin{block}{이유}경계 정책이 없으면 같은 알고리즘도 구현·테스트 결과가 달라진다.\end{block}
+\end{frame}
+\begin{frame}{무엇을 반환할 것인가?}
+\begin{columns}[T]\column{.48\textwidth}
+\begin{itemize}\item first occurrence\item all occurrences\item count\item overlapping occurrences\end{itemize}
+\column{.48\textwidth}
+\begin{itemize}\item exact matching\item approximate preview\item single pattern\item multi-pattern preview\end{itemize}
+\end{columns}
+\scheckpoint{ \(T=\texttt{AAAAA}, P=\texttt{AAA}\)의 all-match 결과는 \([0,1,2]\)다.}
+\end{frame}

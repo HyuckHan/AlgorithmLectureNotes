@@ -1,0 +1,37 @@
+\begin{frame}{개념 지도(Concept Map)}\centering\begin{tikzpicture}[node distance=6mm,scale=1.08,transform shape]\node[stack](r){recursive specification};\node[stack,below left=of r](e){call stack};\node[stack,below=of r](c){induction};\node[stack,below right=of r](t){recurrence};\node[stack,below=17mm of c](a){DFS / backtracking / divide};\foreach \x in {e,c,t}{\draw[-Stealth,AlgoOrange](r)--(\x);}\draw[-Stealth,AlgoOrange](c)--(a);\end{tikzpicture}
+\end{frame}
+\begin{frame}{재귀 설계 Checklist}\begin{enumerate}\item mission\item base case\item recursive case\item progress measure\item combine/return\item mark 또는 undo\item recurrence와 maximum depth\end{enumerate}
+\end{frame}
+\begin{frame}{개념과 코드 추적 Quiz}\small
+\begin{enumerate}
+  \item base case가 있어도 무한 재귀가 가능한 이유는?
+  \item $sum(3)$의 push 순서와 return 값은?
+  \item \texttt{print}가 재귀 호출 전/후에 있으면 문자열 순서는?
+  \item 재귀 정확성 증명에서 induction hypothesis의 역할은?
+  \item Binary Search의 precondition과 worst-case recursion depth는?
+  \item visited 없이 cycle이 있는 maze를 탐색하면?
+  \item $F_5$ 호출 트리에서 중복되는 부분문제 하나는?
+\end{enumerate}
+\end{frame}
+\begin{frame}{점화식과 설계 Quiz}\small\begin{enumerate}\item $T(n)=T(n-1)+n$을 푼다.\item $T(n)=2T(n/4)+n$에 Master Theorem을 적용한다.\item 배열 구간의 최댓값을 재귀적으로 정의하라.\item $\{x,y\}$의 state-space tree와 네 subset을 그려라.\end{enumerate}
+\end{frame}
+\begin{frame}{Quiz 정답 I: 개념과 코드 추적}\small
+\begin{enumerate}
+  \item progress measure가 줄지 않아 base case에 도달하지 않을 수 있다.
+  \item push: $sum(3)\to sum(2)\to sum(1)\to sum(0)$;\quad return: $0\to1\to3\to6$.
+  \item 호출 전이면 순방향, 반환 뒤이면 역방향으로 출력한다.
+  \item 작은 입력의 mission이 맞다고 가정해 현재 입력의 결합이 맞음을 보인다.
+  \item 비감소 정렬된 inclusive 구간과 임의 접근이 필요하며, worst-case depth는 $\Th(\log n)$.
+  \item 같은 cell을 반복해 종료하지 않거나 중복 탐색한다.
+  \item 예: $F_3$ 또는 $F_2$.
+\end{enumerate}
+\end{frame}
+\begin{frame}{Quiz 정답 II · 다음 강의}\small
+\begin{enumerate}
+  \item $\Th(n^2)$
+  \item $\Th(n)$: root가 지배하며 정규성 조건도 만족한다.
+  \item 예: $max(b,e)=\max(A[b],max(b+1,e))$, base는 $b=e$.
+  \item $\emptyset,\{x\},\{y\},\{x,y\}$; level마다 $x,y$를 exclude/include한다.
+\end{enumerate}
+\sectiontakeaway{다음: divide-and-conquer에서 재귀 구조를 실제 고성능 알고리즘으로 확장하고, memoization은 Dynamic Programming으로 이어진다.}
+\end{frame}

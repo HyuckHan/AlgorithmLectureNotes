@@ -1,0 +1,19 @@
+\begin{frame}{단순 정렬 비교}
+\centering\small\begin{tabular}{lccccc}\toprule&best&average&worst&stable&특징\\\midrule Selection&$\Theta(n^2)$&$\Theta(n^2)$&$\Theta(n^2)$&No&swap 적음\\Bubble*&$\Theta(n)$&$\Theta(n^2)$&$\Theta(n^2)$&Yes&인접 swap\\Insertion&$\Theta(n)$&$\Theta(n^2)$&$\Theta(n^2)$&Yes&adaptive\\\bottomrule\end{tabular}
+\vspace{3mm}\small *조기 종료 구현.
+\end{frame}
+\begin{frame}{효율적인 Comparison Sort}
+\centering\small\begin{tabular}{lcccc}\toprule&\shortstack{best / expected\\time}&worst time&auxiliary space&stable\\\midrule Merge&$\Theta(n\log n)$&$\Theta(n\log n)$&$\Theta(n)$&Yes\\Quick&$\Theta(n\log n)$ expected&$\Theta(n^2)$&\shortstack{$\Theta(\log n)$ expected\\$\Theta(n)$ worst}&No\\Heap&$\Theta(n\log n)$&$\Theta(n\log n)$&\shortstack{$\Theta(1)$ iterative\\$\Theta(\log n)$ recursive}&No\\\bottomrule\end{tabular}\par
+\vspace{3mm}{\small 배열 구현 기준. Heap space는 MAX-HEAPIFY 구현 방식에 따라 달라진다.\par}
+\end{frame}
+\begin{frame}{Non-comparison Sort}
+\centering\begin{tabular}{lccc}\toprule&시간&추가 공간&조건\\\midrule Counting&$\Theta(n+k)$&$\Theta(n+k)$&integer range $0..k$\\Radix&$\Theta(d(n+b))$&$\Theta(n+b)$&$d$ digits, base $b$\\\bottomrule\end{tabular}
+\begin{alertblock}{trade-off}비교 하한을 피하는 대신 key 표현과 범위에 의존한다.\end{alertblock}
+\end{frame}
+\begin{frame}{어떤 상황에 무엇을 선택할까?}
+\begin{description}\item[거의 정렬된 작은 배열] Insertion\item[stable worst-case 보장] Merge\item[일반적인 in-memory array] 표준 라이브러리의 최적화된 sort\item[추가 배열 없이 worst-case 보장] Heap\item[작은 정수 key range] Counting\item[고정 길이 digit key] Radix\end{description}
+\end{frame}
+\begin{frame}{알고리즘 선택 Checklist}
+\begin{enumerate}\item key와 total order가 정확한가?\item $n$, key range, 기존 정렬 정도는?\item worst-case guarantee가 필요한가?\item stability와 auxiliary space 제한은?\item array, linked list, disk 중 어디에 있는가?\item 직접 구현할 이유가 없다면 표준 라이브러리를 썼는가?\end{enumerate}
+\vfill\muted{알고리즘의 차이를 이해했으므로, 실제 프로그램에서는 표준 라이브러리와 올바른 comparator 계약으로 이를 적용한다.}
+\end{frame}

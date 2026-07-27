@@ -1,0 +1,43 @@
+\begin{frame}[plain]
+\vfill
+{\usebeamerfont{title}\color{AlgoBlue}정렬 · Sorting\par}
+\vspace{3mm}{\color{AlgoOrange}\rule{32mm}{1.2pt}\par}
+\vspace{5mm}{\large 단순 정렬 · Heap · 선형시간 정렬 · Comparator\par}
+\vspace{8mm}{\small Algorithm Lecture Notes\par}
+\vfill
+\end{frame}
+\begin{frame}{학습 목표}
+\begin{itemize}
+  \item permutation 보존과 ordered output으로 정렬을 명세한다.
+  \item stability, auxiliary space, in-place, adaptivity, worst-case 보장과 key 제약을 비교한다.
+  \item Selection, Bubble, Insertion, Merge, Quick, Heap, Counting, Radix Sort를 추적·분석한다.
+  \item comparison sorting의 $\Omega(n\log n)$ 하한을 설명한다.
+  \item Java/C 정렬 API와 안전한 comparator를 선택·사용한다.
+\end{itemize}
+\end{frame}
+\section{Part A. 정렬 문제와 평가 기준}
+\begin{frame}{왜 정렬인가?}
+\begin{columns}[T]\column{.48\textwidth}\begin{block}{정렬 전}\large 29, 10, 14, 37, 13\end{block}\begin{itemize}\item 최솟값·중앙값 찾기 어려움\item 중복과 범위 파악 어려움\end{itemize}\column{.48\textwidth}\begin{block}{정렬 후}\large 10, 13, 14, 29, 37\end{block}\begin{itemize}\item Binary Search와 중복 제거\item 통계·ranking·visualization\item database merge와 index의 기반\end{itemize}\end{columns}
+\end{frame}
+\begin{frame}{정렬 문제의 명세}
+\mission{입력 sequence를 key의 순서에 맞게 재배열하라.}
+\[\langle a_1,\dots,a_n\rangle\longmapsto\langle a'_1,\dots,a'_n\rangle,\qquad a'_1\preceq\cdots\preceq a'_n\]
+\begin{enumerate}\item 출력은 입력 record들의 \alert{permutation}이다.\item 모든 인접 key가 지정된 order를 만족한다.\end{enumerate}
+\vfill\muted{Record 정렬에서는 key만 복사하는 것이 아니라 record 전체가 함께 이동해야 한다.}
+\end{frame}
+\begin{frame}{Key, Record, Total Order}
+\begin{description}\item[Record] 정체성을 가지며 함께 이동해야 하는 전체 데이터\item[Key] 순서를 결정하는 record의 일부\item[비교 관계] 모든 쌍을 비교할 수 있고, 결과가 일관되며 추이적이다.\end{description}
+서로 다른 record라도 comparator가 0을 반환하면 같은 equivalence class에 속할 수 있다.
+\begin{exampleblock}{예}\texttt{Student(name, grade, id)}를 grade 내림차순, 동점이면 id 오름차순으로 정렬한다.\end{exampleblock}
+\end{frame}
+\begin{frame}{정렬 알고리즘 Road Map}
+\centering\begin{tikzpicture}[node distance=7mm and 9mm,every node/.style={tree node,minimum width=24mm}]
+\node[chosen] (s) {Sorting};
+\node[below left=of s] (c) {comparison}; \node[below right=of s] (n) {key structure};
+\node[below=of c,xshift=-20mm] (simple) {simple};\node[below=of c,xshift=20mm] (fast) {$n\log n$};
+\node[below=of n,xshift=-15mm] (count) {Counting};\node[below=of n,xshift=15mm] (radix) {Radix};
+\draw[-Latex] (s)--(c);\draw[-Latex](s)--(n);\draw[-Latex](c)--(simple);\draw[-Latex](c)--(fast);\draw[-Latex](n)--(count);\draw[-Latex](n)--(radix);
+\node[below=2mm of simple,font=\small,draw=none,fill=none]{Selection · Bubble · Insertion};
+\node[below=2mm of fast,font=\small,draw=none,fill=none]{Merge · Quick · Heap};
+\end{tikzpicture}
+\end{frame}

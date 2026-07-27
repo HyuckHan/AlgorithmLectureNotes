@@ -1,0 +1,32 @@
+\section{Part H. Greedy와 Cut Property}
+\begin{frame}{Greedy는 증명이 필요하다}
+\begin{block}{Greedy}각 단계의 local choice를 확정하고 되돌리지 않는다.\end{block}
+\begin{alertblock}{반례}coin \(\{1,3,4\}\), amount 6:\\greedy \(4+1+1=3\) coins, optimal \(3+3=2\) coins.\end{alertblock}
+\gtakeaway{그럴듯한 local choice가 항상 global optimum은 아니다.}
+\end{frame}
+\begin{frame}{Cut와 Crossing Edge}
+\[
+(S,V-S),\qquad e=(u,v)\text{ crosses if }u\in S,\ v\notin S.
+\]
+\centering\begin{tikzpicture}[x=1.4cm]
+\node[gvertex](a)at(0,0){A};\node[gvertex](b)at(1.5,1){B};\node[gvertex](c)at(3,0){C};\node[gvertex](d)at(4.5,1){D};
+\draw[gedge](a)--(b);\draw[gedge](c)--(d);\draw[gactive](b)--node[above]{light}(c);\draw[gcut](2.25,-1)--(2.25,2);
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Cut Property}
+\begin{theorem}현재 선택된 safe edges와 양립하는 cut에서 가장 가벼운 crossing edge는 safe하다.\end{theorem}
+\begin{itemize}\item weight tie이면 가장 가벼운 edge가 여러 개일 수 있다.\item 그중 하나를 선택해도 어떤 MST와 양립한다.\end{itemize}
+\end{frame}
+\begin{frame}{Exchange Argument}
+\small MST \(T^*\)가 light crossing edge \(e\)를 포함하지 않는다고 하자.
+\begin{enumerate}\item \(T^*+e\)는 cycle을 만든다.\item cycle에는 같은 cut을 건너는 다른 edge \(f\)가 있다.\item light edge이므로 \(w(e)\le w(f)\).\item \(T'=T^*-f+e\)도 spanning tree이고 \(w(T')\le w(T^*)\).\end{enumerate}
+\gtakeaway{\(e\)를 포함하는 MST가 존재한다. strict \(<\)가 아니라 \(\le\)이므로 tie도 포함한다.}
+\end{frame}
+\begin{frame}{Prim과 Kruskal의 같은 뿌리}
+\begin{columns}[T]\column{.48\textwidth}\begin{block}{Prim}현재 한 tree와 outside 사이 cut의 light edge\end{block}
+\column{.48\textwidth}\begin{block}{Kruskal}현재 forest component를 나누는 cut의 light feasible edge\end{block}\end{columns}
+\end{frame}
+\begin{frame}{Part H Checkpoint}
+\begin{enumerate}\item greedy choice만으로 optimality가 보장되는가?\item tie가 있으면 cut property가 깨지는가?\item exchange에서 \(e\)를 추가하면 무엇이 생기는가?\end{enumerate}
+\begin{exampleblock}{답}아니다; 아니다; cycle.\end{exampleblock}
+\end{frame}

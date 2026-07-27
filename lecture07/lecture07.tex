@@ -1,0 +1,50 @@
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{theme/beamerthemealgorithms}
+\definecolor{AlgoOrangeText}{HTML}{B45309}
+\setsansfont{Noto Sans}[Scale=0.98,AutoFakeSlant=0.15]
+\setmainfont{Noto Sans}[Scale=0.98,AutoFakeSlant=0.15]
+\setmonofont{Noto Sans Mono}[Scale=0.90]
+\newfontfamily\lecturefooterfont{Noto Sans}
+\usepackage{kotex,amsmath,amssymb,mathtools,booktabs,array,multirow}
+\setsanshangulfont{Noto Sans CJK KR}[Scale=0.98,AutoFakeSlant=0.15]
+\setmainhangulfont{Noto Sans CJK KR}[Scale=0.98,AutoFakeSlant=0.15]
+\setmonohangulfont{Noto Sans Mono CJK KR}[Scale=0.90]
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,matrix,decorations.pathreplacing,backgrounds,patterns}
+\usepackage{pgfplots}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\algrenewcommand\textproc[1]{\textbf{#1}}
+\input{lecture02/common.tex}
+\input{lecture03/common.tex}
+\input{lecture04/common.tex}
+\input{lecture05/common.tex}
+\input{lecture06/common.tex}
+\input{lecture07/common.tex}
+\pgfplotsset{compat=1.18,compat/show suggested version=false}
+\title{해시 테이블\\[-1mm]\large Hash Tables}
+\subtitle{Hash Function, Collision Resolution, Load Factor와 Rehashing}
+\author{Algorithm Lecture Notes}
+\date{}
+\setbeamerfont{subtitle}{size=\large}
+\setbeamertemplate{frame numbering}{\lecturefooterfont\insertframenumber/\inserttotalframenumber}
+\mode<handout>{\AtBeginSection[]{}}
+\begin{document}
+\input{lecture07/sections/01_motivation.tex}
+\input{lecture07/sections/02_hashing_model.tex}
+\input{lecture07/sections/03_hash_functions.tex}
+\input{lecture07/sections/04_string_hashing.tex}
+\input{lecture07/sections/05_collision.tex}
+\input{lecture07/sections/06_chaining.tex}
+\input{lecture07/sections/07_open_addressing.tex}
+\input{lecture07/sections/08_linear_probing.tex}
+\input{lecture07/sections/09_quadratic_probing.tex}
+\input{lecture07/sections/10_double_hashing.tex}
+\input{lecture07/sections/11_deletion.tex}
+\input{lecture07/sections/12_load_factor.tex}
+\input{lecture07/sections/13_rehashing.tex}
+\input{lecture07/sections/14_implementation.tex}
+\input{lecture07/sections/15_comparison.tex}
+\input{lecture07/sections/16_summary_quiz.tex}
+\input{lecture07/sections/17_appendix.tex}
+\end{document}

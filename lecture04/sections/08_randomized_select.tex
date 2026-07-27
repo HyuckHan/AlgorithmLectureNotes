@@ -1,0 +1,32 @@
+\section{Part C. Randomized Selection의 성능}
+\begin{frame}{RANDOMIZED-SELECT 의사코드}
+\small\begin{algorithmic}[1]
+\Require{$p\le r$ and $1\le i\le r-p+1$}
+\Procedure{RandomizedSelect}{$A,p,r,i$}
+\If{$p=r$}\State \Return $A[p]$\EndIf
+\State choose $s$ uniformly from $\{p,\dots,r\}$
+\State \Call{Swap}{$A[s],A[r]$}
+\State $q\gets\Call{Partition}{A,p,r}$; $k\gets q-p+1$
+\State follow exactly one branch with ranks $i$ or $i-k$
+\EndProcedure
+\end{algorithmic}
+\begin{block}{Contract}invalid rank는 caller error로 처리하거나 명시적 예외를 반환해야 한다.\end{block}
+\end{frame}
+\begin{frame}{좋은 Pivot은 상수 확률로 나온다}
+충분히 큰 $n$에서 pivot rank의 적어도 대략 절반은 가운데 구간 $[n/4,3n/4]$에 있다.
+\begin{itemize}
+\item 그런 pivot은 다음 문제 크기를 최대 $3n/4$로 줄인다.
+\item successive levels에서 good pivot 사이의 기대 간격은 상수다.
+\item 알고리즘이 같은 배열에서 good pivot이 나올 때까지 retry하는 것은 아니다. 모든 pivot 뒤 재귀한다.
+\end{itemize}
+\end{frame}
+\begin{frame}{Expected Recurrence의 의미}
+\optional[Advanced]\hfill
+uniform random pivot에서 한 보수적 upper bound는
+\[\mathbb E[T(n)]\le\frac1n\sum_{k=1}^{n}\mathbb E\!\left[T\!\left(\max\{k-1,n-k\}\right)\right]+cn.\]
+\texttt{max}는 고정된 목표 rank가 실제로 따르는 한쪽 대신 더 큰 쪽을 쓰는 worst-target \alert{upper bound}다. good-pivot scale argument로 expected $O(n)$, exact unrestricted selection의 $\Omega(n)$과 합쳐 expected $\Theta(n)$을 얻는다.
+\end{frame}
+\begin{frame}{Expected와 Worst를 혼동하지 말자}
+\begin{itemize}\item randomness는 pivot 선택에 있다. “평균 입력” 가정이 아니다.\item expected $\Theta(n)$이어도 특정 random choices는 $\Theta(n^2)$일 수 있다.\item stack: expected $O(\log n)$, worst $O(n)$\item adversarial latency guarantee가 필요하면 deterministic 전략을 묻는다.\end{itemize}
+\vfill\muted{기대 선형 시간이 아니라 모든 실행에서의 선형 상한이 필요하다면 pivot 품질 자체를 구조적으로 보장해야 한다.}
+\end{frame}

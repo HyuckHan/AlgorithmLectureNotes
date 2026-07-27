@@ -1,0 +1,50 @@
+\section{Part L. 요약과 Quiz}
+
+% 49
+\begin{frame}{한 장으로 정리}
+  \begin{center}
+  \begin{tikzpicture}[node distance=4mm,font=\small]
+    \node[draw,rounded corners,fill=AlgoLight,minimum width=2.5cm] (q) {문제·명세};
+    \node[draw,rounded corners,fill=AlgoLight,minimum width=2.5cm,right=of q] (alg) {알고리즘};
+    \node[draw,rounded corners,fill=AlgoLight,minimum width=2.5cm,right=of alg] (proof) {정확성};
+    \node[draw,rounded corners,fill=AlgoLight,minimum width=2.5cm,right=of proof] (cost) {복잡도};
+    \draw[flow] (q)--(alg); \draw[flow] (alg)--(proof); \draw[flow] (proof)--(cost);
+  \end{tikzpicture}
+  \end{center}
+  \begin{itemize}
+    \item 의사코드는 절차를 명확하게, invariant는 왜 맞는지를 설명한다.
+    \item 입력 크기와 기본 연산을 정한 뒤 반복 횟수를 센다.
+    \item $\Oh$는 상한, $\Om$는 하한, $\Th$는 tight bound다.
+    \item Linear Search worst case는 $\Th(n)$이다.
+    \item Binary Search는 정렬된 임의 접근 배열에서 best case $\Th(1)$, worst case $\Th(\log n)$이다.
+  \end{itemize}
+\end{frame}
+
+% 50
+\begin{frame}{설명 Quiz}
+  \large
+  \setlength{\itemsep}{1mm}
+  \begin{enumerate}
+    \item 알고리즘과 프로그램의 차이는?
+    \item Maximum에서 $v$가 유지하는 invariant는?
+    \item 정렬된 임의 접근 배열 $[2,5,8,12,16,23,38]$에서 16을 Binary Search로 찾을 때 비교하는 값들은?
+    \item $4n^2+3n+7$의 tight bound는?
+    \item $f\in\Oh(g)$와 $f\in\Th(g)$의 차이는?
+  \end{enumerate}
+  \vfill
+  \muted{먼저 혼자 90초, 그다음 옆 사람과 근거를 비교한다.}
+\end{frame}
+
+% 51
+\begin{frame}{Quiz 확인 · Exit Ticket}
+  \begin{enumerate}
+    \item 알고리즘은 언어 독립적 절차, 프로그램은 그 구체적 구현.
+    \item 처리한 prefix의 최댓값이 $v$다.
+    \item $mid=4,6,5$이므로 $12\to23\to16$. 정렬과 효율적인 임의 접근이 전제다.
+    \item $\Th(n^2)$.
+    \item $\Oh$는 점근적 상한, $\Th$는 상·하한이 일치하는 tight bound.
+  \end{enumerate}
+  \begin{alertblock}{Exit ticket}
+    오늘 가장 헷갈린 개념 하나와, 그것을 확인할 수 있는 짧은 예 하나를 적자.
+  \end{alertblock}
+\end{frame}

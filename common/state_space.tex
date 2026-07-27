@@ -1,0 +1,34 @@
+\tikzset{
+ gvertex/.style={circle,draw=AlgoBlue,thick,fill=white,minimum size=9mm,font=\small\bfseries,inner sep=1pt},
+ gcycle/.style={gvertex,draw=red!75!black,ultra thick,fill=red!12},
+ gedge/.style={draw=AlgoRule,thick},
+ ssnode/.style={circle,draw=AlgoBlue,thick,fill=white,minimum size=8mm,font=\scriptsize\bfseries,inner sep=1pt},
+ sscurrent/.style={ssnode,draw=AlgoOrange,ultra thick,fill=AlgoOrange!18},
+ ssvalid/.style={ssnode,draw=green!45!black,ultra thick,fill=green!10},
+ ssdead/.style={ssnode,draw=red!70!black,thick,fill=red!9},
+ ssbound/.style={ssnode,draw=violet!75!black,thick,fill=violet!9},
+ ssopen/.style={ssnode,draw=AlgoOrange,thick,fill=AlgoOrange!10},
+ ssclosed/.style={ssnode,draw=AlgoBlue,thick,fill=AlgoBlue!15},
+ ssedge/.style={draw=AlgoRule,thick,-Latex},
+ ssactiveedge/.style={draw=AlgoOrange,ultra thick,-Latex},
+ ssprune/.style={isosceles triangle,isosceles triangle apex angle=55,shape border rotate=90,draw=red!70!black,fill=red!8,minimum height=9mm,font=\tiny},
+ ssboundprune/.style={ssprune,draw=violet!75!black,fill=violet!8},
+ ssbox/.style={draw=AlgoBlue,rounded corners,fill=AlgoLight,inner sep=2mm,font=\small},
+ ssnote/.style={draw=AlgoOrange,rounded corners,fill=AlgoOrange!10,inner sep=2mm,font=\small},
+ ssinc/.style={draw=green!45!black,rounded corners,fill=green!9,inner sep=1.5mm,font=\small\bfseries},
+ board/.style={draw=AlgoRule,minimum width=7mm,minimum height=7mm,font=\small\bfseries,inner sep=0pt},
+ obstacle/.style={board,fill=AlgoGray!55},
+ pathcell/.style={board,fill=green!18,draw=green!45!black,ultra thick},
+ opencell/.style={board,fill=AlgoOrange!15,draw=AlgoOrange,thick},
+ closedcell/.style={board,fill=AlgoBlue!12,draw=AlgoBlue,thick}
+}
+\newcommand{\ssmission}[1]{\begin{block}{Mission}#1\end{block}}
+\newcommand{\sstakeaway}[1]{\begin{takeaway}#1\end{takeaway}}
+\newcommand{\sscheckpoint}[1]{\begin{exampleblock}{Checkpoint}#1\end{exampleblock}}
+\newcommand{\incbadge}[1]{\tikz[baseline=-.55ex]\node[ssinc]{INC \(=#1\)};}
+\newcommand{\ubbadge}[1]{\tikz[baseline=-.55ex]\node[ssbox]{UB \(=#1\)};}
+\newcommand{\statebadge}[2]{\tikz[baseline=-.55ex]\node[ssbox]{#1: #2};}
+\newcommand{\prunetriangle}[2]{\node[ssprune]at(#1){P};\node[font=\tiny,text=red!70!black,below=1mm]at(#1){#2};}
+\newcommand{\pqview}[1]{\tikz[baseline=-.55ex]\node[ssbox]{PQ: #1};}
+\newcommand{\ssoptional}[1][Optional]{\tikz[baseline=(label.base)]\node[draw=AlgoRule,rounded corners=2pt,fill=AlgoLight,text=AlgoGray,font=\scriptsize\bfseries,inner xsep=4pt,inner ysep=2pt] (label) {#1};}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}

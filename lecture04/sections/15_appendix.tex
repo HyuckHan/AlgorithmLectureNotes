@@ -1,0 +1,19 @@
+\begin{frame}{Appendix: 정밀한 상수항은 어디서 오는가?}
+\optional[Appendix]\hfill
+본문의 $3n/10-O(1)$은 다음 예외를 감춘다.
+\begin{itemize}\item 5개 미만인 마지막 group\item $M$ 자신이 속한 group\item medians 수가 짝수일 때 선택한 median convention\end{itemize}
+그래서 문헌의 $3n/10-3$, $7n/10+2$ 같은 식은 convention에 따라 상수가 달라질 수 있지만 asymptotic recurrence는 같다.
+\end{frame}
+\begin{frame}{Appendix: 왜 Group Size가 5인가?}
+\optional[Appendix]\hfill
+\begin{tabular}{lccc}\toprule size&median 비용&recursive fraction&standard 분석\\\midrule
+3&constant&$1/3+2/3=1$&선형 overhead 흡수 여유 없음\\
+5&constant&$1/5+7/10=9/10$&선형 보장\\
+7&constant&$1/7+5/7=6/7$&가능, 상수 증가\\\bottomrule
+\end{tabular}
+\begin{block}{범위}Size 3의 식은 이 standard recurrence argument가 선형 bound를 주지 못한다는 뜻이지, 모든 변형이 불가능하다는 선언은 아니다. 더 큰 홀수 group도 가능하지만 상수 비용이 달라진다.\end{block}
+\end{frame}
+\begin{frame}{다음 강의로}
+Selection에서 배운 설계 패턴:
+\begin{itemize}\item 필요한 부분 문제만 남긴다.\item randomization으로 expected 성능을 얻는다.\item 구조적 sampling으로 worst-case 성능을 보장한다.\item recurrence의 각 항을 실제 작업과 연결한다.\end{itemize}
+\end{frame}

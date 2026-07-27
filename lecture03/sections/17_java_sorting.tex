@@ -1,0 +1,52 @@
+\begin{frame}{Java: 표준 라이브러리부터}
+\begin{itemize}\item primitive array: \texttt{Arrays.sort(values)}\item object array: \texttt{Arrays.sort(records, comparator)}\item list: \texttt{list.sort(comparator)}\end{itemize}
+\begin{block}{원칙}알고리즘 학습을 위한 구현과 production code의 선택을 구분한다.\end{block}
+\end{frame}
+\begin{frame}[fragile]{Primitive, String, List 정렬}
+\begin{lstlisting}[style=jcode]
+int[] a = {29, 10, 14, 37, 13};
+Arrays.sort(a);
+
+String[] names = {"Kim", "Lee", "Park"};
+Arrays.sort(names);
+
+List<String> list = new ArrayList<>(List.of(names));
+list.sort(Comparator.reverseOrder());
+\end{lstlisting}
+\end{frame}
+\begin{frame}[fragile]{Comparable: 자연 순서 한 가지}
+\optional[선택 심화]\hfill
+\begin{lstlisting}[style=jcode]
+final class Fruit implements Comparable<Fruit> {
+    final String name;
+    final int quantity;
+
+    @Override public int compareTo(Fruit other) {
+        return name.compareTo(other.name);
+    }
+}
+\end{lstlisting}
+\end{frame}
+\begin{frame}[fragile]{Comparator: 별도의 정렬 기준}
+\begin{lstlisting}[style=jcode]
+Comparator<Fruit> byQuantity =
+    Comparator.comparingInt(f -> f.quantity);
+
+Arrays.sort(fruits, byQuantity);
+\end{lstlisting}
+\begin{block}{정확한 관계}\texttt{Comparator<T>}는 class가 아니라 \alert{functional interface}다.\end{block}
+\end{frame}
+\begin{frame}[fragile]{Comparator Chaining과 Lambda}
+\begin{lstlisting}[style=jcode]
+Comparator<Fruit> order =
+    Comparator.comparingInt((Fruit f) -> f.quantity)
+              .thenComparing(f -> f.name);
+
+Arrays.sort(fruits, order);
+\end{lstlisting}
+동점 처리 규칙을 코드에 명시하면 total order가 분명해진다.
+\vfill\muted{\texttt{thenComparing}은 앞선 comparison이 equality를 반환할 때만 tie-breaker를 적용한다.}
+\end{frame}
+\begin{frame}{Comparator Contract와 Stability}
+\begin{itemize}\item sign reversal consistency: $\operatorname{sgn}(cmp(a,b))=-\operatorname{sgn}(cmp(b,a))$\item transitivity와 equality class에 대한 비교 일관성\item sorting 중 결과가 변하지 않는 deterministic behavior\item 정수 비교에 \texttt{a-b} 금지 — \texttt{Integer.compare(a,b)} 사용\item stability를 보장하는 API도 comparator가 0을 반환한 records 사이에서만 입력 순서를 보존\end{itemize}
+\end{frame}

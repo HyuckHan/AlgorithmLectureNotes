@@ -1,0 +1,20 @@
+\subsection{Appendix}
+\begin{frame}{AVL Height와 Fibonacci}
+최소 node 수는
+\[
+N(h)=1+N(h-1)+N(h-2)
+\]
+를 만족하여 Fibonacci처럼 exponential하게 증가한다. 따라서 node 수 $n$에 대한 height는 $O(\log n)$이다.
+\end{frame}
+\begin{frame}{RB DELETE Fixup Preview}
+\begin{itemize}\item deleted black을 대신한 $x$에 extra black을 생각\item sibling과 near/far nephew 색으로 case 구분\item recolor 또는 rotation으로 extra black을 위로 이동·제거\item root 도달 또는 red $x$를 black으로 만들면 종료\end{itemize}
+\end{frame}
+\begin{frame}{B+Tree Preview}
+\begin{columns}[T]\column{.48\textwidth}\begin{block}{B-Tree}internal node도 record 또는 record pointer를 가질 수 있음\end{block}
+\column{.48\textwidth}\begin{block}{B+Tree}records는 leaf에 있고 leaves를 link하여 range scan에 유리\end{block}\end{columns}
+\begin{alertblock}{범위}Lecture 6 본문은 B-Tree에 집중한다.\end{alertblock}
+\end{frame}
+\begin{frame}{Code와 Invariant Validation}
+\begin{itemize}\item BinaryTree: traversal, size, height, ownership\item BST: sorted inorder, parent consistency\item AVL: stored height와 $|BF|\le1$\item RB: root/NIL black, red-red 금지, equal black-height\item B-Tree: key bounds/range, child count, equal leaf depth\end{itemize}
+\sttakeaway{자료구조 구현의 마지막 단계는 “동작해 보인다”가 아니라 invariant를 자동 검사하는 것이다.}
+\end{frame}

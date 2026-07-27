@@ -1,0 +1,70 @@
+\begin{frame}{DeterministicSelect의 전체 단계}
+\begin{enumerate}\item $n\le5$이면 직접 정렬하여 반환\item 최대 5개씩 group 구성\item 각 group median 수집\item medians의 median $M$을 재귀 선택\item $M$으로 원본을 3-way partition\item 목표 rank가 있는 한쪽만 재귀\end{enumerate}
+\vfill\muted{크기 5 이하의 정렬은 $\Theta(1)$이고 group 수는 $\lceil n/5\rceil$이므로 median 수집은 전체 $\Theta(n)$이다.}
+\end{frame}
+\begin{frame}{25개를 5개씩 묶기}
+\centering\begin{tikzpicture}[x=.78cm,y=.72cm]
+\foreach \row/\vals in {0/{22,4,17,9,31},1/{12,28,6,19,2},2/{25,1,14,30,8},3/{16,27,5,23,10},4/{20,3,29,7,24}}{\foreach \v [count=\i] in \vals{\node[select cell]at(\i,-\row){\v};}\node[group box,fit={(.6,-\row-.42)(5.4,-\row+.42)}]{};\node[font=\small,anchor=east]at(.3,-\row){G\the\numexpr\row+1\relax};}
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Group Sort → Median → Median of Medians}
+\centering\begin{tikzpicture}[x=.78cm,y=.72cm]
+\foreach \x/\v in {1/4,2/9,4/22,5/31}\node[select cell]at(\x,0){\v};
+\foreach \x/\v in {1/2,2/6,4/19,5/28}\node[select cell]at(\x,-1){\v};
+\foreach \x/\v in {1/1,2/8,4/25,5/30}\node[select cell]at(\x,-2){\v};
+\foreach \x/\v in {1/5,2/10,4/23,5/27}\node[select cell]at(\x,-3){\v};
+\foreach \x/\v in {1/3,2/7,4/24,5/29}\node[select cell]at(\x,-4){\v};
+\only<1|handout:0>{\foreach \y/\v in {0/17,-1/12,-2/14,-3/16,-4/20}\node[select cell]at(3,\y){\v};}
+\only<2-|handout:1>{\foreach \y/\v in {0/17,-1/12,-2/14,-3/16,-4/20}\node[group median]at(3,\y){\v};}
+\foreach \y in {0,-1,-2,-3,-4}\node[group box,fit={(.6,\y-.42)(5.4,\y+.42)}]{};
+\only<1|handout:0>{\node[callout]at(8,-2){각 group 정렬};}
+\only<2|handout:0>{\node[callout]at(8,-2){3번째 값이 median};}
+\only<3|handout:0>{\foreach \x/\v in {7/17,8/12,9/14,10/16,11/20}\node[group median]at(\x,-2){\v};\node[callout]at(9,-3){medians};}
+\only<4|handout:0>{\foreach \x/\v in {7/12,8/14,9/16,10/17,11/20}{\ifnum\x=9\node[mom]at(\x,-2){\v};\else\node[group median]at(\x,-2){\v};\fi}\node[callout]at(9,-3){$M=16$};}
+\only<5|handout:1>{\node[mom]at(9,-2){16};\node[callout]at(9,-3){원본의 pivot};}
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{불완전한 마지막 Group}
+마지막 group은 1–4개일 수 있다. 크기 $g$인 group을 정렬한 뒤
+\[
+\left\lceil\frac g2\right\rceil\text{th element}
+\]
+를 lower median으로 선택한다. 예: $g=4$이면 2nd, $g=2$이면 1st.
+\begin{itemize}\item 구현 correctness에는 포함\item 분석에서는 incomplete group과 $M$ 자신의 group을 $O(1)$ 예외로 처리\end{itemize}
+\vfill\muted{불완전 group에는 full 5-element group의 “3개 보장”을 적용하지 않는다.}
+\end{frame}
+\begin{frame}{DeterministicSelect: Pivot 만들기}
+\small\begin{algorithmic}[1]
+\Require{$p\le r$ and $1\le i\le r-p+1$}
+\Procedure{DeterministicSelect}{$A,p,r,i$}
+\State $n\gets r-p+1$
+\If{$n\le5$}
+  \State sort $A[p..r]$; \Return $A[p+i-1]$
+\EndIf
+\State split into groups $G$ of at most 5
+\State sort each $G$; append its $\lceil |G|/2\rceil$th value to $B$
+\State $M\gets\Call{DeterministicSelect}{B,1,|B|,\lceil|B|/2\rceil}$
+\EndProcedure
+\end{algorithmic}
+\vfill\muted{$p+i-1$은 유효한 absolute index이며, $M$은 원본 $A[p..r]$에 실제로 존재하는 값이다.}
+\end{frame}
+\begin{frame}{DeterministicSelect: 3-way 분기}
+\small\begin{algorithmic}[1]
+\Procedure{DeterministicSelect (continued)}{$A,p,r,i,M$}
+\State $(lt,gt)\gets\Call{Partition3AroundValue}{A,p,r,M}$
+\Comment{$M\in A[p..r]$}
+\State $L\gets lt-p$; $E\gets gt-lt+1$
+\If{$i\le L$}
+  \State \Return \Call{DeterministicSelect}{$A,p,lt-1,i$}
+\ElsIf{$i\le L+E$}
+  \State \Return $M$
+\Else
+  \State \Return \Call{DeterministicSelect}{$A,gt+1,r,i-L-E$}
+\EndIf
+\EndProcedure
+\end{algorithmic}
+\[
+A[p..lt-1]<M,\quad A[lt..gt]=M,\quad A[gt+1..r]>M
+\]
+\vfill\muted{이제 group median 수집이 원본 원소를 양쪽에서 얼마나 제거하는지 계산한다.}
+\end{frame}

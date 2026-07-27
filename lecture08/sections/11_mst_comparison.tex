@@ -1,0 +1,28 @@
+\section{Part K. MST Correctness와 비교}
+\begin{frame}{Prim vs Kruskal}
+\scriptsize\centering\begin{tabular}{lll}\toprule&Prim&Kruskal\\\midrule
+growth&one tree&forest merge\\state&vertex key/parent&sorted edges, DSU\\fit&matrix/dense도 자연스러움&edge list/sparse\\disconnected&별도 restart 필요&MSF 자연스럽게 생성\\tie&extract/key policy&edge order\\\bottomrule\end{tabular}
+\end{frame}
+\begin{frame}{MST Uniqueness}
+\begin{block}{충분조건}모든 edge weight가 distinct이면 MST는 unique다.\end{block}
+\begin{block}{Ties}동일 weight가 있으면 여러 MST가 가능하다. 그러나 모든 MST의 total weight는 같다.\end{block}
+\end{frame}
+\begin{frame}{동일 Weight Square}
+\centering\begin{tikzpicture}[x=1.8cm,y=1.1cm]
+\node[gvertex](a)at(0,1){A};\node[gvertex](b)at(2,1){B};\node[gvertex](c)at(2,-1){C};\node[gvertex](d)at(0,-1){D};
+\draw[gmst](a)--node[above]{1}(b);\draw[gmst](b)--node[right]{1}(c);\draw[gmst](c)--node[below]{1}(d);\draw[gedge](d)--node[left]{1}(a);
+\end{tikzpicture}
+\begin{block}{여러 해}cycle의 어느 한 edge를 빼도 total 3인 MST다.\end{block}
+\end{frame}
+\begin{frame}{MST는 Shortest-Path Tree가 아니다}
+\begin{columns}[T]\column{.48\textwidth}\begin{block}{MST}전체 selected edge 합이 최소\end{block}
+\column{.48\textwidth}\begin{block}{SPT}source-to-each-vertex path가 최소\end{block}\end{columns}
+\begin{alertblock}{결론}MST 안의 두 vertex 사이 path가 원 graph의 shortest path일 필요는 없다.\end{alertblock}
+\end{frame}
+\begin{frame}{MST Validator}
+\begin{enumerate}\item selected edge 수 \(V-1\)\item DSU로 acyclic and connected\item 모든 selected edge가 input에 존재\item total weight 재계산\item 작은 graph는 spanning-tree brute force oracle과 비교\end{enumerate}
+\end{frame}
+\begin{frame}{Part K Checkpoint}
+\begin{enumerate}\item distinct weights이면 MST는?\item Prim/Kruskal 예제 optimum weight는?\item MST path가 항상 shortest path인가?\end{enumerate}
+\begin{exampleblock}{답}unique; 48; 아니다.\end{exampleblock}
+\end{frame}

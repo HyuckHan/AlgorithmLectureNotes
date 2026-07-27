@@ -1,0 +1,67 @@
+\section{Part B. 알고리즘과 프로그램}
+
+% 5
+\begin{frame}{알고리즘은 무엇인가?}
+  \begin{block}{Algorithm}
+    입력을 받아 원하는 출력을 만드는 \textbf{명확하고 유한한 절차}.
+  \end{block}
+  \begin{center}
+    \begin{tikzpicture}[node distance=12mm]
+      \node[draw=AlgoRule,rounded corners,fill=AlgoLight,minimum width=2.2cm,minimum height=1cm] (i) {입력 $I$};
+      \node[draw=AlgoOrange,very thick,rounded corners,fill=AlgoOrange!10,minimum width=3.2cm,minimum height=1cm,right=of i] (a) {알고리즘 $A$};
+      \node[draw=AlgoRule,rounded corners,fill=AlgoLight,minimum width=2.2cm,minimum height=1cm,right=of a] (o) {출력 $O$};
+      \draw[flow] (i)--(a); \draw[flow] (a)--(o);
+    \end{tikzpicture}
+  \end{center}
+  핵심은 특정 언어가 아니라 \keyterm{문제 해결 규칙}이다.
+\end{frame}
+
+% 6
+\begin{frame}{명세, 알고리즘, 프로그램}
+  \begin{center}
+  \begin{tikzpicture}[node distance=7mm]
+    \node[draw=AlgoBlue,rounded corners,minimum width=9cm,minimum height=.8cm] (s) {명세 \;—\; 무엇을 계산해야 하는가?};
+    \node[draw=AlgoOrange,rounded corners,minimum width=9cm,minimum height=.8cm,below=of s] (a) {알고리즘 \;—\; 어떤 절차로 계산하는가?};
+    \node[draw=AlgoBlue,rounded corners,minimum width=9cm,minimum height=.8cm,below=of a] (p) {프로그램 \;—\; 언어로 어떻게 구현하는가?};
+    \draw[flow] (s)--(a); \draw[flow] (a)--(p);
+  \end{tikzpicture}
+  \end{center}
+  \begin{itemize}
+    \item 같은 알고리즘을 Python, C++, Rust 등 여러 언어로 구현할 수 있다.
+    \item 프로그램은 알고리즘을 특정 언어와 실행 환경에서 구현한
+      \textbf{실행 가능한 표현}이다.
+  \end{itemize}
+\end{frame}
+
+% 7
+\begin{frame}{실행한다는 것: trace}
+  프로그램을 시작하면 컴퓨터가 알고리즘의 단계들을 \textbf{실행(execute)}한다.
+  \begin{columns}[T,onlytextwidth]
+    \column{.47\textwidth}
+      \begin{block}{컴퓨터로 실행}
+        빠르고 반복 가능하다. 실제 입력과 구현의 동작을 확인한다.
+      \end{block}
+    \column{.47\textwidth}
+      \begin{block}{손으로 실행}
+        변수 값을 표로 추적한다. 논리 오류와 비용을 이해하는 강력한 도구다.
+      \end{block}
+  \end{columns}
+  \vfill
+  \muted{역사적으로 ``computer''는 계산 절차를 수행하는 사람을 가리키기도 했다.}
+\end{frame}
+
+% 8
+\begin{frame}{알고리즘 설계는 창의적 활동이다}
+  \begin{center}
+  \begin{tikzpicture}[node distance=5mm]
+    \node[draw,rounded corners,fill=AlgoLight,minimum width=2.4cm] (m) {문제 모델링};
+    \node[draw,rounded corners,fill=AlgoLight,minimum width=2.4cm,right=of m] (d) {전략 설계};
+    \node[draw,rounded corners,fill=AlgoLight,minimum width=2.4cm,right=of d] (c) {정당성 설명};
+    \node[draw,rounded corners,fill=AlgoLight,minimum width=2.4cm,right=of c] (a) {비용 분석};
+    \draw[flow] (m)--(d); \draw[flow] (d)--(c); \draw[flow] (c)--(a);
+  \end{tikzpicture}
+  \end{center}
+  \begin{takeaway}
+    알고리즘을 발명하는 만능 알고리즘은 없다. 좋은 예제를 많이 \textbf{추적하고, 변형하고, 구현하는 연습}이 설계 감각을 만든다.
+  \end{takeaway}
+\end{frame}

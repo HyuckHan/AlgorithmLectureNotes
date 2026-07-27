@@ -1,0 +1,51 @@
+\subsection{Graph Coloring}
+\begin{frame}{\(m\)-Coloring의 State}
+\begin{description}
+\item[State] 정해진 order의 first \(k\) vertices가 colored.
+\item[Decision] vertex \(k\)에 color \(1..m\).
+\item[Promising] 이미 colored인 neighbor와 다른 color.
+\item[Complete] 모든 vertex가 colored.
+\end{description}
+\end{frame}
+\begin{frame}{작은 Graph Coloring Trace}
+\centering\begin{tikzpicture}
+\node[gvertex](a)at(-2,1){A};\node[gvertex](b)at(0,2){B};\node[gvertex](c)at(2,1){C};\node[gvertex](d)at(0,-.5){D};
+\foreach \u/\v in{a/b,b/c,c/d,d/a,a/c}\draw[gedge](\u)--(\v);
+\only<2-|handout:1>{\node[gvertex,fill=red!20](aa)at(-2,1){A:1};}
+\only<3-|handout:1>{\node[gvertex,fill=AlgoBlue!18](bb)at(0,2){B:2};}
+\only<4|handout:0>{\node[gcycle](cc)at(2,1){C:1};\node[ssnote]at(4,-.5){A와 conflict \(\Rightarrow P\)};}
+\only<5|handout:1>{\node[gvertex,fill=green!15](cc)at(2,1){C:3};\node[gvertex,fill=AlgoBlue!18](dd)at(0,-.5){D:2};\node[ssinc]at(4,-.5){valid 3-coloring};}
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Coloring Pseudocode}
+\scriptsize\begin{algorithmic}[1]
+\Procedure{Color}{$k$}
+\If{\(k=|V|\)}\State output color; \Return true\EndIf
+\State \(v\gets order[k]\)
+\For{\(c\gets1\) to \(m\)}
+\If{every colored \(u\in Adj[v]\) has \(color[u]\ne c\)}
+\State \(color[v]\gets c\)
+\If{\Call{Color}{k+1}}\State\Return true\EndIf
+\State \(color[v]\gets0\)
+\EndIf\EndFor
+\State\Return false
+\EndProcedure
+\end{algorithmic}
+\end{frame}
+\begin{frame}{Vertex Order가 성능을 바꾼다}
+\begin{itemize}
+\item 높은 degree 또는 제약이 강한 vertex를 먼저 고르면 conflict를 일찍 발견할 수 있다.
+\item order가 바뀌어도 모든 color를 시도하면 completeness는 유지된다.
+\item 동적 “most constrained variable”은 CSP heuristic의 예다.
+\end{itemize}
+\end{frame}
+\begin{frame}{Coloring Correctness}
+\begin{enumerate}
+\item 각 level은 한 vertex의 모든 color를 열거한다.
+\item 이미 같은 색 neighbor가 있으면 그 conflict는 descendant에서도 사라지지 않는다.
+\item 따라서 prune은 sound하다.
+\end{enumerate}
+\end{frame}
+\begin{frame}{Graph Coloring Takeaway}
+\sstakeaway{Graph Coloring도 같은 Backtracking skeleton을 사용한다. 달라지는 것은 state, Candidates, Promising뿐이다.}
+\end{frame}

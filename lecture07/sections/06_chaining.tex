@@ -1,0 +1,82 @@
+\subsection{Separate Chaining}
+\begin{frame}{Separate Chaining의 구조}
+\centering\begin{tikzpicture}[x=1.8cm,y=.72cm]
+\foreach \i in {0,...,6}{\node[ht slot](b\i)at(0,-\i){\i};}
+\node[chain node](a)at(2,-3){24};\node[chain node](c)at(4,-3){17};\node[chain node](d)at(6,-3){10};
+\draw[chain edge](b3)--(a);\draw[chain edge](a)--(c);\draw[chain edge](c)--(d);
+\node[chain node](e)at(2,-5){12};\node[chain node](f)at(4,-5){5};
+\draw[chain edge](b5)--(e);\draw[chain edge](e)--(f);
+\end{tikzpicture}
+\begin{center}\small $h(k)=k\bmod7$, head insertion: bucket 3 chain은 $24\to17\to10$.\end{center}
+\end{frame}
+\begin{frame}{Chained Hash Operations}
+\small\begin{algorithmic}[1]
+\Procedure{ChainedSearch}{$T,key$}
+ \For{each entry $e$ in $T[h(key)]$}
+  \If{$e.key=key$}\State\Return $e$\EndIf
+ \EndFor
+ \State\Return NOT\_FOUND
+\EndProcedure
+\Statex
+\Procedure{ChainedPut}{$T,key,value$}
+ \State $e\gets\Call{ChainedSearch}{T,key}$
+ \If{$e\ne$ NOT\_FOUND}\State $e.value\gets value$\Else
+ \State insert $(key,value)$ at chain head; $n\gets n+1$
+ \EndIf
+\EndProcedure
+\end{algorithmic}
+\end{frame}
+\begin{frame}{Chaining Animation: Insert}
+\centering\begin{tikzpicture}[x=1.7cm,y=.8cm]
+\foreach \i in {0,...,6}{\node[ht slot](b\i)at(0,-\i){\i};}
+\only<1|handout:0>{\node[chain active]at(3,-3){10};\draw[chain edge](b3)--(1.8,-3);\node[callout]at(5,-1){$10\bmod7=3$};}
+\only<2|handout:0>{\node[chain active](a)at(2,-3){17};\node[chain node](c)at(4,-3){10};\draw[chain edge](b3)--(a);\draw[chain edge](a)--(c);\node[callout]at(5,-1){collision; head insert 17};}
+\only<3|handout:1>{\node[chain active](a)at(2,-3){24};\node[chain node](c)at(4,-3){17};\node[chain node](d)at(6,-3){10};\draw[chain edge](b3)--(a);\draw[chain edge](a)--(c);\draw[chain edge](c)--(d);\node[callout]at(5,-1){collision; head insert 24};}
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Chaining Animation: Search와 Delete}
+\centering\begin{tikzpicture}[x=1.9cm]
+\node[ht slot](b)at(0,0){3};\node[chain node](a)at(2,0){24};\node[chain node](c)at(4,0){17};\node[chain node](d)at(6,0){10};
+\draw[chain edge](b)--(a);\draw[chain edge](a)--(c);\draw[chain edge](c)--(d);
+\only<1|handout:0>{\node[chain active]at(a){24};\node[callout]at(3,-1.2){SEARCH 17: compare 24};}
+\only<2|handout:0>{\node[chain active]at(c){17};\node[callout]at(3,-1.2){17 found};}
+\only<3|handout:0>{\node[chain active]at(c){17};\node[callout]at(3,-1.2){DELETE 17: unlink};}
+\only<4|handout:1>{\draw[chain edge,orange](a)to[bend left=25](d);\node[chain node,fill=AlgoGray!10,text=AlgoGray]at(c){removed};\node[callout]at(3,-1.2){24 $\to$ 10};}
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Chain Collection 선택}
+\begin{itemize}
+\item singly linked list: 단순, head insertion 가능
+\item dynamic array/small vector: locality가 좋을 수 있음
+\item sorted chain: search 조기 종료 가능하지만 insert 비용 증가
+\item extreme collision에서 balanced tree를 고려할 수 있음
+\end{itemize}
+\begin{alertblock}{Map semantics}head insertion 자체는 $\Theta(1)$이지만 duplicate update를 지원하려면 먼저 equal key를 찾아야 한다.\end{alertblock}
+\end{frame}
+\begin{frame}{Chaining Analysis}
+\[
+\alpha=\frac{n}{m}=\text{average chain length}.
+\]
+\small\centering\begin{tabular}{lc}\toprule
+operation (resize 제외)&simple uniform hashing 아래 expected\\\midrule
+unsuccessful search&$\Theta(1+\alpha)$\\
+successful search&$\Theta(1+\alpha)$\\
+unchecked head insert&$\Theta(1)$\\
+map put/update&$\Theta(1+\alpha)$\\\bottomrule
+\end{tabular}
+\httakeaway{$\alpha$를 bounded constant로 유지하면 resize 없는 연산은 expected $\Theta(1)$. 특정한 $M\approx N/10$이 보편 최적이라는 뜻은 아니다.}
+\end{frame}
+\begin{frame}{Chaining Worst Case}
+\centering\begin{tikzpicture}[x=1.2cm]
+\node[ht collision](b)at(0,0){bucket $j$};
+\foreach \i in {1,...,6}{\node[chain node,minimum width=14mm](n\i)at({1.55*\i},0){$k_{\i}$};}
+\draw[chain edge](b)--(n1);\foreach \i in {1,...,5}{\pgfmathtruncatemacro{\j}{\i+1}\draw[chain edge](n\i)--(n\j);}
+\end{tikzpicture}
+\[
+\text{all keys in one bucket}\quad\Longrightarrow\quad \Theta(n)\text{ search}.
+\]
+\end{frame}
+\begin{frame}{Separate Chaining Checkpoint}
+\begin{enumerate}\item $m=7,n=12$이면 $\alpha$는?\item head insertion map put이 항상 $\Theta(1)$이 아닌 이유는?\item bucket 3의 search order는?\end{enumerate}
+\begin{exampleblock}{답}$12/7$; duplicate/update search가 필요; $24,17,10$.\end{exampleblock}
+\end{frame}

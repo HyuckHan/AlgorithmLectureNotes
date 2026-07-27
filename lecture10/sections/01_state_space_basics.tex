@@ -1,0 +1,78 @@
+\begin{frame}[plain,noframenumbering]
+\vspace*{12mm}
+{\usebeamerfont{title}\color{AlgoBlue}상태공간 트리의 탐색\par}
+\vspace{1mm}
+{\large\bfseries\color{AlgoBlue}State-Space Tree Search\par}
+\vspace{4mm}
+{\large Backtracking, Branch-and-Bound와 A*\par}
+\vspace{6mm}
+{\color{AlgoOrange}\rule{.55\linewidth}{.7pt}\par}
+\vspace{6mm}
+{\small Algorithm Lecture Notes\par}
+\end{frame}
+\begin{frame}{학습 목표 I}
+\begin{enumerate}
+\item state, decision, candidate, feasible, optimal solution을 구분한다.
+\item 같은 state space를 DFS, BFS, best-first로 탐색할 수 있음을 설명한다.
+\item Backtracking의 feasibility pruning과 Branch-and-Bound의 objective pruning을 구분한다.
+\item 순열, N-Queens, Subset Sum을 state-space tree로 모델링한다.
+\end{enumerate}
+\end{frame}
+\begin{frame}{학습 목표 II}
+\begin{enumerate}
+\setcounter{enumi}{4}
+\item incumbent와 optimistic bound로 최적화 subtree를 prune한다.
+\item A*의 \(g,h,f=g+h\), admissibility, consistency를 설명한다.
+\item pruning의 soundness와 최악의 exponential complexity를 함께 판단한다.
+\item generated/expanded/pruned nodes와 frontier 크기로 성능을 측정한다.
+\end{enumerate}
+\end{frame}
+\section{Part A. State-Space Search Fundamentals}
+\begin{frame}{Motivation: 모든 선택을 다 볼 것인가?}
+\ssmission{가능한 결정은 많지만, 정답을 잃지 않으면서 만들 필요가 없는 subtree를 조기에 제거하자.}
+\[
+\text{model state}\ \longrightarrow\ \text{choose order}\ \longrightarrow\
+\text{prove pruning safe}
+\]
+\begin{alertblock}{핵심 질문}“빨라 보이는 규칙”이 아니라 “왜 이 branch에는 필요한 답이 없는가?”를 증명해야 한다.\end{alertblock}
+\end{frame}
+\begin{frame}{State와 Decision}
+\begin{columns}[T]
+\column{.47\linewidth}
+\begin{block}{State}지금까지 내린 결정이 만든 partial solution과 앞으로 필요한 정보.\end{block}
+\column{.47\linewidth}
+\begin{block}{Decision}현재 state에서 child state로 가는 한 번의 선택.\end{block}
+\end{columns}
+\begin{exampleblock}{예: binary selection}state \(=(i,\text{selected},\text{sum})\), decision \(=\) \(w[i]\) include/exclude.\end{exampleblock}
+\end{frame}
+\begin{frame}{State-Space Tree의 구조}
+\centering
+\begin{tikzpicture}[level distance=10mm,sibling distance=29mm]
+\node[ssnode,label=above:{root: 결정 0개}]{\(\varnothing\)}
+ child{node[ssnode]{A} child{node[ssvalid]{A,C} edge from parent node[left,font=\tiny]{choose C}} child{node[ssdead]{A,D} edge from parent node[right,font=\tiny]{choose D}} edge from parent node[left,font=\tiny]{choose A}}
+ child{node[ssnode]{B} child{node[ssnode]{B,C}} child{node[ssbound]{B,D}} edge from parent node[right,font=\tiny]{choose B}};
+\node[font=\scriptsize]at(0,-3.3){level/depth = 내린 결정 수 \qquad leaf = complete 또는 더 확장할 수 없는 state};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Candidate, Feasible, Optimal}
+\begin{description}
+\item[Candidate] 모든 결정이 끝난 complete state.
+\item[Feasible] 모든 constraint를 만족한 candidate.
+\item[Optimal] feasible candidates 중 objective가 가장 좋은 해.
+\item[Dead state] 어떤 descendant도 feasible일 수 없는 state.
+\item[Bounded state] feasible descendant는 가능하지만 incumbent를 개선할 수 없는 state.
+\end{description}
+\sscheckpoint{complete라고 해서 feasible은 아니며, feasible이라고 해서 optimal도 아니다.}
+\end{frame}
+\begin{frame}{Part A Takeaway}
+\sstakeaway{State-space tree는 가능한 decision sequence를 표현하는 모델이다. 알고리즘은 node의 의미와 pruning 근거를 명확히 해야 한다.}
+\begin{center}
+\small
+\textbf{State}
+\(\rightarrow\) feasibility test
+\(\rightarrow\) objective bound (optimization)
+\(\rightarrow\) frontier/recursive expansion
+\(\rightarrow\) Apply--Recurse--Undo
+\(\rightarrow\) solution/incumbent update
+\end{center}
+\end{frame}

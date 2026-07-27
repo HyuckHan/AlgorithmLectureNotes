@@ -1,0 +1,54 @@
+\begin{frame}{Selection 개념 Map}
+\centering\begin{tikzpicture}[every node/.style={tree node,align=center,font=\footnotesize,minimum width=24mm},leaf/.style={tree node,align=center,font=\footnotesize,minimum width=20mm}]
+\node[chosen](s)at(0,0){Selection};
+\node(st)at(-4.4,-1.05){Sort then Select};
+\node(q)at(0,-1.05){Quickselect};
+\node(d)at(4.4,-1.05){DeterministicSelect};
+\node[leaf](stt)at(-4.4,-2.15){$\Theta(n\log n)$};
+\node(f)at(-1.5,-2.15){Fixed-pivot\\Quickselect};
+\node(r)at(1.5,-2.15){RandomizedSelect};
+\node(m)at(4.4,-2.15){Median of Medians};
+\node[leaf](fw)at(-1.5,-3.25){worst $\Theta(n^2)$};
+\node[leaf](re)at(.6,-3.25){expected $\Theta(n)$};
+\node[leaf](rw)at(2.4,-3.25){worst $\Theta(n^2)$};
+\node[leaf](mw)at(4.4,-3.25){worst $\Theta(n)$};
+\draw[-Latex](s)--(st);\draw[-Latex](s)--(q);\draw[-Latex](s)--(d);
+\draw[-Latex](st)--(stt);\draw[-Latex](q)--(f);\draw[-Latex](q)--(r);\draw[-Latex](d)--(m);
+\draw[-Latex](f)--(fw);\draw[-Latex](r)--(re);\draw[-Latex](r)--(rw);\draw[-Latex](m)--(mw);
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Hand Trace Quiz}
+partition 결과가 $[3,5,8,\boxed{12},17,20,25]$, 현재 $p=1$, $q=4$다.
+\begin{enumerate}\item $k$는?\item $i=2,4,7$일 때 각각 다음 행동은?\item 오른쪽으로 갈 때 새 rank는?\item 3-way equal interval이 rank 3–5이면 $i=4$의 답은?\end{enumerate}
+\end{frame}
+\begin{frame}{Complexity Quiz}
+\begin{enumerate}
+\item balanced Quickselect가 왜 $2T(n/2)$가 아닌가?
+\item worst recurrence와 해는?
+\item RandomizedSelect의 expected bound는 무엇에 대한 기대값인가?
+\item Fixed last-element Quickselect와 RandomizedSelect의 pseudocode 차이는?
+\item BFPRT recurrence의 세 항은 어디서 오는가?
+\end{enumerate}
+\end{frame}
+\begin{frame}{Group of Five · Concept · Code Quiz}
+\begin{columns}[T]\column{.48\textwidth}\begin{enumerate}\item 5개 group의 median 위치는?\item 왜 약 $3n/10$을 제거하는가?\item group size 3은 왜 불리한가?\end{enumerate}\column{.48\textwidth}\begin{enumerate}\setcounter{enumi}{3}\item expected와 worst guarantee 차이는?\item 언제 sort가 더 적절한가?\item 1-based $i=4$는 0-based API의 rank 몇인가?\end{enumerate}\end{columns}
+\end{frame}
+\begin{frame}{Quiz 정답 I: Trace와 Complexity}
+\small\begin{itemize}
+\item $k=4$; $i=2$는 left rank 2, $i=4$는 pivot 12, $i=7$은 right rank $7-4=3$. Equal ranks 3–5에서 $i=4$의 답은 equal value다.
+\item 목표 rank가 있는 한쪽만 재귀하므로 balanced recurrence는 $T(n/2)+\Theta(n)$이다.
+\item worst: $T(n-1)+\Theta(n)=\Theta(n^2)$.
+\item RandomizedSelect의 기대값은 현재 subarray에서 uniform하게 선택한 pivot index들의 random choices에 대한 평균이다.
+\item Fixed version은 곧바로 $A[r]$를 사용한다. RandomizedSelect는 uniform $s$를 뽑아 $A[s]$와 $A[r]$를 swap한 뒤 같은 Lomuto를 호출한다.
+\end{itemize}
+\end{frame}
+\begin{frame}{Quiz 정답 II: Group과 선택}
+\small\begin{itemize}\setlength{\itemsep}{2pt}
+\item $T(\lceil n/5\rceil)$은 medians의 median, $T(7n/10+O(1))$은 원본의 retained side upper bound, $\Theta(n)$은 grouping·partition이다.
+\item Median 절반×group 수 $n/5$×group당 3개로 각 방향 $3n/10-O(1)$을 인증한다.
+\item Size 3의 standard fraction 합은 1, size 5는 0.9다.
+\item 후속 작업에 전체 순서가 필요하면 sort가 합리적이다.
+\item 강의 $i=4$는 코드의 zero-based relative rank 3이다.
+\end{itemize}
+\begin{takeaway}Quickselect는 보통 빠르고, Median of Medians는 deterministic worst-case linear guarantee를 준다.\end{takeaway}
+\end{frame}

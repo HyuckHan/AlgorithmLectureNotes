@@ -1,0 +1,54 @@
+\begin{frame}{멱집합(Power Set)}
+\optional[추가 예제]\hfill
+\[S=\{a,b,c\},\quad\mathcal P(S)=\{\emptyset,\{a\},\{b\},\{c\},\{a,b\},\{a,c\},\{b,c\},\{a,b,c\}\}.\]
+원소마다 include/exclude 두 선택 → $2^n$개.
+\end{frame}
+\begin{frame}{부분해(Partial Solution)와 남은 선택}\mission{\texttt{power(k)}는 $data[k..n-1]$의 모든 선택을 완성해, 이미 정한 $include[0..k-1]$과 함께 출력한다.}
+\end{frame}
+\begin{frame}[fragile]{C 스타일 Pseudocode}\begin{lstlisting}
+void power_set(int k) {
+  if (k == n) { print_selected(include); return; }
+  include[k] = false; power_set(k + 1);
+  include[k] = true;  power_set(k + 1);
+}
+\end{lstlisting}base case는 empty set도 한 줄로 출력한다.
+\end{frame}
+\begin{frame}{상태 공간 트리: $\{a,b,c\}$}\centering
+\begin{tikzpicture}[scale=.88,transform shape,
+  level distance=12mm,
+  level 1/.style={sibling distance=68mm},
+  level 2/.style={sibling distance=32mm},
+  level 3/.style={sibling distance=16mm},
+  every node/.style={tree node,font=\normalsize,minimum height=7mm},
+  edge from parent/.style={draw=AlgoGray}
+]
+\node{$\emptyset$}
+ child{node{$\emptyset$}
+   child{node{$\emptyset$} child{node{$\emptyset$}} child{node{$\{c\}$}}}
+   child{node{$\{b\}$} child{node{$\{b\}$}} child{node{$\{b,c\}$}}}}
+ child{node{$\{a\}$}
+   child{node{$\{a\}$} child{node{$\{a\}$}} child{node{$\{a,c\}$}}}
+   child{node{$\{a,b\}$} child{node{$\{a,b\}$}} child{node{$\{a,b,c\}$}}}};
+\node[anchor=east,font=\small\bfseries,text=AlgoGray] at (-6.2,0) {start};
+\node[anchor=east,font=\small\bfseries,text=AlgoGray] at (-6.2,-1.2) {decide $a$};
+\node[anchor=east,font=\small\bfseries,text=AlgoGray] at (-6.2,-2.4) {decide $b$};
+\node[anchor=east,font=\small\bfseries,text=AlgoGray] at (-6.2,-3.6) {decide $c$ / output};
+\end{tikzpicture}
+\vfill 각 level은 다음 원소를 \textbf{exclude/include}하는 독립적인 두 선택이다.
+\end{frame}
+\begin{frame}{출력 크기가 Lower Bound다}부분집합 수만 $2^n$이므로 leaf 하나를 생성하는 데만 $\Omega(2^n)$이 필요하다.
+\begin{itemize}
+  \item 길이 $n$의 include 배열을 매번 출력: $\Th(n2^n)$
+  \item 선택 원소를 증분적으로 유지·출력: 표현과 출력량에 따라 비용이 달라짐
+\end{itemize}
+$\Th(n2^n)$은 모든 출력 방식에 필수인 bound가 아니다.
+\end{frame}
+\begin{frame}{확장: 순열(Permutation)과 Undo}순열은 남은 원소 중 하나를 choose한다.
+\[
+\texttt{swap(k,i);}\quad\texttt{perm(k+1);}\quad\texttt{swap(k,i);}
+\]
+\begin{block}{Mutable-state invariant}
+호출 전에는 현재 partial solution을 나타낸다. 반환 뒤에는 \textbf{같은 상태로 복구}되어 다음 선택을 시험할 수 있어야 한다.
+\end{block}
+\sectiontakeaway{\textbf{choose $\to$ explore $\to$ unchoose}가 호출 전후 invariant를 지킨다.}
+\end{frame}

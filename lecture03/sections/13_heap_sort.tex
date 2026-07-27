@@ -1,0 +1,29 @@
+\begin{frame}{Heapsort의 아이디어}
+\begin{enumerate}\item $\Theta(n)$에 max-heap을 만든다.\item root의 최댓값을 active heap의 마지막과 swap한다.\item heap size를 1 줄이고 root를 HEAPIFY한다.\end{enumerate}
+\begin{block}{Invariant}오른쪽 suffix는 최종 위치가 확정된 큰 원소들이며, 왼쪽 prefix는 max-heap이다.\end{block}
+\end{frame}
+\begin{frame}{HEAPSORT 의사코드}
+\begin{algorithmic}[1]\Procedure{HeapSort}{$A[1..n]$}\State \Call{BuildMaxHeap}{$A$}\For{$last\gets n$ downto $2$}\State \Call{Swap}{$A[1],A[last]$}\State $heapSize\gets last-1$\State \Call{MaxHeapify}{$A,1,heapSize$}\EndFor\EndProcedure\end{algorithmic}
+\end{frame}
+\begin{frame}{Heapsort: Heap은 줄고 정렬 구간은 자란다}
+\centering\begin{tikzpicture}[scale=.94]
+\only<1>{\heaparraytree{16,14,10,8,7,9,3,2,4,1}{1}{10}}
+\only<2>{\heaparraytree{14,8,10,4,7,9,3,2,1,16}{1}{9}}
+\only<3>{\heaparraytree{10,8,9,4,7,1,3,2,14,16}{1}{8}}
+\only<4>{\heaparraytree{9,8,3,4,7,1,2,10,14,16}{1}{7}}
+\only<5>{\heaparraytree{1,2,3,4,7,8,9,10,14,16}{0}{1}}
+\end{tikzpicture}
+\only<1|handout:0>{max-heap 준비}\only<2|handout:0>{16 확정}\only<3|handout:0>{14 확정}\only<4|handout:0>{10 확정}\only<5|handout:1>{나머지 동일한 extract+heapify를 반복한 최종 상태}
+\end{frame}
+\begin{frame}{Heapsort의 분석}
+\[\underbrace{\Theta(n)}_{build}+\underbrace{(n-1)\Theta(\log n)}_{extract+heapify}=\Theta(n\log n)\]
+\begin{itemize}\item best = average = worst: $\Theta(n\log n)$\item iterative MAX-HEAPIFY: $\Theta(1)$ auxiliary space\item recursive MAX-HEAPIFY: worst-case $\Theta(\log n)$ call stack; unstable\item random access가 필요하고 locality는 Quick Sort보다 불리할 수 있다.\end{itemize}
+\muted{$\Theta(n)$ build term은 $(n-1)\Theta(\log n)$보다 낮은 차수라 최종 bound를 바꾸지 않는다.}
+\end{frame}
+\begin{frame}{Merge, Quick, Heap 비교}
+\small\begin{tabular}{lccc}\toprule&Merge&Quick&Heap\\\midrule worst time&$\Theta(n\log n)$&$\Theta(n^2)$&$\Theta(n\log n)$\\auxiliary&$\Theta(n)$&\shortstack{$\Theta(\log n)$ expected\\$\Theta(n)$ worst}&\shortstack{$\Theta(1)$ iterative\\$\Theta(\log n)$ recursive}\\stable&Yes&No&No\\실용 강점&보장·external&locality·expected 속도&보장·in-place\\\bottomrule\end{tabular}
+\end{frame}
+\begin{frame}{Heapsort Takeaway}
+\sortingtakeaway{max-heap의 root를 반복 추출한다. active heap과 sorted suffix의 경계를 놓치지 말자.}
+\muted{$n\log n$ 하한은 비교 결과만 사용하는 model의 한계다. Key의 범위와 digit 구조를 직접 이용하면 이 가정을 벗어날 수 있다.}
+\end{frame}

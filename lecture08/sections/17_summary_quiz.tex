@@ -1,0 +1,25 @@
+\section{Part Q. Summary와 Quiz}
+\begin{frame}{Lecture 8 Summary I}
+\begin{itemize}\item matrix는 dense/edge lookup, list는 sparse/traversal에 적합\item BFS는 layer와 unweighted distance, DFS는 recursion/finish 구조\item concrete traversal order는 adjacency order에 의존\item DAG \(\Longleftrightarrow\) topological order exists\end{itemize}
+\end{frame}
+\begin{frame}{Lecture 8 Summary II}
+\begin{itemize}\item MST: undirected connection total, cut property\item Prim: one tree + vertex PQ; Kruskal: forest + edge sort + DSU\item Relaxation은 candidate path로 upper bound를 낮춤\item BFS/DAG/Dijkstra/BF는 입력 조건이 다름\end{itemize}
+\end{frame}
+\begin{frame}{Graph Basics · Traversal Quiz}
+\small\begin{enumerate}\item weighted matrix에서 no-edge는 무엇으로 표현할까?\item BFS에서 vertex를 언제 discovered로 표시할까?\item adjacency order가 바뀌면 BFS distance가 바뀌는가?\item directed cycle의 DFS 증거는?\item list DFS complexity는?\end{enumerate}
+\end{frame}
+\begin{frame}{DAG · MST Quiz}
+\scriptsize\begin{enumerate}\item Kahn 결과 길이가 \(V\)보다 작으면?\item min-heap Kahn의 list-graph 시간은?\item DFS topo에서 order는 무엇의 reverse인가?\item Prim key와 Dijkstra dist의 차이는?\item Kruskal에서 edge \(DG8\)은 왜 reject했는가?\item A--G MST total은?\end{enumerate}
+\end{frame}
+\begin{frame}{Shortest Paths Quiz}
+\small\begin{enumerate}\item weighted graph에 BFS가 틀릴 수 있는 이유는?\item Dijkstra의 필수 weight 조건은?\item Bellman--Ford는 negative cycle을 어떻게 찾는가?\item \(dist[u]=\infty\)일 때 Relax를 건너뛰는 이유는?\item \(E\)가 negative edge를 가진 DAG라면 어떤 알고리즘인가?\end{enumerate}
+\end{frame}
+\begin{frame}{Quiz 정답 I}
+\small\begin{enumerate}\item \(\infty\) sentinel 또는 boolean\item enqueue 시\item distance는 유지, same-layer order/parent는 달라질 수 있음\item GRAY back edge\item \(\Theta(V+E)\)\end{enumerate}
+\end{frame}
+\begin{frame}{Quiz 정답 II}
+\scriptsize\begin{enumerate}\item directed cycle\item \(O(E+V\log V)\)\item finish order\item one-edge key vs cumulative path dist\item \(D\)와 \(G\)가 \(D-F-G\)로 이미 같은 component\item 48\end{enumerate}
+\end{frame}
+\begin{frame}{Quiz 정답 III}
+\small\begin{enumerate}\item edge count와 weight sum 목적이 다름\item 모든 edge nonnegative\item \(V-1\) passes 뒤 extra relaxation\item INF arithmetic overflow/false update 방지\item topological-order DAG shortest paths\end{enumerate}
+\end{frame}

@@ -1,0 +1,33 @@
+\section{Part G. Minimum Spanning Tree}
+\begin{frame}{Spanning Tree}
+\begin{block}{전제}undirected, connected graph \(G=(V,E)\).\end{block}
+\begin{itemize}\item 모든 vertex 포함\item connected\item acyclic\item 정확히 \(|V|-1\) edges\end{itemize}
+\begin{alertblock}{Disconnected input}하나의 MST는 없다. 각 component의 minimum spanning tree를 합친 minimum spanning forest는 가능하다.\end{alertblock}
+\end{frame}
+\begin{frame}{Minimum Spanning Tree}
+\[
+T_{\mathrm{MST}}\in\arg\min_{T\text{ spanning tree}}\sum_{e\in T}w(e).
+\]
+\begin{block}{Source 없음}MST는 특정 source에서의 path를 최소화하지 않는다. 전체 tree edge weight를 최소화한다.\end{block}
+\end{frame}
+\begin{frame}{MST와 다른 목표}
+\small\begin{tabular}{lll}\toprule&목표&source\\\midrule
+MST&전체 연결 edge 합 최소&없음\\
+shortest-path tree&source부터 각 path 최소&있음\\
+minimum-cost path&한 source-target path 최소&있음\\\bottomrule\end{tabular}
+\end{frame}
+\begin{frame}{Applications}
+\begin{itemize}\item road/fiber/circuit layout\item clustering의 hierarchy\item TSP approximation의 구성 요소\end{itemize}
+\begin{alertblock}{현실의 제약}MST는 redundancy가 없으므로 한 edge 장애에 취약하다. fault tolerance에는 추가 edge가 필요하다.\end{alertblock}
+\end{frame}
+\begin{frame}{MST 기본 예제: A--G}
+\small edges:
+\[
+\{AB8,AC9,AD11,BE10,CD13,CE5,CF12,DF8,DG8,FG7\}.
+\]
+\begin{block}{Tie policy}동일 weight는 endpoint lexicographic order로 처리한다. 다른 tie order도 같은 optimum weight의 다른 MST를 만들 수 있다.\end{block}
+\end{frame}
+\begin{frame}{Part G Checkpoint}
+\begin{enumerate}\item \(n\)-vertex spanning tree edge 수는?\item disconnected graph에서 결과 이름은?\item MST에 source가 있는가?\end{enumerate}
+\begin{exampleblock}{답}\(n-1\); minimum spanning forest; 없다.\end{exampleblock}
+\end{frame}

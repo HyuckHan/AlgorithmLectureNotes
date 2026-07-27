@@ -1,0 +1,39 @@
+\section{Part P. 알고리즘 선택과 종합 비교}
+\begin{frame}{Shortest-Path Algorithm Chooser}
+\scriptsize\centering\begin{tabular}{llll}\toprule
+Algorithm&Graph condition&Negative edge&Time (list)\\\midrule
+BFS&unweighted or unit-weight&N/A&\(\Theta(V+E)\)\\
+DAG SP&DAG&allowed&\(\Theta(V+E)\)\\
+Dijkstra&weighted&forbidden&\(O(E\log V)\) heap\\
+Bellman--Ford&weighted&allowed&\(\Theta(VE)\)\\
+Floyd--Warshall&all pairs&allowed&\(\Theta(V^3)\)\\\bottomrule
+\end{tabular}
+\end{frame}
+\begin{frame}{Negative-Cycle Detection}
+\small\begin{tabular}{ll}\toprule
+method&signal\\\midrule
+DAG SP&cycle이면 topo sort 자체가 실패\\
+Dijkstra&negative edge를 입력에서 reject\\
+Bellman--Ford&extra pass relaxation 가능\\
+Floyd--Warshall preview&\(dist[v][v]<0\)\\\bottomrule
+\end{tabular}
+\end{frame}
+\begin{frame}{Prim vs Dijkstra}
+\small\begin{tabular}{lll}\toprule&Prim&Dijkstra\\\midrule
+value&\(key[v]\)&\(dist[v]\)\\meaning&cheapest one edge&cheapest cumulative path\\update&\(w(u,v)<key[v]\)&\(dist[u]+w<dist[v]\)\\result&MST&shortest-path tree\\\bottomrule\end{tabular}
+\end{frame}
+\begin{frame}{Traversal · MST · SP를 구분하라}
+\begin{columns}[T]\column{.31\textwidth}\begin{block}{Traversal}reachability/order\end{block}
+\column{.31\textwidth}\begin{block}{MST}total connection cost\end{block}
+\column{.31\textwidth}\begin{block}{Shortest Path}source-to-target path cost\end{block}\end{columns}
+\end{frame}
+\begin{frame}{Common Mistakes I}
+\small\begin{itemize}\item matrix row/column 방향 반전\item 0을 no-edge와 zero edge에 동시에 사용\item BFS visited를 dequeue 시 표시\item concrete BFS/DFS order를 유일하다고 생각\item discovery와 finish order 혼동\item boolean visited로 directed cycle 판정\item cycle graph에서 topo partial output 반환\end{itemize}
+\end{frame}
+\begin{frame}{Common Mistakes II}
+\small\begin{itemize}\item Prim parent edge 누락, key와 dist 혼동\item Kruskal DSU 없이 cycle 판정\item MST와 SPT 혼동\item negative edge에 Dijkstra 적용\item BF extra cycle pass 누락\item \(\mathrm{INF}+w\) overflow\item complexity에서 representation/PQ 조건 생략\end{itemize}
+\end{frame}
+\begin{frame}{Part P Checkpoint}
+\begin{enumerate}\item negative edge가 있는 DAG에는?\item nonnegative weighted graph에는?\item reachable negative cycle 검출에는?\end{enumerate}
+\begin{exampleblock}{답}DAG shortest path; Dijkstra; Bellman--Ford.\end{exampleblock}
+\end{frame}

@@ -1,0 +1,42 @@
+\section{Part L. Shortest Paths와 Relaxation}
+\begin{frame}{Shortest-Path Distance}
+\[
+w(p)=\sum_{e\in p}w(e),\qquad \delta(s,v)=\min_{p:s\leadsto v}w(p).
+\]
+\begin{block}{종류}single-source, single-destination, single-pair, all-pairs. single-destination은 edge를 reverse해 single-source로 바꿀 수 있다.\end{block}
+\end{frame}
+\begin{frame}{Negative Cycle의 정확한 영향}
+\begin{alertblock}{조건}source에서 reachable한 negative cycle에서 target으로 갈 수 있으면 그 target의 infimum은 \(-\infty\), finite shortest path가 없다.\end{alertblock}
+graph 다른 component의 negative cycle은 모든 source-target query를 무효로 만들지 않는다.
+\end{frame}
+\begin{frame}{Relaxation}
+\[
+\textbf{if }dist[u]\ne\infty\ \land\ dist[v]>dist[u]+w(u,v)
+\]
+\[
+dist[v]\gets dist[u]+w(u,v),\qquad parent[v]\gets u.
+\]
+\begin{alertblock}{안전}unreachable guard 없이 \(\mathrm{INF}+w\)를 계산하면 overflow와 false update가 가능하다.\end{alertblock}
+\end{frame}
+\begin{frame}{Relaxation Animation}
+\centering\begin{tikzpicture}
+\node[relax]at(0,1){\(dist[u]=4,\ w(u,v)=-2\)};
+\node[callout]at(0,0){candidate \(=2\), old \(dist[v]=7\)};
+\only<1>{\node[callout]at(0,-1){compare};}
+\only<2>{\node[callout,draw=AlgoOrange]at(0,-1){update \(dist[v]=2,\ parent[v]=u\)};}
+\only<3>{\node[callout]at(0,-1){한 번의 Relax가 final을 보장하지는 않는다};}
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Shortest-Path Invariants}
+\begin{description}\item[Upper bound]\(dist[v]\)는 실제 발견한 path weight이므로 \(\delta(s,v)\)보다 작아지지 않는다.\item[Path relaxation]shortest path edge를 순서대로 relax하면 endpoint 값이 전달된다.\item[Predecessor]parent edge를 역추적해 실제 path를 복원한다.\end{description}
+\end{frame}
+\begin{frame}{Path Reconstruction}
+\begin{algorithmic}[1]\State \(path\gets[]\)
+\While{$v\ne\NIL$}\State prepend \(v\); \(v\gets parent[v]\)\EndWhile
+\end{algorithmic}
+\begin{itemize}\item source에서 끝나면 valid reachable path\item \(dist=\infty\)이면 unreachable\item negative cycle 검출 후 affected parent chain을 finite SPT로 해석하지 않음\end{itemize}
+\end{frame}
+\begin{frame}{Part L Checkpoint}
+\begin{enumerate}\item Relax의 INF guard는 왜 필요한가?\item parent의 역할은?\item unreachable distance는?\end{enumerate}
+\begin{exampleblock}{답}overflow/false update 방지; 실제 path 복원; \(\infty\).\end{exampleblock}
+\end{frame}

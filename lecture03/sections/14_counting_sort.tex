@@ -1,0 +1,35 @@
+\section{Part E. Key 구조를 이용한 정렬과 실무 API}
+\begin{frame}{Counting Sort가 요구하는 것}
+\mission{각 key가 정수 $0..k$ 범위이고 $k$가 충분히 작다는 구조를 이용한다.}
+\begin{itemize}\item 정수 key이거나 integer offset으로 mapping할 수 있어야 한다.\item $0..k$에서 $k$는 maximum key이고 count array 길이는 $k+1$이다.\item $min..max$에서는 길이가 $max-min+1$이며, memory는 $n$이 아니라 range 크기에 의존한다.\end{itemize}
+\end{frame}
+\begin{frame}{Frequency 출력과 Stable Record 출력}
+\begin{columns}[T]\column{.48\textwidth}\begin{block}{값만 정렬}frequency만큼 key를 반복 출력 — 단순하지만 record stability 개념이 없다.\end{block}\column{.48\textwidth}\begin{block}{record 정렬}prefix count로 최종 위치를 정하고 입력을 오른쪽에서 왼쪽으로 배치 — stable.\end{block}\end{columns}
+\end{frame}
+\begin{frame}{Stable COUNTING-SORT 의사코드}
+\small\begin{algorithmic}[1]\Procedure{CountingSort}{$A[1..n],k$}\State initialize $C[0..k]\gets0$\For{$j\gets1$ to $n$}\State $C[key(A[j])]\gets C[key(A[j])]+1$\EndFor\For{$i\gets1$ to $k$}\State $C[i]\gets C[i]+C[i-1]$\EndFor\For{$j\gets n$ downto $1$}\State $B[C[key(A[j])]]\gets A[j]$\State $C[key(A[j])]\gets C[key(A[j])]-1$\EndFor\State \Return $B$\EndProcedure\end{algorithmic}
+\vfill\muted{누적 count는 key의 오른쪽 끝 위치다. 오른쪽부터 배치하고 감소시키면 equal records의 상대 순서가 보존된다.}
+\end{frame}
+\begin{frame}{Counting Sort: Count → Prefix → Place}
+\centering\begin{tikzpicture}[x=.9cm,y=.92cm]
+\node[anchor=east,font=\bfseries]at(-.7,1.2){A};\foreach \x/\v in {0/4,1/1,2/3,3/4,4/3}\node[sort cell]at(\x,1.2){\v};
+\node[anchor=east,font=\bfseries]at(-.7,0){C};
+\only<1>{\foreach \x/\v in {0/0,1/0,2/0,3/0,4/0}\node[sort active]at(\x,0){\v};\node[callout]at(7,1.2){1. initialize};}
+\only<2>{\foreach \x/\v in {0/0,1/1,2/0,3/2,4/2}\node[sort active]at(\x,0){\v};\node[callout]at(7,1.2){2. frequency count};}
+\only<3>{\foreach \x/\v in {0/0,1/1,2/1,3/3,4/5}\node[sort active]at(\x,0){\v};\node[callout]at(7,1.2){3. cumulative prefix};}
+\only<4>{\foreach \x/\v in {0/0,1/0,2/1,3/1,4/3}\node[sort active]at(\x,0){\v};\node[callout]at(7,1.2){4. stable placement};}
+\foreach \i in {0,...,4}\node[font=\small,text=AlgoGray]at(\i,-.52){\i};
+\node[anchor=east,font=\bfseries]at(-.7,-1.25){B};
+\only<1-3>{\foreach \x in {0,...,4}\node[sort done]at(\x,-1.25){\phantom{0}};}
+\only<4>{\foreach \x/\v in {0/1,1/3,2/3,3/4,4/4}\node[sort done]at(\x,-1.25){\v};}
+\end{tikzpicture}
+\only<4>{\vfill\muted{표시된 $C$는 placement 중 감소한 working positions이며 원래 prefix count가 아니다.}}
+\end{frame}
+\begin{frame}{Counting Sort의 복잡도}
+\[T(n,k)=\Theta(n+k),\qquad S(n,k)=\Theta(n+k)\]
+\begin{itemize}\item stable record version은 output $B$와 count $C$ 때문에 auxiliary $\Theta(n+k)$\item value-only frequency reconstruction은 $n$ 크기의 record buffer가 필요 없을 수 있음\item $k=O(n)$이면 선형 시간; comparison lower bound와 모순 없음\end{itemize}
+\end{frame}
+\begin{frame}{Counting Sort Takeaway}
+음수 key $min..max$는 offset $key-min$으로 index화할 수 있다. 그러나 range $max-min+1$이 작아야 한다.
+\sortingtakeaway{선형시간의 대가는 제한된 key range와 추가 배열이다.}
+\end{frame}

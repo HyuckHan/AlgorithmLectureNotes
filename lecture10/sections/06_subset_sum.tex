@@ -1,0 +1,68 @@
+\subsection{Subset Sum}
+\begin{frame}{Subset Sum 문제 계약}
+양의 정수 \(w[0..n-1]\)과 target \(W\)에 대해 합이 \(W\)인 index subset을 모두 보고한다.
+\begin{description}
+\item[State] \(i,currentSum,remainingSum,selected\).
+\item[Decision] \(w[i]\) include 또는 exclude.
+\item[Leaf] \(2^n\) possible subsets.
+\item[중복 정책] 같은 값이라도 index가 다르면 다른 선택; 출력 값 집합은 필요하면 deduplicate.
+\end{description}
+\end{frame}
+\begin{frame}{두 Sound Pruning 조건}
+\[
+currentSum>W
+\quad\Longrightarrow\quad P
+\]
+\[
+currentSum+remainingSum<W
+\quad\Longrightarrow\quad P
+\]
+\begin{block}{전제}모든 weight가 양수이므로 앞으로 합은 줄지 않고, 남은 값을 모두 더한 것이 최대 도달 합이다.\end{block}
+\begin{alertblock}{음수가 있으면}초과한 합이 나중에 감소할 수 있으므로 첫 조건은 일반적으로 안전하지 않다.\end{alertblock}
+\end{frame}
+\begin{frame}{Subset Sum Pseudocode}
+\tiny\begin{algorithmic}[1]
+\Procedure{SubsetSum}{$i,currentSum,remainingSum$}
+\If{\(currentSum=W\)}\State report selection; \Return\EndIf
+\If{\(i=n\lor currentSum>W\lor currentSum+remainingSum<W\)}\State\Return\EndIf
+\State include \(w[i]\)
+\State \Call{SubsetSum}{$i+1,currentSum+w[i],remainingSum-w[i]$}
+\State undo include
+\State \Call{SubsetSum}{$i+1,currentSum,remainingSum-w[i]$}
+\EndProcedure
+\end{algorithmic}
+\end{frame}
+\begin{frame}{Include/Exclude Tree: \([3,4,5,6]\), \(W=9\)}
+\centering\begin{tikzpicture}[level distance=11mm,sibling distance=34mm]
+\node[ssnode]{\(i0,s0,r18\)}
+ child{node[sscurrent]{\(\{3\},s3\)} child{node[ssnode]{\(\{3,4\},s7\)} child{node[ssdead]{\(s12\)}} child{node[ssvalid]{\(\{3,6\}\)}}} child{node[ssdead]{\(\{3\},r5\)}}}
+ child{node[ssnode]{\(\{\},s0\)} child{node[sscurrent]{\(\{4\},s4\)} child{node[ssvalid]{\(\{4,5\}\)}} child{node[ssdead]{\(r6<9\)}}}};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Subset Sum Trace}
+\centering\begin{tikzpicture}
+\node[ssbox]at(0,1.3){\only<1|handout:0>{\(i=0,s=0,r=18\)}\only<2|handout:0>{include 3: \(i=1,s=3,r=15\)}\only<3|handout:0>{include 4,5: \(s=12>9\Rightarrow P\)}\only<4|handout:0>{exclude 4,5; include 6: \(\{3,6\}\Rightarrow F\)}\only<5|handout:1>{다른 branch: \(\{4,5\}\Rightarrow F\)}};
+\node[ssnote]at(0,0){\only<1|handout:0>{invariant 시작}\only<2|handout:0>{Apply 3}\only<3|handout:0>{overshoot prune}\only<4|handout:0>{Undo 후 sibling 탐색}\only<5|handout:1>{solution set 완전성 유지}};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Pruning 전후 비교}
+\begin{columns}
+\column{.47\linewidth}\begin{block}{완전탐색}모든 16 leaves 검사\\solution: \(\{3,6\},\{4,5\}\)\end{block}
+\column{.47\linewidth}\begin{block}{Pruned search}overshoot와 unreachable subtree 제거\\동일 solution set\end{block}
+\end{columns}
+\begin{block}{Metric}generated, expanded, pruned node 수를 함께 기록해야 pruning 효과를 비교할 수 있다.\end{block}
+\end{frame}
+\begin{frame}{Subset Sum Invariants}
+\[
+currentSum=\sum_{j\in selected}w[j],
+\qquad
+remainingSum=\sum_{j=i}^{n-1}w[j].
+\]
+\[
+\text{Apply/Undo 뒤 두 식이 항상 성립해야 한다.}
+\]
+\end{frame}
+\begin{frame}{Subset Sum Checkpoint}
+\begin{enumerate}\item target 0은 어떤 정책인가?\item \(currentSum+remainingSum<W\)가 안전한 이유는?\end{enumerate}
+\begin{exampleblock}{답}empty subset을 한 해로 즉시 보고; 남은 양수를 모두 포함해도 target에 못 미치기 때문이다.\end{exampleblock}
+\end{frame}

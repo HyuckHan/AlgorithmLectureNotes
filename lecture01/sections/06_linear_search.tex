@@ -1,0 +1,73 @@
+\section{Part F. 선형 탐색(Linear Search)}
+
+% 22
+\begin{frame}{탐색 문제를 먼저 명세하자}
+  \begin{block}{Search}
+    \textbf{Input:} 배열 $A[1..n]$, 찾을 값 $x$\par
+    \textbf{Output:} $A[i]=x$인 인덱스 $i$, 없으면 $\NotFound$
+  \end{block}
+  \begin{itemize}
+    \item 중복 원소가 있다면 ``첫 번째 인덱스''처럼 요구사항을 명시한다.
+    \item 정렬 여부는 사용할 수 있는 알고리즘을 바꾼다.
+  \end{itemize}
+\end{frame}
+
+% 23
+\begin{frame}[fragile]{선형 탐색(Linear Search)}
+  \large
+  \begin{algorithmic}[1]
+    \Procedure{LinearSearch}{$A[1..n],x$}
+      \For{$i \gets 1$ \textbf{to} $n$}
+        \If{$A[i]=x$}
+          \State \Return $i$
+        \EndIf
+      \EndFor
+      \State \Return $\NotFound$
+    \EndProcedure
+  \end{algorithmic}
+  \vfill
+  왼쪽부터 하나씩 비교한다. \keyterm{정렬되지 않은 배열에서도 정확히 동작}한다.
+\end{frame}
+
+% 24
+\begin{frame}{선형 탐색: $x=12$ 찾기}
+  \begin{center}
+  \begin{tikzpicture}[scale=1.15,transform shape]
+    \foreach \x/\val in {0/3,1/6,2/9,3/12,4/15,5/18,6/21,7/24}{
+      \node[cell] (l\x) at (1.16*\x,0) {\val};
+    }
+    \only<1|handout:0>{\node[active] at (0,0) {3};}
+    \only<2|handout:0>{\node[discarded] at (0,0) {3}; \node[active] at (1.16,0) {6};}
+    \only<3|handout:0>{\node[discarded] at (0,0) {3}; \node[discarded] at (1.16,0) {6}; \node[active] at (2.32,0) {9};}
+    \only<4-|handout:1>{\node[discarded] at (0,0) {3}; \node[discarded] at (1.16,0) {6}; \node[discarded] at (2.32,0) {9}; \node[active] at (3.48,0) {12};}
+    \only<1|handout:0>{\node[note,above=5mm of l0] {$i=1$: $3\ne12$};}
+    \only<2|handout:0>{\node[note,above=5mm of l1] {$i=2$: $6\ne12$};}
+    \only<3|handout:0>{\node[note,above=5mm of l2] {$i=3$: $9\ne12$};}
+    \only<4-|handout:1>{\node[font=\small,text=AlgoOrangeText,above=5mm of l3] {$i=4$: 발견!};}
+  \end{tikzpicture}
+  \end{center}
+  \only<1|handout:0>{첫 번째 원소부터 비교한다.}
+  \only<2-3|handout:0>{일치하지 않으면 다음 인덱스로 이동한다.}
+  \only<4-|handout:1>{찾는 즉시 4를 반환하고 종료한다.}
+\end{frame}
+
+% 25
+\begin{frame}{선형 탐색 정리}
+  \begin{columns}[T,onlytextwidth]
+    \column{.48\textwidth}
+      \textbf{장점}
+      \begin{itemize}
+        \item 정렬이 필요 없다.
+        \item 한 번의 탐색을 위해 준비 비용이 없다.
+        \item 첫 일치에서 즉시 종료한다.
+      \end{itemize}
+    \column{.48\textwidth}
+      \textbf{한계}
+      \begin{itemize}
+        \item 마지막에 있거나 없으면 전부 본다.
+        \item 입력이 두 배면 최악 비교 수도 두 배다.
+      \end{itemize}
+  \end{columns}
+  \begin{takeaway}단순하지만 전제가 적다. ``느리다''가 아니라 \textbf{비교 횟수가 입력 크기에 선형}이라고 말하자.\end{takeaway}
+  \muted{정렬되지 않은 배열에서는 하나씩 보는 것이 안전하다. 정렬이라는 추가 정보가 있으면 무엇을 건너뛸 수 있을까?}
+\end{frame}

@@ -1,0 +1,45 @@
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{theme/beamerthemealgorithms}
+\setsansfont{Noto Sans}[Scale=0.98,AutoFakeSlant=0.15]
+\setmainfont{Noto Sans}[Scale=0.98,AutoFakeSlant=0.15]
+\setmonofont{Noto Sans Mono}[Scale=0.90]
+\newfontfamily\lecturefooterfont{Noto Sans}
+\usepackage{kotex,amsmath,amssymb,mathtools,booktabs,array,multirow}
+\setsanshangulfont{Noto Sans CJK KR}[Scale=0.98,AutoFakeSlant=0.15]
+\setmainhangulfont{Noto Sans CJK KR}[Scale=0.98,AutoFakeSlant=0.15]
+\setmonohangulfont{Noto Sans Mono CJK KR}[Scale=0.90]
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,trees,matrix,decorations.pathreplacing,backgrounds,patterns,shapes.multipart}
+\usepackage{pgfplots}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\algrenewcommand\textproc[1]{\textbf{#1}}
+\input{lecture02/common.tex}
+\input{lecture03/common.tex}
+\input{lecture04/common.tex}
+\input{lecture05/common.tex}
+\input{lecture06/common.tex}
+\pgfplotsset{compat=1.18,compat/show suggested version=false}
+\title{검색 트리}
+\subtitle{Binary Tree에서 Balanced Search Tree와 B-Tree까지}
+\author{Algorithm Lecture Notes}
+\date{}
+\setbeamerfont{subtitle}{size=\large}
+\setbeamertemplate{frame numbering}{\lecturefooterfont\insertframenumber/\inserttotalframenumber}
+\mode<handout>{\AtBeginSection[]{}}
+\begin{document}
+\input{lecture06/sections/01_tree_basics.tex}
+\input{lecture06/sections/02_binary_tree.tex}
+\input{lecture06/sections/03_traversal.tex}
+\input{lecture06/sections/04_binary_tree_impl.tex}
+\input{lecture06/sections/05_dynamic_set.tex}
+\input{lecture06/sections/06_bst_search.tex}
+\input{lecture06/sections/07_bst_insert_delete.tex}
+\input{lecture06/sections/08_balanced_motivation.tex}
+\input{lecture06/sections/09_avl.tex}
+\input{lecture06/sections/10_red_black.tex}
+\input{lecture06/sections/11_btree.tex}
+\input{lecture06/sections/12_comparison.tex}
+\input{lecture06/sections/13_summary_quiz.tex}
+\input{lecture06/sections/14_appendix.tex}
+\end{document}

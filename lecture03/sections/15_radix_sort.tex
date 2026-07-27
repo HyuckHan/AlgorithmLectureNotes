@@ -1,0 +1,30 @@
+\begin{frame}{LSD Radix Sort의 아이디어}
+\optional[선택 심화]\hfill
+가장 낮은 자리(LSD)부터 높은 자리로 이동하며 각 자리에서 \alert{stable sort}를 수행한다.
+\[\text{ones}\rightarrow\text{tens}\rightarrow\text{hundreds}\]
+\muted{짧은 수는 leading zero로 본다: $2\to002$, $24\to024$, $90\to090$.}
+\end{frame}
+\begin{frame}{Radix Sort: 자리 하나씩 안정적으로}
+\centering\begin{tikzpicture}[x=1.05cm]
+\only<1>{\foreach \x/\v in {1/170,2/90,3/802,4/2,5/24,6/45,7/75,8/66}\node[sort active,minimum width=9.5mm]at(\x,0){\v};\node[callout]at(4.5,-1.05){ones 결과};}
+\only<2>{\foreach \x/\v in {1/802,2/2,3/24,4/45,5/66,6/170,7/75,8/90}\node[sort active,minimum width=9.5mm]at(\x,0){\v};\node[callout]at(4.5,-1.05){tens 결과};}
+\only<3>{\foreach \x/\v in {1/2,2/24,3/45,4/66,5/75,6/90,7/170,8/802}\node[sort active,minimum width=9.5mm]at(\x,0){\v};\node[callout]at(4.5,-1.05){hundreds 결과};}
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{왜 내부 정렬이 Stable이어야 하는가?}
+tens 자리로 정렬할 때 ones 자리에서 만든 순서를 같은 tens group 안에 보존해야 한다.
+\begin{exampleblock}{실행 예: tens digit이 같은 170과 75}
+ones pass 뒤에는 $170$이 $75$보다 먼저다. 두 수 모두 tens digit이 \alert{7}이므로
+stable한 tens sort는 tens=7 group 안에서 $[170,75]$의 순서를 유지한다.
+\end{exampleblock}
+\end{frame}
+\begin{frame}{Radix Sort의 복잡도}
+digit 수 $d$, 진법/버킷 수 $b$일 때 Counting Sort를 사용하면
+\[T(n)=\Theta\bigl(d(n+b)\bigr)\]
+고정 길이 word에서 $d,b$를 상수로 다룬다는 가정 아래 정확히 $\Theta(n)$이다.
+일반적으로는 두 parameter를 포함한 전체 bound를 유지해야 한다.
+\end{frame}
+\begin{frame}{Radix Sort Takeaway}
+\begin{itemize}\item 정수·고정 길이 문자열 등 digit 분해가 자연스러울 때 유리\item signed integer, variable length, locale string은 encoding/order 설계 필요\item 추가 buffer와 여러 pass의 memory traffic을 고려\end{itemize}
+\sortingtakeaway{각 digit 정렬의 stability가 전체 lexicographic order를 만든다.}
+\end{frame}

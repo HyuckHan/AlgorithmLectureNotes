@@ -1,0 +1,40 @@
+\subsection{Search Tree와 Hash Table 비교}
+\begin{frame}{구조 종합 비교}
+\scriptsize\centering\begin{tabular}{lcccc>{\raggedright\arraybackslash}p{2.2cm}}\toprule
+Structure&Equality&Insert/Delete&Worst&Order/Range&Typical use\\\midrule
+plain BST&$\Theta(h)$&$\Theta(h)$&$\Theta(n)$&yes&small ordered set\\
+AVL/RB&$\Theta(\log n)$&$\Theta(\log n)$&$\Theta(\log n)$&yes&memory ordered map\\
+B-Tree&$\Theta(\log_t n)$ I/O&same&$\Theta(\log_t n)$ I/O&yes&database index\\
+chained hash&exp. $\Theta(1)$&amort. exp. $\Theta(1)$&$\Theta(n)$&no&flexible map\\
+open address&exp. $\Theta(1)$&amort. exp. $\Theta(1)$&$\Theta(n)$&no&cache-friendly map\\\bottomrule
+\end{tabular}
+\begin{block}{Memory pattern}Tree는 pointer node, B-Tree는 page, chaining은 bucket+node, open addressing은 dense array를 사용한다.\end{block}
+\end{frame}
+\begin{frame}{Workload별 선택}
+\small\centering\begin{tabular}{ll}\toprule
+요구&첫 후보\\\midrule
+exact username lookup&hash table\\
+leaderboard sorted iteration&balanced search tree\\
+database range scan&B-Tree family\\
+memoization cache&hash table\\
+untrusted adversarial keys&mitigation을 갖춘 hash 또는 worst guarantee tree\\
+prefix/range query&ordered/trie 계열\\\bottomrule
+\end{tabular}
+\end{frame}
+\begin{frame}{Chaining vs Open Addressing}
+\begin{columns}[T]\column{.48\textwidth}
+\begin{block}{Chaining 선택}높은/변동 load, stable entry address가 중요, linked allocation 허용\end{block}
+\column{.48\textwidth}
+\begin{block}{Open Addressing 선택}cache locality, 낮은 allocation overhead, 충분한 slack 유지 가능\end{block}
+\end{columns}
+\begin{alertblock}{둘 다 확인할 것}hash quality, equality contract, resize latency, deletion workload, adversarial input.\end{alertblock}
+\end{frame}
+\begin{frame}{구조 선택 Takeaway}
+\htmission{먼저 필요한 operation과 guarantee를 고르고, 그다음 collision policy와 capacity policy를 설계한다.}
+\begin{itemize}
+\item equality lookup/cache/compiler symbol table: hash table이 강한 첫 후보
+\item ordered map/range query/leaderboard: AVL 또는 Red--Black Tree
+\item database·filesystem index와 page I/O: B-Tree 계열
+\item adversarial worst-case 보장이 우선이면 balanced tree 또는 방어 정책을 갖춘 hash
+\end{itemize}
+\end{frame}

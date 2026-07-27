@@ -1,0 +1,50 @@
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{theme/beamerthemealgorithms}
+\setsansfont{Noto Sans}[Scale=0.98,AutoFakeSlant=0.15]
+\setmainfont{Noto Sans}[Scale=0.98,AutoFakeSlant=0.15]
+\setmonofont{Noto Sans Mono}[Scale=0.90]
+\newfontfamily\lecturefooterfont{Noto Sans}
+\usepackage{kotex,amsmath,amssymb,mathtools,booktabs,array,multirow}
+\setsanshangulfont{Noto Sans CJK KR}[Scale=0.98,AutoFakeSlant=0.15]
+\setmainhangulfont{Noto Sans CJK KR}[Scale=0.98,AutoFakeSlant=0.15]
+\setmonohangulfont{Noto Sans Mono CJK KR}[Scale=0.90]
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,matrix,decorations.pathreplacing,backgrounds,patterns,shapes.geometric}
+\usepackage{pgfplots}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\algrenewcommand\textproc[1]{\textbf{#1}}
+\input{lecture02/common.tex}
+\input{lecture03/common.tex}
+\input{lecture04/common.tex}
+\input{lecture05/common.tex}
+\input{lecture06/common.tex}
+\input{lecture07/common.tex}
+\input{lecture08/common.tex}
+\pgfplotsset{compat=1.18,compat/show suggested version=false}
+\title{그래프 알고리즘\\[-1mm]\large Graph Algorithms}
+\subtitle{Representation, Traversal, DAG, MST와 Shortest Paths}
+\author{Algorithm Lecture Notes}
+\date{}
+\setbeamerfont{subtitle}{size=\large}
+\setbeamertemplate{frame numbering}{\lecturefooterfont\insertframenumber/\inserttotalframenumber}
+\begin{document}
+\input{lecture08/sections/01_graph_basics.tex}
+\input{lecture08/sections/02_representation.tex}
+\input{lecture08/sections/03_bfs.tex}
+\input{lecture08/sections/04_dfs.tex}
+\input{lecture08/sections/05_cycle_detection.tex}
+\input{lecture08/sections/06_topological_sort.tex}
+\input{lecture08/sections/07_mst_intro.tex}
+\input{lecture08/sections/08_cut_property.tex}
+\input{lecture08/sections/09_prim.tex}
+\input{lecture08/sections/10_kruskal.tex}
+\input{lecture08/sections/11_mst_comparison.tex}
+\input{lecture08/sections/12_shortest_path_intro.tex}
+\input{lecture08/sections/13_unweighted_dag.tex}
+\input{lecture08/sections/14_dijkstra.tex}
+\input{lecture08/sections/15_bellman_ford.tex}
+\input{lecture08/sections/16_comparison.tex}
+\input{lecture08/sections/17_summary_quiz.tex}
+\input{lecture08/sections/18_appendix.tex}
+\end{document}

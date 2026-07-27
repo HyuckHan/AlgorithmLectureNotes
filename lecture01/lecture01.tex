@@ -1,0 +1,67 @@
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{theme/beamerthemealgorithms}
+\definecolor{AlgoOrangeText}{HTML}{B45309}
+\setbeamercolor{alerted text}{fg=AlgoOrangeText}
+\renewcommand{\keyterm}[1]{\textcolor{AlgoOrangeText}{\bfseries #1}}
+\usepackage{kotex}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs,array}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,decorations.pathreplacing}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18,compat/show suggested version=false}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{microtype}
+
+\title{알고리즘 입문 · Introduction to Algorithms}
+\subtitle{문제를 푸는 절차에서 성장률 분석까지}
+\author{Algorithm Lecture Notes}
+\date{}
+
+\newcommand{\NotFound}{\mathtt{NOT\_FOUND}}
+\newcommand{\Oh}{\mathcal{O}}
+\newcommand{\Om}{\Omega}
+\newcommand{\Th}{\Theta}
+\algrenewcommand\algorithmicrequire{\textbf{Input:}}
+\algrenewcommand\algorithmicensure{\textbf{Output:}}
+\algrenewcommand\textproc[1]{\textsf{#1}}
+\tikzset{
+  cell/.style={draw=AlgoRule,thick,minimum width=1.05cm,minimum height=.78cm,font=\small},
+  active/.style={cell,fill=AlgoOrange!22,draw=AlgoOrange,very thick},
+  discarded/.style={cell,fill=AlgoRule!45,text=AlgoGray},
+  note/.style={font=\small,text=AlgoGray},
+  flow/.style={-{Stealth[length=2mm]},thick,draw=AlgoOrange}
+}
+
+\mode<handout>{\AtBeginSection[]{}}
+
+\begin{document}
+
+% 1
+\begin{frame}[plain]
+  \vfill
+  {\usebeamerfont{title}\color{AlgoBlue}\inserttitle\par}
+  \vspace{3mm}
+  {\color{AlgoOrange}\rule{2.8cm}{1.2pt}\par}
+  \vspace{3mm}
+  {\usebeamerfont{subtitle}\color{AlgoGray}\insertsubtitle\par}
+  \vfill
+  {\usebeamerfont{author}\color{AlgoGray}\insertauthor\par}
+  \vspace{5mm}
+\end{frame}
+
+\input{lecture01/sections/01_motivation.tex}
+\input{lecture01/sections/02_algorithm_program.tex}
+\input{lecture01/sections/03_algorithm_properties.tex}
+\input{lecture01/sections/04_pseudocode.tex}
+\input{lecture01/sections/05_maximum.tex}
+\input{lecture01/sections/06_linear_search.tex}
+\input{lecture01/sections/07_binary_search.tex}
+\input{lecture01/sections/08_complexity_motivation.tex}
+\input{lecture01/sections/09_orders_of_growth.tex}
+\input{lecture01/sections/10_asymptotic_notation.tex}
+\input{lecture01/sections/11_algorithm_analysis.tex}
+\input{lecture01/sections/12_summary_quiz.tex}
+
+\end{document}

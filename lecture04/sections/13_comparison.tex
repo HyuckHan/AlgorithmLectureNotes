@@ -1,0 +1,59 @@
+\section{Part E. 전략 비교, 요약과 Quiz}
+\begin{frame}{Selection 비교 I: 시간과 보장}
+\centering
+\small
+\begin{tabular}{lccc}\toprule
+Algorithm & Policy & Typical/expected & Worst\\\midrule
+Sort+select & comparison sort & $\Theta(n\log n)$ & $\Theta(n\log n)$\\
+Fixed Quickselect & e.g. last element & input-dependent & $\Theta(n^2)$\\
+RandomizedSelect & uniform random & expected $\Theta(n)$ & $\Theta(n^2)$\\
+BFPRT & Median of Medians & $\Theta(n)$ & $\Theta(n)$\\\bottomrule
+\end{tabular}
+\vspace{5mm}
+\begin{block}{Expected의 확률 공간}
+RandomizedSelect만 uniform pivot choice에 대한 distribution-free expected guarantee를 갖는다.
+Fixed rule에는 입력 분포 가정 없는 expected bound가 없다.
+\end{block}
+\end{frame}
+\begin{frame}{Selection 비교 II: 공간과 사용 맥락}
+\begin{columns}[T]
+\column{.48\textwidth}
+\begin{block}{Sort + Select}
+space·determinism은 sort에 의존\\
+이후 full order가 필요할 때
+\end{block}
+\begin{block}{Fixed Quickselect}
+deterministic; stack worst $O(n)$\\
+입력과 pivot behavior를 통제할 때
+\end{block}
+\column{.48\textwidth}
+\begin{block}{RandomizedSelect}
+randomized; stack expected $O(\log n)$, worst $O(n)$\\
+일반적인 one-rank query
+\end{block}
+\begin{block}{BFPRT}
+deterministic; in-place medians면 stack $O(\log n)$\\
+temp $B$ 구현은 active storage $O(n)$ 가능
+\end{block}
+\end{columns}
+\vfill\muted{BFPRT의 recursive calls는 sequential하며 longest active branch의 깊이는 $O(\log n)$이다.}
+\end{frame}
+\begin{frame}{Selection 전략 Checklist}
+\begin{enumerate}\item 한 rank만 필요한가, 이후 전체 정렬도 필요한가?\item expected time이면 충분한가, latency worst-case 보장이 필요한가?\item 입력이 adversarial할 수 있는가?\item duplicates가 많은가? 그렇다면 3-way partition이 유리하다.\item 입력을 바꿀 수 있는가? immutable이면 copy 비용도 포함한다.\end{enumerate}
+\end{frame}
+\begin{frame}{Introselect: 두 전략을 결합하기}
+\optional[선택 심화]\hfill
+Introselect는 hybrid selection 전략의 family다. 보통은 빠른 partition policy를 사용하고 recursion depth나 progress가 나빠지면 guaranteed fallback으로 전환한다.
+\begin{block}{주의}특정 표준 라이브러리의 내부 알고리즘은 버전과 구현에 따라 달라질 수 있다.\end{block}
+\end{frame}
+\begin{frame}{실제 코드의 Rank Convention}
+\optional[선택 심화]\hfill
+\small
+\begin{columns}[T]\column{.47\textwidth}\begin{block}{강의 pseudocode}1-based relative rank\\$1\le i\le n$\end{block}\column{.47\textwidth}\begin{block}{제공 C/Java 코드}0-based rank\\$0\le rank<n$\end{block}\end{columns}
+\begin{block}{변환}$rank0=i-1,\qquad i=rank0+1$\end{block}
+\begin{itemize}
+\item 제공 API는 전체 $A[0..n)$에 대한 relative \texttt{rank0}를 받는다.
+\item subarray API는 relative rank인지 absolute index인지 contract에 명시한다.
+\item empty/null/negative 또는 \texttt{rank >= length}는 거부한다.
+\end{itemize}
+\end{frame}

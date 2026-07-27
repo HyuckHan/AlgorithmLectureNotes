@@ -1,0 +1,49 @@
+\section{Part F. Comparison, Implementation, Summary, and Quiz}
+\begin{frame}{A*와 Branch-and-Bound의 관계}
+\begin{columns}[T]
+\column{.48\linewidth}
+\begin{block}{공통}frontier, best-first 가능, optimistic estimate, worst-case exponential.\end{block}
+\column{.48\linewidth}
+\begin{block}{차이}A*: path cost \(g+h\), heuristic 조건.\\B\&B: 일반 최적화, subtree bound와 incumbent.\end{block}
+\end{columns}
+\begin{alertblock}{동의어가 아니다}관련된 best-first framework이지만 목적·용어·correctness condition이 다르다.\end{alertblock}
+\end{frame}
+\begin{frame}{세 기법 비교 I}
+\small
+\begin{tabular}{L{2.0cm}L{3.2cm}L{3.2cm}L{3.2cm}}\toprule
+&Backtracking&B\&B&A*\\\midrule
+main goal&feasible solution&optimal solution&least-cost path\\
+typical order&DFS&DFS/BFS/best-first&best-first\\
+evaluation&promising&objective UB/LB&\(f=g+h\)\\
+best known&optional&incumbent&\(g\), goal cost\\\bottomrule
+\end{tabular}
+\end{frame}
+\begin{frame}{세 기법 비교 II}
+\small
+\begin{tabular}{L{2.0cm}L{3.2cm}L{3.2cm}L{3.2cm}}\toprule
+&Backtracking&B\&B&A*\\\midrule
+structure&recursion/stack&stack/queue/PQ&min-PQ\\
+correctness&sound feasibility prune&safe bound&admissible/consistent policy\\
+examples&queens, coloring&knapsack, assignment&pathfinding\\
+memory&usually depth&frontier-dependent&OPEN/CLOSED can be large\\\bottomrule
+\end{tabular}
+\end{frame}
+\begin{frame}{Worst-Case Complexity}
+\begin{itemize}
+\item Backtracking: subset \(O(2^n)\), permutation \(O(n!)\).
+\item Branch-and-Bound: bound가 도움이 없으면 exponential tree 전체.
+\item A*: 약한 heuristic과 큰 state space에서는 exponential time/memory 가능.
+\end{itemize}
+\begin{block}{구분할 metric}theoretical worst case, expanded-node count, bound/heuristic cost, peak frontier size.\end{block}
+\end{frame}
+\begin{frame}{Pruning은 Heuristic인가?}
+\begin{itemize}
+\item sound pruning은 correctness를 희생하지 않는 논리적 제거다.
+\item heuristic은 탐색 순서나 optimistic estimate를 제공할 수 있다.
+\item unsafe heuristic으로 prune하면 더 빨라질 수 있지만 exact algorithm이 아니다.
+\end{itemize}
+\end{frame}
+\begin{frame}{세 탐색 기법 Checkpoint}
+\begin{enumerate}\item feasibility와 objective pruning의 질문은 각각 무엇인가?\item \(h=0\)인 A*는?\item pruning이 polynomial을 보장하는가?\end{enumerate}
+\begin{exampleblock}{답}해가 가능한가 / incumbent 개선 가능한가; Dijkstra priority; 아니다.\end{exampleblock}
+\end{frame}

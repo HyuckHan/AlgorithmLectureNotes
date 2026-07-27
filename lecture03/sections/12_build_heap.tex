@@ -1,0 +1,31 @@
+\begin{frame}{Leaves는 이미 Heap이다}
+1-based heap에서 index $\lfloor n/2\rfloor+1,\dots,n$은 leaf다.
+\[\text{따라서 }i=\lfloor n/2\rfloor\text{부터 }1\text{까지 역순으로 HEAPIFY}\]
+모든 child index는 parent보다 크다. 따라서 child는 이미 처리되었거나 leaf이므로 MAX-HEAPIFY의 precondition이 성립한다.
+\end{frame}
+\begin{frame}{BUILD-MAX-HEAP 의사코드}
+\begin{algorithmic}[1]\Procedure{BuildMaxHeap}{$A[1..n]$}\State $heapSize\gets n$\For{$i\gets\lfloor n/2\rfloor$ downto $1$}\State \Call{MaxHeapify}{$A,i,heapSize$}\EndFor\EndProcedure\end{algorithmic}
+\end{frame}
+\begin{frame}{BUILD-MAX-HEAP: 아래에서 위로}
+\centering\begin{tikzpicture}[scale=.94]
+\only<1>{\heaparraytree{4,1,3,2,16,9,10,14,8,7}{5}{10}}
+\only<2>{\heaparraytree{4,1,3,14,16,9,10,2,8,7}{4}{10}}
+\only<3>{\heaparraytree{4,1,10,14,16,9,3,2,8,7}{3}{10}}
+\only<4>{\heaparraytree{4,16,10,14,7,9,3,2,8,1}{2}{10}}
+\only<5>{\heaparraytree{16,14,10,8,7,9,3,2,4,1}{1}{10}}
+\end{tikzpicture}
+\only<1|handout:0>{$i=5$: leaf의 parent부터 시작}\only<2|handout:0>{$i=4$ 완료}\only<3|handout:0>{$i=3$ 완료}\only<4|handout:0>{$i=2$ 완료}\only<5|handout:1>{$i=1$ 완료: max-heap}
+\end{frame}
+\begin{frame}{느슨한 상한은 $O(n\log n)$}
+$n/2$개의 node 각각에 $O(\log n)$을 곱하면 $O(n\log n)$이다.
+\begin{alertblock}{왜 느슨한가?}대부분의 node는 아래쪽에 있어 높이가 0 또는 1이다. 모두가 root 높이만큼 내려가지 않는다.\end{alertblock}
+\end{frame}
+\begin{frame}{정밀한 합은 $\Theta(n)$}
+\optional[Advanced]\hfill
+높이 $h$인 node 수는 최대 $n/2^{h+1}$개다.
+\[\sum_{h=0}^{\lfloor\log n\rfloor}\frac{n}{2^{h+1}}O(h)=O(n)\sum_{h\ge0}\frac{h}{2^{h+1}}=O(n)\]
+일반적인 배열 표현의 모든 원소가 결과 heap에 참여하므로 선형 입력 크기의 작업이 필요하다. 따라서 \alert{$\Theta(n)$}.
+\end{frame}
+\begin{frame}{BUILD-MAX-HEAP Takeaway}
+\sortingtakeaway{“호출 수 × 최악 비용”은 맞지만 느슨할 수 있다. node 높이별 비용을 합하면 $\Theta(n)$이다.}
+\end{frame}

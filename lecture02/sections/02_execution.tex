@@ -1,0 +1,80 @@
+\begin{frame}{예제: $1+\cdots+n$}\mission{\texttt{sum(n)}은 $1$부터 $n$까지의 합을 반환한다.}\threeparts{$sum(0)=0$}{$sum(n)=n+sum(n-1)$}{$n\to n-1$}
+\end{frame}
+\begin{frame}[fragile]{C 구현}\begin{lstlisting}
+int sum(int n) {
+    if (n == 0) return 0;
+    return n + sum(n - 1);
+}
+\end{lstlisting}\textbf{Precondition:} $n\ge0$. 음수 입력 정책은 별도로 정해야 한다.
+\vfill\muted{분석 가정: 수학적 합이 C의 \texttt{int} 범위를 넘지 않는다.}
+\end{frame}
+\begin{frame}{$sum(4)$: 호출과 반환}\centering
+\only<1>{\LARGE $sum(4)$\vfill\muted{작은 문제의 답을 기다리며 계산을 보류한다.}}
+\only<2>{\LARGE $4+3+2+1+sum(0)$\vfill\muted{호출이 base case까지 내려간다.}}
+\only<3>{\LARGE $4+3+2+1+0=\alert{10}$\vfill\alert{반환하며 보류된 덧셈을 해결한다.}}
+\end{frame}
+\begin{frame}{호출 스택: Push}\centering
+\begin{tikzpicture}[node distance=1.5mm,every node/.append style={font=\normalsize}]
+\node[stack] (a) {$sum(4)$: $4+\square$};
+\visible<2->{\node[stack,above=of a] (b) {$sum(3)$: $3+\square$};\node[stack,above=of b] (c) {$sum(2)$: $2+\square$};}
+\visible<3->{\node[stack,above=of c] (d) {$sum(1)$: $1+\square$};\node[stack,above=of d,fill=AlgoOrange!15] {$sum(0)$: return 0};}
+\end{tikzpicture}
+\vfill\only<1>{첫 호출}\only<2>{재귀 호출이 반복되어 frame이 쌓임}\only<3>{base case 도착}
+\end{frame}
+\begin{frame}{호출 스택: Pop}\centering
+\begin{columns}[c,onlytextwidth]
+\column{.52\textwidth}
+\begin{tikzpicture}[node distance=1.5mm,every node/.append style={font=\normalsize}]
+\path (-2.2,0)--(2.2,4.8);
+\only<1>{
+  \node[stack] (a) at (0,.35) {$sum(4)$: $4+\square$};
+  \node[stack,above=of a] (b) {$sum(3)$: $3+\square$};
+  \node[stack,above=of b] (c) {$sum(2)$: $2+\square$};
+  \node[stack,above=of c] (d) {$sum(1)$: $1+\square$};
+  \node[stack,above=of d,fill=AlgoOrange!15] {$sum(0)$: return 0};}
+\only<2>{
+  \node[stack] (a) at (0,.35) {$sum(4)$: $4+\square$};
+  \node[stack,above=of a] (b) {$sum(3)$: $3+\square$};
+  \node[stack,above=of b] (c) {$sum(2)$: $2+\square$};
+  \node[stack,above=of c,fill=AlgoOrange!15] {$sum(1)$: $1+0=1$};}
+\only<3>{
+  \node[stack] (a) at (0,.35) {$sum(4)$: $4+\square$};
+  \node[stack,above=of a] (b) {$sum(3)$: $3+\square$};
+  \node[stack,above=of b,fill=AlgoOrange!15] {$sum(2)$: $2+1=3$};}
+\only<4>{
+  \node[stack] (a) at (0,.35) {$sum(4)$: $4+\square$};
+  \node[stack,above=of a,fill=AlgoOrange!15] {$sum(3)$: $3+3=6$};}
+\only<5>{\node[stack,fill=AlgoOrange!15] at (0,.35) {$sum(4)$: $4+6=10$};}
+\end{tikzpicture}
+\column{.43\textwidth}
+\only<1>{\alert{$sum(0)\Rightarrow0$}\par\small caller $sum(1)$로 복귀}
+\only<2>{\alert{$sum(1)\Rightarrow1+0=1$}\par\small caller $sum(2)$가 계산 재개}
+\only<3>{\alert{$sum(2)\Rightarrow2+1=3$}\par\small caller $sum(3)$가 계산 재개}
+\only<4>{\alert{$sum(3)\Rightarrow3+3=6$}\par\small caller $sum(4)$가 계산 재개}
+\only<5>{\alert{$sum(4)\Rightarrow4+6=10$}\par\small 최종 호출이 반환}
+\end{columns}
+\vfill 반환값 전달과 frame 제거가 같은 순간에 일어난다.
+\end{frame}
+\begin{frame}{활성 레코드와 호출·반환 요약}
+\begin{columns}[T,onlytextwidth]
+\column{.42\textwidth}
+\textbf{활성 레코드(Activation Record)}
+\begin{itemize}
+  \item 호출마다 독립적인 매개변수 $n$
+  \item 돌아갈 명령 위치
+  \item 보류된 계산과 저장 레지스터
+\end{itemize}
+\column{.54\textwidth}
+\begin{block}{호출: 아래로 내려감}
+\color{AlgoBlue}$sum(4)\to sum(3)\to sum(2)\to sum(1)\to
+\alert{sum(0)}$
+\end{block}
+\begin{block}{반환: 위로 올라감}
+\color{AlgoOrangeText}$0\to1\to3\to6\to10$
+\end{block}
+\end{columns}
+\vfill\muted{caller는 기다리다가, 반환값을 받으며 frame이 제거되는 순간 보류된 계산을 재개한다.}
+\end{frame}
+\begin{frame}{호출 스택 Checkpoint}\begin{enumerate}\item \texttt{sum(4)}가 \texttt{sum(3)}을 호출하는 순간 7을 반환한다?\item 모든 호출이 같은 지역변수 $n$을 공유한다?\item base case에서는 recursive call이 없다?\end{enumerate}\only<2>{\begin{block}{답}1 거짓: 반환을 기다림. 2 거짓: frame별 저장. 3 참.\end{block}}
+\vfill\muted{실행 과정을 이해했으므로, 이제 작은 호출이 맞다는 가정으로 전체 함수의 정확성을 설명한다.}
+\end{frame}

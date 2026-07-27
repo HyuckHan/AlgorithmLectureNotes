@@ -1,0 +1,42 @@
+\begin{frame}[plain]\vspace*{-8mm}\titlepage\end{frame}
+\begin{frame}{학습 목표 I}
+\small\begin{enumerate}\item $G=(V,E)$와 graph 종류·용어를 정확히 정의한다.\item matrix/list를 만들고 비용을 representation과 함께 말한다.\item BFS/DFS의 queue, stack, parent, distance, time을 추적한다.\item DAG 조건과 Kahn/DFS topological sort를 수행한다.\end{enumerate}
+\end{frame}
+\begin{frame}{학습 목표 II}
+\small\begin{enumerate}\setcounter{enumi}{4}\item spanning tree, MST, cut property를 설명한다.\item Prim/Kruskal과 PQ/DSU 상태를 추적한다.\item relaxation과 predecessor path를 계산한다.\item BFS, DAG SP, Dijkstra, Bellman--Ford의 전제를 구분한다.\item complexity를 representation·자료구조 조건과 함께 말한다.\end{enumerate}
+\end{frame}
+\section{Part A. Graph란 무엇인가?}
+\begin{frame}{Network를 계산 대상으로 바꾸기}
+\begin{columns}[T]\column{.48\textwidth}\begin{block}{현실}친구 관계, 도로, prerequisite, 통신 link\end{block}
+\column{.48\textwidth}\begin{block}{추상화}object $\to$ vertex\\relation $\to$ edge\\cost/time $\to$ weight\end{block}\end{columns}
+\gmission{연결 구조를 어떻게 저장하고, 방문하고, 가장 싸게 연결하거나 이동할까?}
+\end{frame}
+\begin{frame}{Graph의 정의}
+\[
+G=(V,E),\qquad V=\{\text{vertices}\},\quad E=\{\text{edges}\}.
+\]
+\centering\begin{tikzpicture}[x=1.7cm,y=1cm]
+\node[gvertex](a)at(0,0){A};\node[gvertex](b)at(2,1){B};\node[gvertex](c)at(4,0){C};\node[gvertex](d)at(2,-1){D};
+\draw[gedge](a)--(b)--(c)--(d)--(a)(b)--(d);
+\end{tikzpicture}
+\gtakeaway{Adjacent는 두 vertex가 edge로 직접 연결됨을, incident는 edge와 endpoint의 관계를 말한다.}
+\end{frame}
+\begin{frame}{Directed · Undirected · Weighted}
+\begin{columns}[T]\column{.32\textwidth}\begin{block}{Undirected}$\{u,v\}=\{v,u\}$\end{block}
+\column{.32\textwidth}\begin{block}{Directed}$(u,v)\ne(v,u)$\end{block}
+\column{.32\textwidth}\begin{block}{Weighted}$w(u,v)$는 거리·시간·비용·capacity 등 문맥을 가진다.\end{block}\end{columns}
+\begin{alertblock}{같은 weight가 아니다}MST는 전체 연결 비용, shortest path는 한 경로의 누적 비용을 최소화한다.\end{alertblock}
+\end{frame}
+\begin{frame}{Path · Simple Path · Cycle}
+\begin{description}\item[Path]연속 edge를 따라가는 vertex sequence\item[Simple path]vertex를 반복하지 않는 path\item[Cycle]시작과 끝이 같고 내부 vertex가 반복되지 않는 닫힌 path\item[Connected]모든 vertex pair 사이에 path가 있는 undirected graph\end{description}
+\begin{block}{Connected component}undirected graph에서 서로 도달 가능한 maximal vertex 집합. directed graph의 strong/weak connectivity는 appendix preview로 둔다.\end{block}
+\end{frame}
+\begin{frame}{Degree와 방향}
+\begin{columns}[T]\column{.48\textwidth}\begin{block}{Undirected}$\deg(v)$: $v$에 incident한 edge 수\\$\sum_v\deg(v)=2|E|$\end{block}
+\column{.48\textwidth}\begin{block}{Directed}$\operatorname{indeg}(v)$: 들어오는 edge\\$\operatorname{outdeg}(v)$: 나가는 edge\end{block}\end{columns}
+\begin{alertblock}{기본 convention}vertex는 $0,\ldots,n-1$ 또는 A,B,\ldots; parallel edge/self-loop는 기본 예제에서 제외; adjacency order를 명시한다.\end{alertblock}
+\end{frame}
+\begin{frame}{Part A Checkpoint}
+\begin{enumerate}\item $(u,v)$와 $(v,u)$가 다른 graph 종류는?\item tree가 될 수 없는 연결 graph의 징후는?\item edge weight가 0이면 edge가 없는 것인가?\end{enumerate}
+\begin{exampleblock}{답}directed graph; cycle; 아니다. zero-weight edge와 no-edge는 별도 상태다.\end{exampleblock}
+\end{frame}

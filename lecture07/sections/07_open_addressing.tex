@@ -1,0 +1,71 @@
+\subsection{Open Addressing}
+\begin{frame}{Probe Function}
+\[
+h(k,i),\qquad i=0,1,\ldots,m-1.
+\]
+\begin{itemize}\item collision마다 다음 후보 slot을 생성한다.\item SEARCH와 INSERT는 같은 key에 같은 sequence를 사용해야 한다.\item sequence가 충분한 slot을 방문하도록 capacity와 parameter를 설계한다.\item $m$번 probe 후에는 failure 또는 resize한다.\end{itemize}
+\end{frame}
+\begin{frame}{세 Slot State}
+\begin{center}\htlegend\end{center}
+\begin{description}
+\item[EMPTY (E)] 한 번도 사용되지 않음; search 종료 가능
+\item[OCCUPIED] active key--value entry; equality 검사
+\item[DELETED (D)] tombstone; search는 계속, insert 후보로 기억
+\end{description}
+\begin{alertblock}{정확성 규칙}EMPTY와 DELETED를 같은 \texttt{null} 상태로 표현하면 probe chain을 끊어 false negative를 만들 수 있다.\end{alertblock}
+\begin{center}\large\bfseries
+\textcolor{AlgoBlue}{EMPTY $\Rightarrow$ terminate}\qquad
+\textcolor{AlgoOrangeText}{DELETED $\Rightarrow$ continue}
+\end{center}
+\end{frame}
+\begin{frame}{Open-Address SEARCH}
+\small\begin{algorithmic}[1]
+\Procedure{HashSearch}{$T,key$}
+\For{$i\gets0$ to $m-1$}
+ \State $j\gets\Call{Probe}{key,i}$
+ \If{$T[j]=$ EMPTY}\State\Return NOT\_FOUND\EndIf
+ \If{$T[j]$ is OCCUPIED \textbf{and} $T[j].key=key$}
+   \State\Return $T[j]$
+ \EndIf
+\EndFor
+\State\Return NOT\_FOUND
+\EndProcedure
+\end{algorithmic}
+\end{frame}
+\begin{frame}{Open-Address PUT}
+\scriptsize\begin{algorithmic}[1]
+\Procedure{HashPut}{$T,key,value$}
+\State $firstDeleted\gets$ NONE
+\For{$i\gets0$ to $m-1$}
+ \State $j\gets\Call{Probe}{key,i}$
+ \If{$T[j]$ is OCCUPIED \textbf{and} $T[j].key=key$}
+   \State $T[j].value\gets value$; \Return UPDATED
+ \ElsIf{$T[j]=$ DELETED \textbf{and} $firstDeleted=$ NONE}
+   \State $firstDeleted\gets j$
+ \ElsIf{$T[j]=$ EMPTY}
+   \State place at $firstDeleted$ if present, else at $j$; \Return INSERTED
+ \EndIf
+\EndFor
+\State use $firstDeleted$ if present; otherwise RESIZE/FAIL
+\EndProcedure
+\end{algorithmic}
+\end{frame}
+\begin{frame}{왜 첫 Tombstone에 즉시 쓰지 않는가?}
+\centering\htrowthirteen{E,D,E,42,E,E,29,E,E,E,E,E,E}
+\begin{block}{가능한 상황}새 key의 probe sequence에서 tombstone 뒤에 같은 logical key가 이미 존재할 수 있다.\end{block}
+\httakeaway{첫 DELETED를 기억하되 EMPTY 또는 full probe까지 duplicate search를 계속한 뒤 재사용한다.}
+\end{frame}
+\begin{frame}{Open Addressing의 공간 의미}
+\begin{columns}[T]\column{.48\textwidth}
+\begin{block}{피하는 것}entry마다 별도 linked-node allocation과 pointer를 피할 수 있다.\end{block}
+\column{.48\textwidth}
+\begin{alertblock}{필요한 것}empty capacity slack, slot state metadata, resize 중 새 table이 필요하다.\end{alertblock}
+\end{columns}
+\[
+n<\text{usable capacity}\le m.
+\]
+\end{frame}
+\begin{frame}{Open Addressing Checkpoint}
+\begin{enumerate}\item SEARCH가 EMPTY에서 멈출 수 있는 이유는?\item DELETED에서는 왜 계속해야 하는가?\item $m$번 probe 후에도 자리가 없으면?\end{enumerate}
+\begin{exampleblock}{답}probe chain에 그 key가 있었다면 EMPTY 이전에 있어야 함; 뒤에 active key가 있을 수 있음; resize 또는 명시적 failure.\end{exampleblock}
+\end{frame}

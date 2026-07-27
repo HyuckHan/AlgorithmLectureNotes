@@ -1,0 +1,38 @@
+\section{Part R. Appendix}
+\begin{frame}{Implementation Files}
+\scriptsize\begin{tabular}{ll}\toprule
+Java&Graph, WeightedGraph, GraphTraversal, TopologicalSort, DisjointSet,\\
+&MinimumSpanningTree, ShortestPaths, GraphAlgorithmsDemo\\
+C&graph.h/.c, bfs\_dfs, topological\_sort, disjoint\_set, mst, shortest\_paths\\\bottomrule
+\end{tabular}
+\begin{block}{Policy}bounds, duplicate update, zero weight, deterministic ties, overflow guard, destroy/ownership를 명시한다.\end{block}
+\end{frame}
+\begin{frame}{Invariant Validator}
+\scriptsize\begin{tabular}{ll}\toprule
+Graph&bounds, reverse entry, edge count\\
+BFS&source 0, parent layer, unreachable INF\\
+DFS&\(d<f\), interval nesting, no GRAY\\
+Topo&every \(pos[u]<pos[v]\), cycle rejected\\
+MST&\(V-1\), connected, acyclic, weight\\
+SP&parent edge/path weight, triangle inequality, cycle check\\\bottomrule
+\end{tabular}
+\end{frame}
+\begin{frame}{Edge Classification Detail}
+\begin{itemize}\item directed DFS의 tree/back/forward/cross는 discovery/finish intervals로 분류 가능\item undirected DFS에서는 non-tree edge가 ancestor 방향으로 중복 관찰됨\item cycle/topo에 필요한 핵심은 GRAY back edge\end{itemize}
+\end{frame}
+\begin{frame}{Inverse Ackermann Preview}
+\[
+DSU\text{ with union-by-rank + path compression}: O(\alpha(V))\text{ amortized}.
+\]
+\(\alpha(V)\)는 실용적 input에서 매우 작다. Kruskal의 지배 비용은 edge sorting이다.
+\end{frame}
+\begin{frame}{All-Pairs Preview}
+\[
+D^{(k)}[i,j]=\min(D^{(k-1)}[i,j],D^{(k-1)}[i,k]+D^{(k-1)}[k,j]).
+\]
+Floyd--Warshall은 \(\Theta(V^3)\), negative edge를 허용하며 \(D[v,v]<0\)로 negative cycle을 확인한다.
+\end{frame}
+\begin{frame}{Code Validation Checklist}
+\begin{itemize}\item BFS queue/output, DFS times/stack snapshots, topo orders regenerated\item DSU roots and accept/reject decisions checked per state\item Prim/Kruskal exact edges and optimum agreement\item finalized Dijkstra and negative-edge rejection\item Bellman--Ford exact pass states and cycle detection\item Java/C strict compile and invariant tests\end{itemize}
+\gtakeaway{Graph algorithm은 그림보다 invariant와 재현 가능한 tie policy로 검증한다.}
+\end{frame}

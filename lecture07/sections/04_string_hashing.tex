@@ -1,0 +1,73 @@
+\subsection{Integer와 String Hashing}
+\begin{frame}{Division Method}
+\[
+h(k)=k\bmod m
+\]
+\begin{itemize}\item 단순하고 빠르지만 $m$과 key pattern의 공약수에 민감하다.\item modulo 방식에서 prime $m$은 pattern 회피에 유용할 수 있지만 절대 규칙은 아니다.\item 현대 구현은 bit mixing과 power-of-two capacity를 함께 사용하기도 한다.\end{itemize}
+\begin{exampleblock}{계산}$m=13$: $h(25)=12$, $h(29)=3$.\end{exampleblock}
+\end{frame}
+\begin{frame}{Multiplication Method}
+\[
+h(k)=\left\lfloor m\,\operatorname{frac}(kA)\right\rfloor,\qquad
+\operatorname{frac}(x)=x-\lfloor x\rfloor,\quad 0<A<1
+\]
+\begin{block}{유명한 선택}Knuth의 제안 중 하나는 $A\approx(\sqrt5-1)/2$이다. 특정 상수가 모든 dataset에 완벽하다는 뜻은 아니다.\end{block}
+\end{frame}
+\begin{frame}{Multiplication Trace: \texorpdfstring{$k=25,m=13$}{k=25,m=13}}
+\centering
+\begin{tikzpicture}[node distance=6mm and 5mm]
+\node[hash box,alt=<1|handout:0>{draw=AlgoOrange,ultra thick}{}](a){$25A\approx15.45085$};
+\node[hash box,right=of a,alt=<2|handout:0>{draw=AlgoOrange,ultra thick}{}](b){$\operatorname{frac}=0.45085$};
+\node[hash box,right=of b,alt=<3|handout:0>{draw=AlgoOrange,ultra thick}{}](c){$13\times0.45085\approx5.861$};
+\node[hash box,right=of c,alt=<4|handout:1>{draw=AlgoOrange,ultra thick}{}](d){$\lfloor5.861\rfloor=5$};
+\draw[probe arrow](a)--(b);\draw[probe arrow](b)--(c);\draw[probe arrow](c)--(d);
+\end{tikzpicture}
+\begin{center}\small $A=(\sqrt5-1)/2$; 표시값은 반올림했으며 최종 index는 5.\end{center}
+\end{frame}
+\begin{frame}{문자열 Hash의 나쁜 예: ASCII Sum}
+\[
+\operatorname{sum}(\texttt{"abcd"})=97+98+99+100=394
+\]
+\begin{itemize}\item \texttt{"abcd"}와 \texttt{"dbac"}는 항상 같은 합: order를 잃는다.\item 짧은 문자열은 가능한 합의 range가 좁다.\item table index로 줄이기 전부터 많은 collision이 생긴다.\end{itemize}
+\end{frame}
+\begin{frame}{첫 3글자만 쓰면 무엇을 잃는가?}
+\centering\begin{tikzpicture}[node distance=15mm]
+\node[hash box](a){Apple $\to$ App};
+\node[hash box,right=of a](b){Apply $\to$ App};
+\draw[<->,very thick,AlgoOrange](a)--node[above,font=\small]{same prefix}(b);
+\end{tikzpicture}
+\begin{alertblock}{문제}suffix information을 잃어 비슷한 prefix가 많은 dataset에서 collision이 증가한다.\end{alertblock}
+\httakeaway{모든 character를 순서와 함께 반영해야 한다.}
+\end{frame}
+\begin{frame}{Polynomial String Hash}
+문자 code를 $S[i]$라고 하면
+\[
+H(S)=S[0]B^{L-1}+S[1]B^{L-2}+\cdots+S[L-1].
+\]
+Horner form:
+\[
+H(S)=(\cdots((S[0]B+S[1])B+S[2])\cdots)B+S[L-1].
+\]
+\begin{itemize}
+\item 모든 character와 순서를 반영하고 $\Theta(L)$ time에 계산
+\item 작은 홀수 multiplier(예: 31, 37, 131)는 계산이 빠르고 단순한 bit/pattern 상관을 줄이는 실용적 선택
+\item 특정 multiplier가 모든 dataset에 최적이라는 뜻은 아님
+\item modulus 또는 정의된 machine-word 연산으로 bounded hash code 생성
+\end{itemize}
+\end{frame}
+\begin{frame}{Horner's Rule Pseudocode}
+\begin{algorithmic}[1]
+\Procedure{StringHash}{$S,B$}
+\State $hash\gets0$
+\For{each character $c$ in $S$}
+  \State $hash\gets hash\cdot B+\Call{Code}{c}$
+\EndFor
+\State \Return $hash$
+\EndProcedure
+\end{algorithmic}
+\begin{block}{Java 연결}Java의 공식 contract에서 equal strings는 equal hash codes를 가진다. hash code를 실제 table index로 줄이는 단계는 collection 구현의 별도 책임이다.\end{block}
+\end{frame}
+\begin{frame}{Integer와 String Hash Checkpoint}
+\begin{enumerate}\item ASCII sum이 anagram을 구분하지 못하는 이유는?\item Horner 방식의 한 iteration은?\item multiplication 예제의 index는?\end{enumerate}
+\begin{exampleblock}{답}문자 순서를 버리기 때문; \texttt{hash = hash*B + code(c)}; 5.\end{exampleblock}
+\end{frame}

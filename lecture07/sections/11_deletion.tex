@@ -1,0 +1,64 @@
+\section{Part D. Deletion and Rehashing}
+\begin{frame}{삭제 전 Probe Cluster}
+\centering
+\htrowthirteen{13,1,15,16,28,31,38,7,20,E,E,E,25}
+\begin{block}{관찰}key 38의 home은 12이고 probe sequence는 $12,0,1,2,3,4,5,6$이다. key 1은 그 경로 중간인 slot 1에 있다.\end{block}
+\end{frame}
+\begin{frame}{잘못된 삭제: 1을 EMPTY로}
+\centering\begin{tikzpicture}[x=.8cm]
+\foreach \i/\v in {0/13,1/1,2/15,3/16,4/28,5/31,6/38,7/7,8/20,9/E,10/E,11/E,12/25}{\node[ht occupied,minimum width=8mm](s\i)at(\i,0){\v};\node[font=\tiny,text=AlgoGray]at(\i,-.5){\i};}
+\only<1|handout:0>{\node[ht collision,minimum width=8mm]at(s1){1};\node[callout]at(6,1.2){DELETE 1};}
+\only<2|handout:0>{\node[ht empty,minimum width=8mm]at(s1){E};\node[callout]at(6,1.2){잘못된 처리: EMPTY};}
+\only<3|handout:0>{\node[ht empty,minimum width=8mm]at(s1){E};\node[ht collision,minimum width=8mm]at(s12){25};\node[callout]at(6,1.2){SEARCH 38: 12 occupied};}
+\only<4|handout:0>{\node[ht empty,minimum width=8mm]at(s1){E};\node[ht collision,minimum width=8mm]at(s0){13};\node[callout]at(6,1.2){0 occupied, 다음 1};}
+\only<5|handout:1>{\node[ht empty,minimum width=8mm]at(s1){E};\node[callout]at(6,1.2){slot 1 EMPTY: false NOT\_FOUND};}
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{올바른 삭제: Tombstone}
+\centering\begin{tikzpicture}[x=.8cm]
+\foreach \i/\v in {0/13,1/D,2/15,3/16,4/28,5/31,6/38,7/7,8/20,9/E,10/E,11/E,12/25}{\node[ht occupied,minimum width=8mm](s\i)at(\i,0){\v};\node[font=\tiny,text=AlgoGray]at(\i,-.5){\i};}
+\node[ht deleted,minimum width=8mm]at(s1){D};
+\only<1|handout:0>{\node[callout]at(6,1.2){DELETE 1 $\Rightarrow$ DELETED};}
+\only<2|handout:0>{\node[ht collision,minimum width=8mm]at(s12){25};\node[callout]at(6,1.2){SEARCH 38 시작};}
+\only<3|handout:0>{\node[ht deleted,minimum width=8mm]at(s1){D};\node[callout]at(6,1.2){D에서는 계속 probe};}
+\only<4|handout:1>{\node[ht probe,minimum width=8mm]at(s6){38};\node[callout]at(6,1.2){slot 6: found};}
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Tombstone Reuse}
+\begin{enumerate}
+\item PUT는 첫 DELETED index를 기억한다.
+\item probe를 계속해 existing equal key가 없는지 확인한다.
+\item EMPTY를 만나면 기억한 tombstone에 새 entry를 둔다.
+\item active count는 증가하고 tombstone count는 감소한다.
+\end{enumerate}
+\begin{alertblock}{즉시 쓰면 안 되는 이유}같은 key가 tombstone 뒤에 있다면 duplicate entry를 만들 수 있다.\end{alertblock}
+\begin{center}\large
+\textcolor{AlgoBlue}{EMPTY: search 종료}\qquad
+\textcolor{AlgoOrangeText}{DELETED: search 계속, insert 후보}
+\end{center}
+\end{frame}
+\begin{frame}{두 가지 Load}
+\[
+\alpha_{\text{logical}}=\frac{\text{active}}{m},\qquad
+\alpha_{\text{probe}}=\frac{\text{active}+\text{tombstones}}{m}.
+\]
+\loadgauge{.45}{active 9 / capacity 20}{$\alpha_{\text{logical}}=.45$}
+\loadgauge{.7}{active 9 + D 5}{$\alpha_{\text{probe}}=.70$}
+\httakeaway{검색 비용은 probing load의 영향을 받는다. active load가 낮아도 tombstone이 많으면 rehash가 필요할 수 있다.}
+\end{frame}
+\begin{frame}{Open-Address DELETE}
+\begin{algorithmic}[1]
+\Procedure{HashDelete}{$T,key$}
+\State $j\gets\Call{FindSlot}{T,key}$
+\If{$j=$ NOT\_FOUND}\State\Return false\EndIf
+\State $T[j]\gets$ DELETED
+\State $active\gets active-1$; $tombstones\gets tombstones+1$
+\State \Return true
+\EndProcedure
+\end{algorithmic}
+\begin{block}{Invariant}active key는 그 probe sequence에서 EMPTY보다 앞에 도달 가능해야 한다.\end{block}
+\end{frame}
+\begin{frame}{Deletion Checkpoint}
+\begin{enumerate}\item slot 1을 EMPTY로 만들면 왜 38을 잃는가?\item DELETED의 search와 insert 의미는?\item 어떤 load가 probe 길이에 더 직접적인가?\end{enumerate}
+\begin{exampleblock}{답}검색이 slot 1에서 조기 종료; search는 통과, insert는 후보로 기억; active+tombstone 기반 probing load.\end{exampleblock}
+\end{frame}

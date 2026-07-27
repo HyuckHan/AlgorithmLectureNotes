@@ -1,0 +1,38 @@
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{theme/beamerthemealgorithms}
+\definecolor{AlgoOrangeText}{HTML}{B45309}
+\setbeamercolor{alerted text}{fg=AlgoOrangeText}
+\renewcommand{\keyterm}[1]{\textcolor{AlgoOrangeText}{\bfseries #1}}
+\setsansfont{Noto Sans CJK KR}[Scale=0.98,AutoFakeSlant=0.15]
+\setmainfont{Noto Sans CJK KR}[Scale=0.98,AutoFakeSlant=0.15]
+\setmonofont{Noto Sans Mono CJK KR}[Scale=0.90]
+\usepackage{kotex,amsmath,amssymb,mathtools,booktabs,array}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,trees,patterns,decorations.pathreplacing}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18,compat/show suggested version=false}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\input{lecture02/common.tex}
+\pgfplotsset{compat=1.18,compat/show suggested version=false}
+\title{재귀 · Recursion}
+\subtitle{작은 동일 문제로 생각하고, 호출 스택과 점화식으로 분석하기}
+\author{Algorithm Lecture Notes}
+\date{}
+\newcommand{\Oh}{\mathcal O}\newcommand{\Th}{\Theta}\newcommand{\ph}{\varphi}
+\mode<handout>{\AtBeginSection[]{}}
+\begin{document}
+\input{lecture02/sections/01_motivation.tex}
+\input{lecture02/sections/02_execution.tex}
+\input{lecture02/sections/03_correctness.tex}
+\input{lecture02/sections/04_basic_examples.tex}
+\input{lecture02/sections/05_recurrences.tex}
+\input{lecture02/sections/06_master_theorem.tex}
+\input{lecture02/sections/07_recursive_thinking.tex}
+\input{lecture02/sections/08_hanoi.tex}
+\input{lecture02/sections/09_maze.tex}
+\input{lecture02/sections/10_blob.tex}
+\input{lecture02/sections/11_power_set.tex}
+\input{lecture02/sections/12_recursion_vs_iteration.tex}
+\input{lecture02/sections/13_summary_quiz.tex}
+\end{document}

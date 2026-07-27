@@ -1,0 +1,32 @@
+\subsection{Appendix}
+\begin{frame}{Incremental Rehashing Preview}
+\begin{columns}[T]\column{.48\textwidth}
+\begin{alertblock}{Stop-the-world}한 operation이 전체 table을 옮겨 latency spike를 만든다.\end{alertblock}
+\column{.48\textwidth}
+\begin{block}{Incremental}old/new table을 잠시 함께 두고 operation마다 몇 bucket씩 이동한다.\end{block}
+\end{columns}
+\begin{itemize}\item lookup은 migration 완료 전 두 table을 확인할 수 있음\item 상태와 concurrency가 복잡해짐\item total work는 줄지 않지만 latency를 분산\end{itemize}
+\end{frame}
+\begin{frame}{Probe Formula 참고}
+\[
+E[\text{linear successful probes}]
+\approx\frac12\left(1+\frac1{1-\alpha}\right)
+\]
+\[
+E[\text{linear unsuccessful probes}]
+\approx\frac12\left(1+\frac1{(1-\alpha)^2}\right)
+\]
+\begin{alertblock}{해석}위 식은 고전적 linear-probing formulas이며 arbitrary open addressing의 general uniform-hashing bounds가 아니다. 본문 그래프는 표시된 두 식을 그대로 직접 plot했다.\end{alertblock}
+\end{frame}
+\begin{frame}{Hash Flooding과 Adversarial Keys}
+\begin{columns}[T]\column{.45\textwidth}
+\begin{alertblock}{공격}같은 bucket/probe로 가는 key를 대량 공급해 expected $\Theta(1)$을 worst $\Theta(n)$으로 악화시켜 DoS를 유발한다.\end{alertblock}
+\column{.51\textwidth}
+\begin{block}{완화}randomized seed; stronger mixing; chain treeification; request limits; trusted/untrusted workload 분리\end{block}
+\end{columns}
+\begin{center}\small 구체적인 threshold와 내부 algorithm은 language/library version에 따라 달라질 수 있다.\end{center}
+\end{frame}
+\begin{frame}{Code Validation Checklist}
+\begin{itemize}\item Java: custom same-hash unequal keys, mutable-key warning, differential random test\item C: negative keys, allocation ownership, randomized reference comparison\item probing: $m$회 bounded loop로 infinite cycle 방지\item resize: all entries preserved, size stable, tombstones removed\item sanitizers가 있으면 C memory/leak 검사를 추가 실행\end{itemize}
+\httakeaway{Expected performance를 주장하기 전에 correctness invariant와 worst-case escape path부터 확인한다.}
+\end{frame}

@@ -1,0 +1,27 @@
+\subsection{LPS/Failure Table}
+\begin{frame}{LPS의 Index 의미}
+\[
+lps[i]=\max\{r:0\le r<i+1,\ P[0..r-1]=P[i-r+1..i]\}.
+\]
+\[
+\texttt{BAABABAA}\Rightarrow[0,0,0,1,2,1,2,3].
+\]
+\stakeaway{\(i\)는 character index, \(lps[i]\)는 length다. 둘을 혼동하지 않는다.}
+\end{frame}
+\begin{frame}{세 Prefix를 손으로 확인}
+\small\begin{tabular}{lll}\toprule
+prefix&longest border&length\\\midrule
+\texttt{BAAB}&\texttt{B}&1\\
+\texttt{BAABAB}&\texttt{B}&1\\
+\texttt{BAABABAA}&\texttt{BAA}&3\\\bottomrule
+\end{tabular}
+\begin{block}{Fallback chain}\(len\gets lps[len-1]\)는 더 짧은 border 후보를 따라간다.\end{block}
+\end{frame}
+\begin{frame}{Standard LPS vs Sentinel Failure}
+\small\begin{tabular}{lll}\toprule
+Convention&base value&mismatch\\\midrule
+standard LPS&\(lps[0]=0\)&\(j\gets lps[j-1]\)\\
+sentinel failure&\(failure[0]=-1\)&\(j\gets failure[j]\)\\\bottomrule
+\end{tabular}
+\begin{alertblock}{본문 정책}standard LPS만 사용한다. 원본의 length 0 \(\to-1\) row는 다른 convention이다.\end{alertblock}
+\end{frame}

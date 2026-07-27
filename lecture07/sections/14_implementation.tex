@@ -1,0 +1,86 @@
+\section{Part E. Implementation, Performance, and Summary}
+\begin{frame}{Map API Contract}
+\small\begin{tabular}{ll}\toprule
+API&강의용 정책\\\midrule
+\texttt{put/get/containsKey/remove}&duplicate key는 value update\\
+\texttt{size/capacity/loadFactor/clear}&상태를 관찰·초기화\\
+null key/value&금지해 구현 단순화\\
+equality&\texttt{equals} / integer equality\\
+iteration order&보장하지 않음\\
+thread safety&제공하지 않음\\\bottomrule
+\end{tabular}
+\begin{alertblock}{Mutation}operation 중 resize가 일어나 reference/index가 바뀔 수 있으므로 내부 slot pointer를 API 밖으로 노출하지 않는다.\end{alertblock}
+\end{frame}
+\begin{frame}{Java equals/hashCode Contract}
+\[
+a.equals(b)\Rightarrow a.hashCode()=b.hashCode()
+\]
+\[
+a.hashCode()=b.hashCode()\not\Rightarrow a.equals(b).
+\]
+\begin{itemize}\item collision 후 반드시 \texttt{equals}로 logical key 확인\item key가 table 안에 있는 동안 equality/hash-relevant field를 변경하지 않음\item custom key는 두 method를 함께 설계\end{itemize}
+\end{frame}
+\begin{frame}[fragile]{Mutable Key Failure}
+\begin{columns}[T]
+\column{.57\textwidth}
+\begin{lstlisting}[style=jcode,basicstyle=\ttfamily\tiny]
+final class StudentKey {
+  int id;
+  StudentKey(int id) { this.id = id; }
+  @Override public int hashCode() {
+    return Integer.hashCode(id);
+  }
+  @Override public boolean equals(Object obj) {
+    return obj instanceof StudentKey other
+        && id == other.id;
+  }
+}
+StudentKey key = new StudentKey(10);
+map.put(key, "Ada");
+key.id = 20; // dangerous mutation
+map.get(key); // lookup may fail
+\end{lstlisting}
+\column{.40\textwidth}
+\footnotesize
+\begin{alertblock}{왜 실패하는가?}
+entry는 id 10의 bucket에 남지만, \texttt{get(key)}는 id 20으로
+lookup path를 계산한다. Map은 mutated key를 자동 재배치할 의무가 없다.
+\end{alertblock}
+\begin{block}{정책}
+\texttt{equals/hashCode} 관련 field는 key가 table 안에 있는 동안
+immutable이어야 한다.
+\end{block}
+\end{columns}
+\end{frame}
+\begin{frame}{Java 구현}
+\begin{columns}[T]\column{.48\textwidth}
+\begin{block}{ChainedHashMap}
+generic $K,V$; linked bucket; update; resize; cycle/bucket/size validator
+\end{block}
+\column{.48\textwidth}
+\begin{block}{OpenAddressHashMap}
+linear probing; explicit state byte; tombstone reuse; resize; reachability validator
+\end{block}
+\end{columns}
+\begin{exampleblock}{파일}\texttt{ChainedHashMap.java}, \texttt{OpenAddressHashMap.java}\\
+\texttt{HashTableDemo.java}, \texttt{MutableKeyExample.java}, \texttt{HashTableExamplesTest.java}\end{exampleblock}
+\end{frame}
+\begin{frame}{C 구현과 Ownership}
+\begin{columns}[T]\column{.48\textwidth}
+\begin{block}{Chaining}integer key/value를 entry node가 소유. \texttt{destroy}가 모든 node와 bucket array를 해제한다.\end{block}
+\column{.48\textwidth}
+\begin{block}{Open Addressing}slot array가 value를 직접 보관. state enum이 EMPTY/OCCUPIED/DELETED를 구분한다.\end{block}
+\end{columns}
+\begin{itemize}\item allocation failure는 false 반환과 원상태 보존\item negative key는 normalized modulo\item dangling pointer를 API 밖으로 반환하지 않음\end{itemize}
+\end{frame}
+\begin{frame}{Invariant와 Test Strategy}
+\scriptsize\begin{tabular}{ll}\toprule
+Chaining&correct bucket, no duplicate, exact size, no cycle\\
+Open addressing&reachable before EMPTY, no duplicate, active/D counts, bounded probe\\
+Rehash&capacity changed, size preserved, all lookup, no old D\\\midrule
+deterministic tests&empty, update, collision, wrap, middle delete, D reuse, repeated resize\\
+Java differential&random operations vs \texttt{java.util.HashMap}\\
+C randomized&reference key/value arrays와 비교\\\bottomrule
+\end{tabular}
+\httakeaway{구현의 마지막 단계는 “동작하는 예”가 아니라 invariant를 자동 검사하는 것이다.}
+\end{frame}

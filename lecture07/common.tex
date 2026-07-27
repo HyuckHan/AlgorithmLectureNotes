@@ -1,0 +1,35 @@
+\tikzset{
+ ht slot/.style={draw=AlgoBlue,thick,minimum width=10mm,minimum height=8mm,font=\small,fill=white},
+ ht empty/.style={ht slot,fill=AlgoGray!8,text=AlgoGray},
+ ht occupied/.style={ht slot,fill=AlgoBlue!8},
+ ht deleted/.style={ht slot,fill=AlgoGray!18,pattern=north east lines,pattern color=AlgoGray},
+ ht home/.style={ht slot,draw=AlgoBlueTwo,ultra thick,double},
+ ht probe/.style={ht slot,draw=AlgoOrange,ultra thick,fill=AlgoOrange!18},
+ ht collision/.style={ht slot,draw=red!75!black,ultra thick,fill=red!10},
+ chain node/.style={draw=AlgoBlue,thick,rounded corners,fill=white,minimum width=18mm,minimum height=7mm,font=\small},
+ chain active/.style={chain node,draw=AlgoOrange,ultra thick,fill=AlgoOrange!16},
+ chain edge/.style={thick,draw=AlgoBlueTwo,-Latex},
+ probe arrow/.style={ultra thick,draw=AlgoOrange,-Latex},
+ migrated/.style={ht slot,draw=AlgoOrange,ultra thick,fill=AlgoOrange!20},
+ hash box/.style={draw=AlgoBlue,thick,rounded corners,fill=AlgoLight,align=center,minimum height=9mm,inner xsep=3mm}
+}
+\newcommand{\httakeaway}[1]{\begin{takeaway}#1\end{takeaway}}
+\newcommand{\htcheckpoint}[1]{\begin{exampleblock}{Checkpoint}#1\end{exampleblock}}
+\newcommand{\htmission}[1]{\begin{block}{Mission}#1\end{block}}
+\newcommand{\htcell}[4][]{\node[ht slot,#1] (#2#3) at ({.96*(#3)},0) {#4};}
+\newcommand{\htindex}[1]{\node[font=\tiny,text=AlgoGray] at ({.96*(#1)},-.55) {#1};}
+\newcommand{\htlegend}{%
+\tikz[baseline=-.5ex]\node[ht empty,minimum width=6mm,minimum height=4mm,font=\tiny]{E};\ EMPTY\quad
+\tikz[baseline=-.5ex]\node[ht deleted,minimum width=6mm,minimum height=4mm,font=\tiny]{D};\ DELETED\quad
+\tikz[baseline=-.5ex]\node[ht occupied,minimum width=6mm,minimum height=4mm,font=\tiny]{k};\ OCCUPIED}
+\newcommand{\htrowthirteen}[1]{%
+\begin{tikzpicture}[x=.75cm]
+\foreach \v [count=\i from 0] in {#1}{\node[ht slot,minimum width=8mm] at (\i,0){\v};\node[font=\tiny,text=AlgoGray]at(\i,-.48){\i};}
+\end{tikzpicture}}
+\newcommand{\loadgauge}[3]{%
+\begin{tikzpicture}[x=5.5cm,y=.42cm]
+\draw[rounded corners,fill=AlgoGray!10,draw=AlgoRule](0,0)rectangle(1,1);
+\fill[rounded corners,AlgoOrange!65](0,0)rectangle(#1,1);
+\node[anchor=west,font=\small]at(1.05,.5){#2};
+\node[font=\bfseries]at(.5,.5){#3};
+\end{tikzpicture}}

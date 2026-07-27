@@ -1,0 +1,33 @@
+\section{Part E. DFS 활용과 Cycle Detection}
+\begin{frame}{Directed DFS Edge Classification}
+\begin{description}\item[tree]WHITE vertex를 처음 발견\item[back]GRAY ancestor로 이동\item[forward]BLACK descendant로 이동\item[cross]완료된 다른 branch로 이동\end{description}
+\gtakeaway{본문의 핵심은 GRAY로 가는 back edge가 directed cycle의 증거라는 점이다.}
+\end{frame}
+\begin{frame}{Directed Cycle: 3-Color}
+\small\begin{algorithmic}[1]
+\Function{HasCycleDFS}{$u$}\State $color[u]\gets G$
+\ForAll{$v\in Adj[u]$}\If{$color[v]=G$}\State \Return true\EndIf
+\If{$color[v]=W$ \textbf{ and } \Call{HasCycleDFS}{$v$}}\State\Return true\EndIf\EndFor
+\State $color[u]\gets B$; \Return false\EndFunction
+\end{algorithmic}
+\end{frame}
+\begin{frame}{Back Edge Animation}
+\centering\begin{tikzpicture}[x=1.7cm]
+\node[gseen](a)at(0,0){A};\node[gseen](b)at(2,0){B};\node[gcurrent](c)at(4,0){C};
+\draw[garrow](a)--(b);\draw[garrow](b)--(c);
+\only<1>{\draw[garrow](c)to[bend left=35](a);\node[callout]at(2,-1){inspect \(C\to A\)};}
+\only<2>{\draw[gback](c)to[bend left=35]node[below]{back edge}(a);\node[callout]at(2,-1){A is GRAY \(\Rightarrow\) cycle};}
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{왜 visited Boolean만으로 부족한가?}
+\begin{columns}[T]\column{.48\textwidth}\begin{alertblock}{오류}이미 방문한 BLACK vertex로 가는 cross/forward edge까지 cycle로 오판한다.\end{alertblock}
+\column{.48\textwidth}\begin{block}{필요한 상태}현재 recursion stack의 GRAY와 완료된 BLACK을 분리한다.\end{block}\end{columns}
+\end{frame}
+\begin{frame}{Undirected Cycle의 Parent 예외}
+\begin{block}{Rule}visited neighbor \(v\)를 만났을 때 \(v\ne parent[u]\)이면 cycle이다.\end{block}
+\begin{alertblock}{이유}undirected edge는 양방향 adjacency entry로 저장된다. child에서 parent로 되돌아가는 entry는 cycle 증거가 아니다.\end{alertblock}
+\end{frame}
+\begin{frame}{Part E Checkpoint}
+\begin{enumerate}\item directed graph에서 cycle을 증명하는 색은?\item BLACK neighbor는 항상 cycle인가?\item undirected parent edge는 cycle인가?\end{enumerate}
+\begin{exampleblock}{답}GRAY; 아니다; 아니다.\end{exampleblock}
+\end{frame}

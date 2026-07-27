@@ -1,0 +1,29 @@
+\begin{frame}{정렬 알고리즘을 보는 여섯 기준}
+\begin{columns}[T]\column{.48\textwidth}\begin{itemize}\item best / average / worst time\item auxiliary space\item stable 여부\end{itemize}\column{.48\textwidth}\begin{itemize}\item in-place 여부\item adaptive 여부\item comparison 기반 여부\end{itemize}\end{columns}
+\sortingtakeaway{같은 $\Theta(n\log n)$이라도 보장, 메모리, 데이터 이동 비용은 다르다.}
+\end{frame}
+\begin{frame}{Stability: 같은 Key의 순서를 지키는가?}
+\centering\begin{tikzpicture}[x=1.25cm,y=1cm]
+\foreach \x/\t in {0/{A:90},1/{B:70},2/{C:90},3/{D:80}} \node[sort cell,minimum width=13mm] at (\x,1){\t};
+\foreach \x/\t in {0/{B:70},1/{D:80},2/{A:90},3/{C:90}} \node[sort active,minimum width=13mm] at (\x,0){\t};
+\draw[-Latex,thick] (4.3,1)--node[right]{stable}(4.3,0);
+\end{tikzpicture}
+\begin{block}{핵심}A와 C는 서로 다른 record이고 90은 key다. Comparator가 두 record를 동등($compare=0$)하다고 판단할 때 입력의 상대 순서를 보존하면 stable이다.\end{block}
+\end{frame}
+\begin{frame}{Auxiliary Space와 In-place}
+\begin{description}\item[Auxiliary space] 입력 저장 공간을 제외한 추가 메모리\item[In-place] 보통 $O(1)$ 또는 재귀 스택 정도만 추가 사용\end{description}
+\begin{alertblock}{주의}“배열 안에서 정렬”과 “추가 메모리가 전혀 없음”은 같은 말이 아니다. Quick Sort도 recursion stack을 쓴다.\end{alertblock}
+\end{frame}
+\begin{frame}{Adaptive, Online / Offline}
+\begin{columns}[T]\column{.48\textwidth}\begin{block}{Adaptive}\small 이미 정렬된 정도를 이용해 더 빨라진다. 예: Insertion Sort와 inversion 수.\end{block}\column{.48\textwidth}\begin{block}{Online}\small 입력을 모두 받기 전에도 순서를 유지할 수 있다. Insertion은 online 방식으로 쓰기 좋다.\end{block}\end{columns}
+\vspace{4mm}\centering Offline 정렬은 전체 입력을 확보한 뒤 처리한다.
+\end{frame}
+\begin{frame}{Comparison-based와 External Sorting}
+\optional[선택 심화]\hfill
+\begin{itemize}\item \textbf{Comparison sort}: key 비교 결과만 사용 — Merge, Quick, Heap 등\item \textbf{Non-comparison sort}: key 범위·digit 구조를 이용 — Counting, Radix\item \textbf{External sort}: 데이터가 RAM보다 클 때 block I/O를 최소화 — 보통 multiway merge\end{itemize}
+\end{frame}
+\begin{frame}{정렬의 성질 Checkpoint}
+\begin{enumerate}\item 이름순 정렬 뒤 같은 이름 안에서 학번순을 보존하려면?\item $O(1)$ auxiliary space가 필수라면 무엇을 확인해야 하는가?\item 이미 거의 정렬된 입력이라면 어떤 성질이 중요한가?\end{enumerate}
+\begin{exampleblock}{답}1 stable, 2 in-place, 3 adaptive\end{exampleblock}
+\vfill\muted{정렬의 품질을 판단할 기준을 정했으므로, 먼저 단순한 세 알고리즘에서 각 기준이 어떻게 달라지는지 살펴본다.}
+\end{frame}

@@ -1,0 +1,63 @@
+\section{Part D. 0/1 Knapsack Branch-and-Bound}
+\begin{frame}{0/1 Knapsack State}
+\[
+\max\sum p_ix_i\quad\text{s.t.}\quad \sum w_ix_i\le W,\quad x_i\in\{0,1\}.
+\]
+\begin{description}
+\item[State] next item, current weight/profit, selected set, upper bound.
+\item[Order] profit/weight ratio 내림차순.
+\item[Decision] item include/exclude.
+\end{description}
+\begin{block}{Partial state도 feasible solution}현재 weight가 \(W\) 이하이면, 남은 item을 모두 exclude하여 지금 selected set을 그대로 완성할 수 있다. 따라서 leaf 전에도 current profit으로 incumbent를 갱신할 수 있다.\end{block}
+\end{frame}
+\begin{frame}{Running Example}
+\centering\small
+\begin{tabular}{lrrr}\toprule item&weight&profit&ratio\\\midrule
+A&2&40&20\\B&5&30&6\\C&10&50&5\\D&5&10&2\\\bottomrule
+\end{tabular}
+\qquad \(W=16\).
+\begin{exampleblock}{검증된 optimum}A와 C: weight \(12\), profit \(90\).\end{exampleblock}
+\end{frame}
+\begin{frame}{Fractional Relaxation Upper Bound}
+0/1 constraint를 완화해 마지막 item의 fraction을 허용한다.
+\[
+UB(root)=40+30+\frac{9}{10}\cdot50=115.
+\]
+fractional optimum은 0/1 feasible set을 포함하는 relaxation의 optimum이므로 실제 0/1 optimum보다 작지 않다.
+\end{frame}
+\begin{frame}{Knapsack Bound 계산 절차}
+\begin{enumerate}
+\item 현재 profit에서 시작한다.
+\item 남은 capacity를 ratio 순 complete item으로 채운다.
+\item 마지막 item은 가능한 fraction만 채운다.
+\end{enumerate}
+\begin{alertblock}{Overflow safety}weight/profit 합은 넓은 정수형과 덧셈 guard를 사용하고, ratio 비교는 cross multiplication을 안전하게 처리한다.\end{alertblock}
+\end{frame}
+\begin{frame}{Knapsack Best-First Trace}
+\centering\begin{tikzpicture}
+\node[ssbox]at(0,1.5){\only<1|handout:0>{root \((w0,p0,UB115)\)}\only<2|handout:0>{include A: \((2,40,UB115)\)}\only<3|handout:0>{exclude A: \((0,0,UB82)\)}\only<4|handout:0>{include B / exclude B child 생성}\only<5|handout:0>{expand exclude-B; include C: \(w12,p90\)}\only<6|handout:0>{exclude-A \(UB82\le90\Rightarrow P\)}\only<7|handout:1>{PQ empty: optimum 90}};
+\node[ssnote]at(0,0){\only<1|handout:0>{\pqview{root:115}}\only<2|handout:0>{\pqview{A:115}}\only<3|handout:0>{\pqview{A:115,\ \neg A:82}}\only<4|handout:0>{\pqview{AB:115,\ A\neg B:98,\ \neg A:82}}\only<5|handout:0>{\incbadge{90}: selected \(\{A,C\}\)}\only<6|handout:0>{objective-bound prune}\only<7|handout:1>{optimal weight 12, profit 90}};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{핵심 State Tree}
+\centering\begin{tikzpicture}
+\node[sscurrent](r)at(0,2.2){0/0/115};\node[ssopen](a)at(-2,.8){2/40/115};\node[ssbound](na)at(2,.8){0/0/82};
+\node[ssopen](ab)at(-3,-.7){7/70/115};\node[ssopen](anb)at(-1,-.7){2/40/98};
+\node[ssvalid](ac)at(-1,-2.1){12/90};\node[ssbound](p)at(2,-2.1){P};
+\foreach \u/\v in{r/a,r/na,a/ab,a/anb,anb/ac,na/p}\draw[ssedge](\u)--(\v);
+\node[font=\tiny]at(0,-3){node label: weight / profit / UB};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Knapsack Invariants와 Bound 검증}
+\[
+currentWeight=\sum_{i\in selected}w_i,\qquad
+currentProfit=\sum_{i\in selected}p_i.
+\]
+\[
+UB(node)\ge\text{true best feasible descendant profit}.
+\]
+작은 instance에서는 각 node의 descendant를 brute force로 열거해 모든 displayed bound를 검사한다.
+\end{frame}
+\begin{frame}{Knapsack Takeaway}
+\sstakeaway{Fractional knapsack은 0/1 feasible set을 완화하므로 maximization의 safe upper bound를 제공한다. 최악 시간은 여전히 exponential이다.}
+\end{frame}

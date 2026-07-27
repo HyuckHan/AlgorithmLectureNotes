@@ -1,0 +1,31 @@
+\begin{frame}{Recurrence의 세 항}
+\[T(n)\le T(\lceil n/5\rceil)+T(7n/10+O(1))+\Theta(n)\]
+\begin{columns}[T]
+\column{.31\textwidth}\begin{block}{$T(\lceil n/5\rceil)$}약 $n/5$개 median에서 $M$ 선택\end{block}
+\column{.31\textwidth}\begin{block}{$T(7n/10+O(1))$}원본에서 유지될 수 있는 쪽의 upper bound\end{block}
+\column{.31\textwidth}\begin{block}{$\Theta(n)$}group sort·수집·3-way partition\end{block}
+\end{columns}
+\end{frame}
+\begin{frame}{다음 Level의 Problem Mass는 0.9}
+\[\frac15+\frac7{10}=\frac9{10}<1\]
+5개 group의 정렬은 group당 $\Theta(1)$, group 수는 $\Theta(n)$이므로 전체 $\Theta(n)$이다.
+\selecttakeaway{재귀로 전달되는 총 크기가 매 level 일정 비율로 줄어든다는 선형 bound의 직관이다.}
+\muted{Fraction 합만으로 임의의 recurrence가 자동 증명되는 것은 아니다. 다음 substitution이 선형 overhead가 흡수됨을 확인한다.}
+\end{frame}
+\begin{frame}{Substitution으로 $O(n)$ 확인}
+\optional[Advanced]\hfill
+모든 $m<n$에 대해 $T(m)\le cm$을 가정하고, ceiling과 예외를 상수 $b$로 묶으면
+\begin{align*}
+T(n)
+&\le c\left(\frac n5+1\right)
+ +c\left(\frac{7n}{10}+b\right)+an\\
+&\le 0.9cn+an+O(c).
+\end{align*}
+$c>10a$를 먼저 택하고 충분히 큰 $n$을 택하면 $0.1cn$이 $an+O(c)$를 흡수하여 $T(n)\le cn$이다.
+\end{frame}
+\begin{frame}{최종 Bound는 $\Theta(n)$}
+\begin{itemize}\item upper bound: recurrence로 $O(n)$\item lower bound: unrestricted input의 exact comparison-based selection에는 모든 원소가 결과 결정에 참여해야 하는 입력이 있어 $\Omega(n)$\end{itemize}
+\[T(n)=\Theta(n)\quad\text{in the worst case}\]
+\vfill\muted{Approximate quantile이나 전처리된 static data structure의 query에는 이 per-query lower bound를 그대로 적용하지 않는다.}
+\vfill\muted{세 알고리즘의 보장을 이해했으므로, 실제 입력과 latency 요구에 맞는 전략을 선택한다.}
+\end{frame}

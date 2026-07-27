@@ -1,0 +1,37 @@
+\subsection{FIFO·LIFO·Least-Cost Search}
+\begin{frame}{세 Branch-and-Bound 순서 \hfill \ssoptional[선택 심화]}
+\small\begin{tabular}{llll}\toprule
+Policy&Container&다음 node&특징\\\midrule
+FIFO&queue&가장 오래된 live node&level-order\\
+LIFO&stack&가장 최근 live node&DFS-like\\
+Best-bound&PQ&가장 좋은 UB/LB&평가 집중\\\bottomrule
+\end{tabular}
+\end{frame}
+\begin{frame}{Frontier Policy Animation}
+\centering\begin{tikzpicture}
+\node[ssbox]at(0,1.2){live nodes: A(UB 12), B(UB 18), C(UB 15)};
+\node[ssnote]at(0,0){\only<1|handout:0>{FIFO \(\to A\)}\only<2|handout:0>{LIFO \(\to C\)}\only<3|handout:1>{Best-bound max \(\to B\); sound bound이면 어느 순서도 optimality 유지}};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{좋은 Incumbent를 언제 찾는가?}
+\begin{itemize}
+\item LIFO가 좋은 깊은 해를 빨리 찾으면 이후 많은 node를 prune할 수 있다.
+\item best-bound는 bound가 정확할 때 좋은 branch에 집중한다.
+\item FIFO는 shallow structure를 고르게 보지만 frontier가 커질 수 있다.
+\end{itemize}
+\end{frame}
+\begin{frame}{Least-Cost라는 이름}
+Minimization에서는 lower bound가 가장 작은 node를 먼저 꺼내므로 \textbf{least-cost B\&B}라 부른다.
+\[
+\text{maximization: ExtractMax(UB)},\qquad
+\text{minimization: ExtractMin(LB)}.
+\]
+\end{frame}
+\begin{frame}{탐색 순서와 Correctness}
+\begin{block}{동일한 전제}complete expansion, sound feasibility pruning, safe objective bound, 올바른 종료 조건.\end{block}
+이 전제 아래 순서는 성능과 memory를 바꾸지만 optimum 자체는 바꾸지 않는다.
+\end{frame}
+\begin{frame}{Frontier Policy Checkpoint}
+\begin{enumerate}\item memory가 가장 커질 가능성이 높은 정책은?\item maximization best-bound의 PQ key는?\end{enumerate}
+\begin{exampleblock}{답}FIFO 또는 넓은 best-first frontier; upper bound가 큰 순서.\end{exampleblock}
+\end{frame}

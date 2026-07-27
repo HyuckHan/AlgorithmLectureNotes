@@ -1,0 +1,83 @@
+\section{Part N. Dijkstra Algorithm}
+\begin{frame}{Dijkstra의 전제}
+\[
+\forall (u,v)\in E,\qquad w(u,v)\ge0.
+\]
+\begin{block}{핵심}minimum tentative distance vertex를 extract하면 그 distance가 final이다.\end{block}
+\begin{alertblock}{Discovered \(\ne\) Finalized}priority queue에 들어갔다는 이유만으로 final이 아니다.\end{alertblock}
+\end{frame}
+\begin{frame}{Dijkstra: Finalized + Stale Entry}
+\scriptsize\begin{algorithmic}[1]
+\Procedure{Dijkstra}{$G,s$}\State 모든 \(dist\gets\infty,parent\gets\NIL,finalized\gets false\)
+\State \(dist[s]\gets0\)
+\State \(Q\gets\{(0,s)\}\)
+\While{$Q\ne\emptyset$}\State \((du,u)\gets\Call{ExtractMin}{Q}\)
+\If{$du\ne dist[u]$}\State\textbf{continue}\Comment{stale entry}\EndIf
+\If{$finalized[u]$}\State\textbf{continue}\EndIf
+\State \(finalized[u]\gets true\)
+\ForAll{$(u,v,w)\in Adj[u]$}\If{\textbf{not} \(finalized[v]\) \textbf{ and } \(dist[u]+w<dist[v]\)}
+\State \(dist[v]\gets dist[u]+w,\ parent[v]\gets u\)
+\State \Call{Insert}{$Q,(dist[v],v)$}\EndIf\EndFor\EndWhile\EndProcedure
+\end{algorithmic}
+\end{frame}
+\begin{frame}{고정 Dijkstra 예제}
+\small edges:
+\[
+SA4,\ SB2,\ BA1,\ AC5,\ BC8,\ BD10,\ CD2,\ CE6,\ DE3.
+\]
+\begin{block}{Tie policy}PQ는 \((distance,vertex)\) lexicographic. stale entry는 extract 후 현재 dist와 다르면 버린다.\end{block}
+\end{frame}
+\begin{frame}{Dijkstra Trace}
+\centering\begin{tikzpicture}[x=.8cm,y=.75cm]
+\node[gvertex](s)at(0,1.5){S};\node[gvertex](b)at(2,0){B};\node[gvertex](a)at(2,3){A};
+\node[gvertex](c)at(4,2.3){C};\node[gvertex](d)at(5.8,1.2){D};\node[gvertex](e)at(5.8,3.4){E};
+\draw[garrow](s)--node[above left,font=\tiny]{4}(a);\draw[garrow](s)--node[below left,font=\tiny]{2}(b);
+\draw[garrow](b)--node[right,font=\tiny]{1}(a);\draw[garrow](a)--node[above,font=\tiny]{5}(c);
+\draw[garrow](b)--node[below,font=\tiny]{8}(c);\draw[garrow](b)to[bend right=16]node[below,font=\tiny]{10}(d);
+\draw[garrow](c)--node[below,font=\tiny]{2}(d);\draw[garrow](c)--node[above,font=\tiny]{6}(e);\draw[garrow](d)--node[right,font=\tiny]{3}(e);
+\only<2->{\draw[gtreearrow](s)--(b);}\only<3->{\draw[gtreearrow](b)--(a);}\only<4->{\draw[gtreearrow](a)--(c);}
+\only<5->{\draw[gtreearrow](c)--(d);}\only<6->{\draw[gtreearrow](d)--(e);}
+\only<1>{\node[gcurrent]at(s){S};}\only<2>{\node[gcurrent]at(b){B};}\only<3>{\node[gcurrent]at(a){A};}
+\only<4>{\node[gcurrent]at(c){C};}\only<5>{\node[gcurrent]at(d){D};}\only<6>{\node[gcurrent]at(e){E};}
+\node[pq]at(9.2,3){Extract: \only<1>{S(0)}\only<2>{B(2)}\only<3>{A(3)}\only<4>{C(8)}\only<5>{D(10)}\only<6>{E(13)}};
+\node[callout]at(9.2,1.7){Update: \only<1>{A=4,B=2}\only<2>{A=3,C=10,D=12}\only<3>{C=8}\only<4>{D=10,E=14}\only<5>{E=13}\only<6>{done}};
+\node[callout]at(9.2,.4){Finalized: \only<1>{S}\only<2>{S,B}\only<3>{S,B,A}\only<4>{S,B,A,C}\only<5>{S,B,A,C,D}\only<6>{all}};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Dijkstra 결과와 Path}
+\[
+\begin{array}{c|rrrrrr}v&S&A&B&C&D&E\\\hline
+dist&0&3&2&8&10&13\\parent&-&B&S&A&C&D
+\end{array}
+\]
+\[
+S\to B\to A\to C\to D\to E,\qquad 2+1+5+2+3=13.
+\]
+\end{frame}
+\begin{frame}{왜 Nonnegative가 필요한가?}
+\begin{block}{Cut-like intuition}minimum tentative \(u\)보다 더 짧은 path가 미확정 영역을 거쳐 온다면, 그 path의 첫 미확정 vertex는 nonnegative prefix 때문에 \(u\)보다 작은 tentative bound를 가져야 한다. 모순이다.\end{block}
+\end{frame}
+\begin{frame}{Negative Edge Counterexample}
+\centering\begin{tikzpicture}[x=2cm,y=.72cm]
+\node[gvertex](s)at(0,0){s};\node[gvertex](a)at(2,1){a};\node[gvertex](b)at(2,-1){b};
+\draw[garrow](s)--node[above]{2}(a);\draw[garrow](s)--node[below]{5}(b);\draw[gnegative](b)--node[right]{-10}(a);
+\end{tikzpicture}
+\small\begin{alertblock}{Finalization theorem의 실패}
+\(a\)는 distance 2로 먼저 finalized된다. 나중에 \(b=5\)에서 \(b\to a=-10\)을 보면 candidate는 \(-5\)지만 finalized \(a\)를 다시 열지 않는다.
+
+\textbf{정확한 결론:} negative edge가 있는 모든 graph에서 수치가 반드시 틀린다는 뜻은 아니다. Dijkstra의 correctness guarantee가 사라진다는 뜻이다.
+\end{alertblock}
+\end{frame}
+\begin{frame}{Dijkstra Complexity}
+\small\begin{tabular}{ll}\toprule
+implementation&time\\\midrule
+decrease-key heap + list&\(O((V+E)\log V)\)\\
+stale-entry heap&\(O(E\log E)\), simple graph에서는 \(O(E\log V)\)\\
+array/matrix&\(O(V^2)\)\\\bottomrule
+\end{tabular}
+\begin{block}{Validation}입력의 negative weight를 먼저 reject한다.\end{block}
+\end{frame}
+\begin{frame}{Part N Checkpoint}
+\begin{enumerate}\item PQ entry가 곧 finalized인가?\item stale entry 판정은?\item 언제 \(finalized[u]\)를 true로 바꾸는가?\item negative edge에서 보장이 유지되는가?\end{enumerate}
+\begin{exampleblock}{답}아니다; \(du\ne dist[u]\); 유효한 minimum entry를 extract한 뒤; 아니다.\end{exampleblock}
+\end{frame}

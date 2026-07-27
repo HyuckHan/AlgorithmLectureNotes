@@ -1,0 +1,63 @@
+\subsection{구현·테스트·성능 측정}
+\begin{frame}{공통 Metric}
+\footnotesize
+\begin{columns}[T]
+\column{.49\linewidth}
+\begin{description}
+\item[generated] child state로 만든 node
+\item[evaluated] feasibility/bound를 검사한 node
+\item[inserted] frontier에 실제 넣은 node
+\item[expanded] frontier에서 꺼내 child를 만든 node
+\item[pruned] feasibility 또는 bound로 제거한 node
+\item[peak frontier] frontier의 최대 크기
+\end{description}
+\column{.49\linewidth}
+\begin{description}
+\item[feasibility tests] constraint 검사 횟수
+\item[bound computations] UB/LB 계산 횟수
+\item[first feasible] 첫 feasible solution까지 시간
+\item[final optimum] 최종 optimum을 발견한 시간
+\item[elapsed] 종료까지 총 시간
+\end{description}
+\end{columns}
+\begin{block}{재현성}고정 input·seed·tie-breaking으로 pruning 없음/weak/strong, DFS/best-first, \(h=0\)/Manhattan을 비교한다.\end{block}
+\end{frame}
+\begin{frame}{Java 구현 구성 \hfill \ssoptional[참고 구현]}
+\small
+\begin{itemize}
+\item \texttt{PermutationGenerator}, \texttt{NQueensSolver}, \texttt{SubsetSumSolver}
+\item \texttt{GraphColoringSolver}, \texttt{ArithmeticProgressionSearch}
+\item \texttt{KnapsackBranchAndBound}, \texttt{AStarGrid}
+\item \texttt{StateSpaceSearchDemo}, \texttt{StateSpaceSearchTest}
+\end{itemize}
+모든 traversal은 deterministic하며 반환 solution을 별도 validator로 확인한다.
+\end{frame}
+\begin{frame}{C 구현 구성 \hfill \ssoptional[참고 구현]}
+\small
+\begin{itemize}
+\item explicit pointer와 size, caller-owned output buffer
+\item allocation failure와 integer overflow guard
+\item recursion state restoration assertion
+\item sanitizer-friendly cleanup과 bounded priority queue
+\end{itemize}
+\begin{block}{Ownership}각 API는 caller가 제공한 buffer를 채우거나 명시적인 cleanup 함수를 제공한다.\end{block}
+\end{frame}
+\begin{frame}{Oracle와 Invariant Validation}
+\begin{itemize}
+\item 작은 permutation/subset/AP/knapsack은 brute-force oracle과 비교.
+\item N-Queens \(n=1,2,3,4,8\) count와 conflict validator.
+\item 모든 test grid에서 A* cost를 Dijkstra oracle과 비교하고 parent chain·path cost를 재계산.
+\item goal 발견 전 종료 금지와 consistent/no-reopen 대 inconsistent/reopen 정책을 regression test.
+\item 모든 bound가 true descendant optimum보다 optimistic인지 검사.
+\end{itemize}
+\end{frame}
+\begin{frame}{검증된 Running Examples}
+\small\begin{tabular}{ll}\toprule Example&Expected\\\midrule
+\(5P_4\)&120 unique outputs\\
+4-Queens&2 solutions\\
+Subset Sum \([3,4,5,6],9\)&\(\{3,6\},\{4,5\}\)\\
+AP \([1,3,4,5,7]\)&\([1,3,5,7]\), length 4\\
+Knapsack&\(\{A,C\}\), profit 90\\
+A* grid&Dijkstra와 같은 cost 10\\\bottomrule
+\end{tabular}
+\end{frame}

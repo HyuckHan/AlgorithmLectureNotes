@@ -1,0 +1,137 @@
+\section{Part C. Representative DP Problems}
+\begin{frame}{Matrix Minimum Path Sum}
+\begin{columns}\column{.45\textwidth}\centering\matrixfour{}
+\column{.51\textwidth}
+\mission{$(1,1)$에서 $(4,4)$까지 right/down으로 이동하며 방문한 값의 합을 최소화한다.}
+\begin{itemize}\item 시작·끝 cell 포함\item 목표 최소합: 40\end{itemize}
+\end{columns}
+\end{frame}
+\begin{frame}{Matrix Path DP 설계 Template}
+\small
+\dpdesign
+{$dp[i][j]$: $(1,1)$에서 $(i,j)$까지의 최소 경로 합}
+{$M[i][j]+\min(dp[i-1][j],dp[i][j-1])$}
+{시작 cell, 첫 row 누적합, 첫 column 누적합}
+{위·왼쪽 dependency 뒤: row-major 또는 column-major}
+{$dp[n][m]$; 경로는 predecessor를 역추적}
+\end{frame}
+\begin{frame}{State와 Dependency}
+\dpstate{$dp[i][j]$: $(1,1)$에서 $(i,j)$까지 이동하는 최소 경로 합}
+\[
+dp[i][j]=M[i][j]+\min\{dp[i-1][j],dp[i][j-1]\}
+\]
+\centering\begin{tikzpicture}[x=2.15cm,y=1.05cm]
+\node[dp dependency] (up) at(1,1){$dp[i-1][j]$};
+\node[dp dependency] (left) at(0,0){$dp[i][j-1]$};
+\node[dp current] (cur) at(1,0){$dp[i][j]$};
+\draw[dp edge](up)--(cur);\draw[dp edge](left)--(cur);
+\node[font=\small,text=AlgoGray] at(2.35,.5){dependency가 먼저 계산되어야 한다};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Base Cases가 경계를 결정한다}
+\[
+\begin{aligned}
+dp[1][1]&=M[1][1],\\
+dp[1][j]&=dp[1][j-1]+M[1][j],\\
+dp[i][1]&=dp[i-1][1]+M[i][1].
+\end{aligned}
+\]
+\begin{alertblock}{잘못된 초기화}\texttt{if (i==1 || j==1) return M[i][j]}는 누적합이 아니라 현재 값만 반환한다.\end{alertblock}
+\end{frame}
+\begin{frame}{Naive Recursive MinPath}
+\scriptsize\begin{algorithmic}[1]
+\Procedure{MinPath}{$i,j$}
+\If{$i=1$ \textbf{and} $j=1$}\State\Return $M[1][1]$\EndIf
+\If{$i=1$}\State\Return \Call{MinPath}{$1,j-1$}+$M[1][j]$\EndIf
+\If{$j=1$}\State\Return \Call{MinPath}{$i-1,1$}+$M[i][1]$\EndIf
+\State\Return $\min(\Call{MinPath}{i-1,j},\Call{MinPath}{i,j-1})+M[i][j]$
+\EndProcedure
+\end{algorithmic}
+\end{frame}
+\begin{frame}{Call Tree에는 같은 Grid State가 반복된다}
+\centering\begin{tikzpicture}[level distance=11mm,level 1/.style={sibling distance=55mm},level 2/.style={sibling distance=25mm},every node/.style={tree node,font=\small}]
+\node{$P(4,4)$}
+ child{node{$P(3,4)$} child{node[dp repeat]{$P(3,3)$}} child{node{$P(2,4)$}}}
+ child{node{$P(4,3)$} child{node{$P(4,2)$}} child{node[dp repeat]{$P(3,3)$}}};
+\node[callout]at(0,-3.5){partial call tree: $P(3,3)$ 중복};
+\end{tikzpicture}
+\begin{itemize}\item state graph는 $n\times m$ grid DAG\item naive call 수는 right/down 경로 수에 비례해 exponential\end{itemize}
+\end{frame}
+\begin{frame}{Memoized Matrix Path}
+\small\begin{algorithmic}[1]
+\Procedure{MinPathMemo}{$i,j$}
+\If{$seen[i][j]$}\State\Return $memo[i][j]$\EndIf
+\State 정확한 boundary recurrence로 $memo[i][j]$ 계산
+\State $seen[i][j]\gets true$; \Return $memo[i][j]$
+\EndProcedure
+\end{algorithmic}
+\[
+\underbrace{nm}_{\text{reachable states}}\times
+\underbrace{\Theta(1)}_{\text{two predecessors}}=\Theta(nm)
+\]
+\begin{itemize}\item memo table $\Theta(nm)$, recursion stack $\Theta(n+m)$\item 음수 값 가능 시 `-1` sentinel 대신 visited 사용\end{itemize}
+\end{frame}
+\begin{frame}{Bottom-Up Evaluation Order}
+\small\begin{algorithmic}[1]
+\State $dp[1][1]\gets M[1][1]$
+\For{$j\gets2$ \textbf{to} $m$}\State $dp[1][j]\gets dp[1][j-1]+M[1][j]$\EndFor
+\For{$i\gets2$ \textbf{to} $n$}\State $dp[i][1]\gets dp[i-1][1]+M[i][1]$\EndFor
+\For{$i\gets2$ \textbf{to} $n$}\For{$j\gets2$ \textbf{to} $m$}
+\State $dp[i][j]\gets M[i][j]+\min(dp[i-1][j],dp[i][j-1])$
+\EndFor\EndFor
+\end{algorithmic}
+\dptakeaway{row-major 순서에서는 위쪽 row와 현재 row의 왼쪽 cell이 모두 먼저 계산된다.}
+\end{frame}
+\begin{frame}{Matrix DP Row Progression}
+\centering\begin{tikzpicture}[x=1.25cm,y=.85cm]
+\foreach \r/\vals in {0/{6,13,25,30},1/{11,14,25,43},2/{18,31,28,31},3/{26,36,42,40}}
+ \foreach \v [count=\c from 0] in \vals{
+ \only<1|handout:0>{\ifnum\r=0\node[dp done]at(\c,-\r){\v};\else\node[dp inactive]at(\c,-\r){?};\fi}
+ \only<2|handout:0>{\ifnum\r<2\node[dp done]at(\c,-\r){\v};\else\node[dp inactive]at(\c,-\r){?};\fi}
+ \only<3|handout:0>{\ifnum\r<3\node[dp done]at(\c,-\r){\v};\else\node[dp inactive]at(\c,-\r){?};\fi}
+ \only<4|handout:1>{\ifnum\r=3\ifnum\c=3\node[dp answer]at(\c,-\r){\v};\else\node[dp done]at(\c,-\r){\v};\fi\else\node[dp done]at(\c,-\r){\v};\fi}}
+\only<1|handout:0>{\node[callout]at(6,-1.5){first row 누적};}
+\only<2|handout:0>{\node[callout]at(6,-1.5){row 2 완료};}
+\only<3|handout:0>{\node[callout]at(6,-1.5){row 3 완료};}
+\only<4|handout:1>{\node[callout]at(6,-1.5){answer: $dp[4][4]=40$};}
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{대표 Cell 계산: \texorpdfstring{$dp[3][3]$}{dp[3][3]}}
+\[
+dp[3][3]=M[3][3]+\min(dp[2][3],dp[3][2])
+=3+\min(25,31)=28.
+\]
+\centering\begin{tikzpicture}[x=1.4cm]
+\node[dp dependency]at(1,1){25};\node[dp dependency]at(0,0){31};\node[dp current]at(1,0){28};
+\draw[dp edge](1,1)--node[right,font=\scriptsize]{chosen} (1,.45);
+\draw[-Latex,AlgoGray](.45,0)--(.55,0);
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{최소 경로 Reconstruction}
+\centering\begin{tikzpicture}[x=1.15cm,y=.85cm]
+\foreach \r/\vals in {0/{6,7,12,5},1/{5,3,11,18},2/{7,17,3,3},3/{8,10,14,9}}
+ \foreach \v [count=\c from 0] in \vals{\node[dp cell](m-\r-\c)at(\c,-\r){\v};}
+\foreach \x/\y in {0/0,0/-1,1/-1,2/-1,2/-2,3/-2,3/-3}
+  \node[draw=AlgoOrange,ultra thick,minimum width=9mm,minimum height=8mm]at(\x,\y){};
+\draw[dp path](m-0-0.south)--(m-1-0.north);
+\draw[dp path](m-1-0.east)--(m-1-1.west);
+\draw[dp path](m-1-1.east)--(m-1-2.west);
+\draw[dp path](m-1-2.south)--(m-2-2.north);
+\draw[dp path](m-2-2.east)--(m-2-3.west);
+\draw[dp path](m-2-3.south)--(m-3-3.north);
+\node[callout]at(6,-1.5){$6+5+3+11+3+3+9=40$};
+\end{tikzpicture}
+\begin{itemize}\item 완성 table에서 작은 predecessor로 역추적\item 동점이면 위쪽 predecessor를 우선\end{itemize}
+\end{frame}
+\begin{frame}{1-Row Space Optimization}
+\[
+dp[j]\gets M[i][j]+\min(\underbrace{dp[j]}_{\text{update 전: 위}},
+\underbrace{dp[j-1]}_{\text{update 후: 왼쪽}})
+\]
+\begin{itemize}\item left-to-right update가 필수\item time $\Theta(nm)$, auxiliary space $\Theta(m)$\item path 복원이 필요하면 parent 또는 재계산 전략이 필요\end{itemize}
+\end{frame}
+\begin{frame}{Matrix Path Checkpoint}
+\begin{enumerate}\item $dp[1][3]$과 $dp[3][1]$은?\item $dp[3][3]$은?\item 1-row DP를 오른쪽에서 왼쪽으로 갱신하면 왜 틀리는가?\end{enumerate}
+\begin{exampleblock}{답}$25$, $18$, $28$; $dp[j-1]$가 현재 row의 왼쪽 값이 아니게 된다.\end{exampleblock}
+\vfill\muted{Grid의 한 prefix를 state로 삼았다. 이제 두 문자열 prefix의 조합을 state로 확장한다.}
+\end{frame}

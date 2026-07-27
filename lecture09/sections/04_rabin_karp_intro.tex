@@ -1,0 +1,40 @@
+\section{Part B. Rabin--Karp}
+\begin{frame}{Rabin--Karp의 Mission}
+\smission{각 window를 숫자 fingerprint로 요약해 대부분의 alignment를 값 하나로 제외한다.}
+\[
+\text{equal strings}\Rightarrow\text{equal hash},
+\qquad
+\text{equal hash}\not\Rightarrow\text{equal strings}.
+\]
+\end{frame}
+\begin{frame}{Candidate와 Verified Match}
+\begin{description}
+\item[pattern hash] \(P\)의 fingerprint
+\item[window hash] \(T[s..s+m-1]\)의 fingerprint
+\item[candidate hit] 두 hash가 같음 \(\candidatebadge\)
+\item[valid hit] 실제 문자도 모두 같음 \(\verifiedbadge\)
+\item[spurious hit] hash만 같은 collision \(\collisionbadge\)
+\end{description}
+\end{frame}
+\begin{frame}{Numeric Encoding}
+\[
+\Sigma=\{a,b,c,d,e\},\quad code(a)=0,\ldots,code(e)=4,\quad d=5.
+\]
+\centering\begin{tikzpicture}
+\node[smhash]at(0,.7){\only<1|handout:0>{\texttt{cad}\(\to(2,0,3)_5\)}\only<2|handout:1>{\(2\cdot5^2+0\cdot5+3=53\)}};
+\node[smnote]at(0,-.5){원본의 28은 계산 오류이며 53이 정확하다.};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Hash Equality만으로는 부족하다}
+\begin{tikzpicture}[x=1.2cm]
+\node[smhash](p)at(0,0){\(h(P)=17\)};
+\node[smhash](w)at(4,0){\(h(window)=17\)};
+\draw[smarrow](p)--node[above]{candidate \(\candidatebadge\)}(w);
+\node[smnote]at(2,-1){character-by-character verification};
+\end{tikzpicture}
+\begin{alertblock}{교정}\texttt{basicRabinKarp}처럼 hash equality만으로 match를 확정하면 exact matcher가 아니다.\end{alertblock}
+\end{frame}
+\begin{frame}{Rabin--Karp Checkpoint}
+\begin{enumerate}\item 같은 string이면 hash도 같은가?\item 같은 hash이면 string도 같은가?\item candidate hit 다음 단계는?\end{enumerate}
+\begin{exampleblock}{답}예; 반드시 그렇지 않다; 실제 문자 verification.\end{exampleblock}
+\end{frame}

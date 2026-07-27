@@ -1,0 +1,45 @@
+\subsection{Dynamic Set과 Search Tree}
+\begin{frame}{Dictionary ADT와 Dynamic Set Operations}
+\[
+\text{Dictionary ADT}\quad\Longrightarrow\quad
+\text{Dynamic Set Operations}\quad\Longrightarrow\quad
+\text{BST Implementation}
+\]
+\begin{columns}[T]\column{.48\textwidth}
+\begin{itemize}\item SEARCH\item INSERT\item DELETE\item optional UPDATE\end{itemize}
+\column{.48\textwidth}
+\begin{itemize}\item MINIMUM / MAXIMUM\item SUCCESSOR / PREDECESSOR\item ordered iteration\end{itemize}
+\end{columns}
+\end{frame}
+\begin{frame}{UPDATE는 언제 DELETE+INSERT인가?}
+\begin{itemize}
+\item value만 바뀌고 ordering key가 같으면 제자리 update 가능
+\item key가 ordering에 영향을 주면 기존 위치에서 삭제 후 새 key로 삽입
+\item node identity와 satellite data가 있으면 API contract가 중요
+\end{itemize}
+\end{frame}
+\begin{frame}{구조 선택 Preview}
+\scriptsize\centering\begin{tabular}{lccccl}\toprule
+구조&Search&Insert&Delete&Ordered ops&핵심\\\midrule
+unsorted list&$\Theta(n)$&$\Theta(1)^*$&$\Theta(n)$&비효율&작고 단순\\
+sorted array&$\Theta(\log n)$&$\Theta(n)$&$\Theta(n)$&좋음&read-heavy\\
+BST&$\Theta(h)$&$\Theta(h)$&$\Theta(h)$&좋음&shape 의존\\
+balanced BST&$\Theta(\log n)$&$\Theta(\log n)$&$\Theta(\log n)$&좋음&memory map\\
+hash table&expected $\Theta(1)$&expected $\Theta(1)$&expected $\Theta(1)$&어려움&Lecture 7\\
+B-Tree&$\Theta(\log_t n)$&$\Theta(\log_t n)$&$\Theta(\log_t n)$&좋음&page I/O\\\bottomrule
+\end{tabular}
+\begin{block}{가정}
+$^*$duplicate 검사 없는 append만 $\Theta(1)$; distinct-set의 duplicate 검사를 포함하면 $\Theta(n)$. Hash는 expected bound, B-Tree는 고정 $t$와 occupancy 아래 worst-case page I/O.
+\end{block}
+\end{frame}
+\begin{frame}{Search Tree의 공통 비용 모델}
+\[
+\text{operation cost}=\Theta(\text{root에서 이동한 path length})=\Theta(h)
+\]
+\begin{itemize}\item balanced height: $\Theta(\log n)$\item degenerate height: $\Theta(n)$\item B-Tree는 고정 $t$와 occupancy 아래 height와 worst-case page I/O가 $\Theta(\log_t n)$\end{itemize}
+\end{frame}
+\begin{frame}{Dynamic Set Checkpoint}
+\begin{enumerate}\item successor가 필요한 workload에 hash table만 쓰기 어려운 이유는?\item sorted array insert가 느린 이유는?\item key 변경 시 언제 재삽입이 필요한가?\end{enumerate}
+\begin{exampleblock}{답}order가 없음; 원소 shift; ordering key가 바뀔 때.\end{exampleblock}
+\sttakeaway{이 연산 계약을 유지하면서 root-to-leaf 비교 경로로 후보를 줄이는 첫 구현이 BST다.}
+\end{frame}

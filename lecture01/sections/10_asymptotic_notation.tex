@@ -1,0 +1,109 @@
+\section{Part J. 점근 표기: Big-O, Big-Omega, Big-Theta}
+
+% 38
+\begin{frame}{Big-O의 수학적 정의}
+  함수 $f,g:\mathbb{N}\to\mathbb{R}_{\ge0}$에 대해
+  \[
+    f(n)\in\Oh(g(n))
+    \iff
+    \exists c>0,\;\exists n_0\in\mathbb{N},\;
+    \forall n\ge n_0:\; f(n)\le c\,g(n).
+  \]
+  \begin{alertblock}{뜻}
+    어떤 지점 $n_0$ 이후에는 $f$가 $g$의 상수배 위로 올라가지 않는다.
+  \end{alertblock}
+  $\Oh(g)$는 함수들의 \textbf{집합}이다.
+  관례적으로 $f(n)=\Oh(g(n))$도 쓰지만, 이 $=$는 일반적인 수치 등식이 아니라
+  집합 소속을 나타내는 약식 표기다. 엄밀하게는 $f\in\Oh(g)$라고 쓴다.
+\end{frame}
+
+% 39
+\begin{frame}{Big-O의 직관: 결국 위에서 누른다}
+  \begin{columns}[c,onlytextwidth]
+    \column{.65\textwidth}
+    \begin{tikzpicture}
+      \begin{axis}[width=8.2cm,height=5.2cm,axis lines=left,xlabel={$n$},ylabel={value},
+        xmin=0,xmax=30,ymin=0,ymax=160,
+        xtick={0,10,20,30},xticklabels={0,$n_0=10$,20,30},ytick={0,50,100,150},
+        label style={font=\small},tick label style={font=\small},
+        legend style={draw=none,fill=none,font=\small,at={(.03,.97)},anchor=north west}]
+        \addplot[AlgoBlue,very thick,domain=0:30]{3*x+20};
+        \addlegendentry{$f(n)=3n+20$}
+        \addplot[AlgoOrange,very thick,domain=0:30]{5*x};
+        \addlegendentry{$c g(n)=5n$}
+        \draw[dashed,AlgoGray,thick] (axis cs:10,0)--(axis cs:10,50);
+      \end{axis}
+    \end{tikzpicture}
+    \column{.31\textwidth}
+      \begin{itemize}
+        \item 유한한 앞부분은 무시 가능
+        \item 상수배 차이는 허용
+        \item Big-O는 \textbf{정확한 점근 차수(tight bound)}를 뜻하지 않음
+      \end{itemize}
+      $n\ge n_0$이면 $f(n)\le 5n$이다.
+  \end{columns}
+\end{frame}
+
+% 40
+\begin{frame}{Big-O 증명: Witness를 제시하라}
+  \textbf{Claim:} $30n+8\in\Oh(n)$.
+  \begin{enumerate}
+    \item 보일 것: $30n+8\le cn$을 만족하는 $c,n_0$가 존재.
+    \item $c=31$, $n_0=8$을 선택.
+    \item $n\ge8$이면
+      \[
+        30n+8\le30n+n=31n=cn.
+      \]
+  \end{enumerate}
+  따라서 정의에 의해 $30n+8\in\Oh(n)$.
+  \begin{block}{주의}
+    $c,n_0$는 유일하거나 최소일 필요가 없지만, 선택한 값이 실제로 작동함은 보여야 한다.
+  \end{block}
+\end{frame}
+
+% 41
+\begin{frame}{상한을 만드는 표준 패턴}
+  $n\ge1$일 때 다음 부등식을 이용한다.
+  \begin{align*}
+    \left|a_kn^k+\cdots+a_0\right|
+      &\le (|a_k|+\cdots+|a_0|)n^k \in\Oh(n^k),\\
+    1+2+\cdots+n
+      &\le n\cdot n=n^2 \in\Oh(n^2),\\
+    n!&\le n^n\in\Oh(n^n),\\
+    \log(n!)&\le\log(n^n)=n\log n\in\Oh(n\log n).
+  \end{align*}
+  \muted{상한이 항상 tight한 것은 아니다. 예: $1+\cdots+n$은 사실 $\Th(n^2)$.}
+\end{frame}
+
+% 42
+\begin{frame}{Big-$\Omega$와 Big-$\Theta$}
+  \begin{block}{Lower bound}
+    $f(n)\in\Om(g(n))$ iff $\exists c>0,n_0$ such that
+    $0\le c g(n)\le f(n)$ for all $n\ge n_0$.
+  \end{block}
+  \begin{block}{Tight bound}
+    $f(n)\in\Th(g(n))$ iff $\exists c_1,c_2>0,n_0$ such that
+    \[
+      0\le c_1g(n)\le f(n)\le c_2g(n)\quad(n\ge n_0).
+    \]
+  \end{block}
+  동치로, $f\in\Th(g)$ iff $f\in\Oh(g)$이고 $f\in\Om(g)$이다.
+\end{frame}
+
+% 43
+\begin{frame}{$\Oh$, $\Om$, $\Th$를 한 번에 보기}
+  \begin{center}
+  \begin{tikzpicture}[scale=.95,transform shape,x=1cm,y=.65cm]
+    \draw[->,AlgoGray] (0,0)--(10,0) node[right] {$n$};
+    \draw[->,AlgoGray] (0,0)--(0,5.2) node[above] {cost};
+    \draw[AlgoOrange,very thick] plot[smooth] coordinates {(0,.5)(2,1.1)(4,1.8)(6,2.6)(8,3.5)(9.5,4.3)} node[right] {$c_2g$};
+    \draw[AlgoBlue,very thick] plot[smooth] coordinates {(0,.35)(2,.85)(4,1.45)(6,2.15)(8,2.95)(9.5,3.65)} node[right] {$f$};
+    \draw[AlgoGray,very thick] plot[smooth] coordinates {(0,.2)(2,.55)(4,1.05)(6,1.65)(8,2.35)(9.5,3.0)} node[right] {$c_1g$};
+    \draw[dashed] (2,0)--(2,1.1) node[below=2pt] {$n_0$};
+  \end{tikzpicture}
+  \end{center}
+  \begin{takeaway}
+    $\Oh$: 위에서 누름 \quad $\Om$: 아래에서 받침 \quad $\Th$: 양쪽에서 같은 성장률로 조임
+  \end{takeaway}
+  \muted{점근 표기를 앞서 추적한 세 알고리즘에 적용해 보자.}
+\end{frame}

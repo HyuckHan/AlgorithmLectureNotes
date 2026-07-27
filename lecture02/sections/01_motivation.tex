@@ -1,0 +1,24 @@
+\begin{frame}[plain]\vfill{\usebeamerfont{title}\color{AlgoBlue}\inserttitle\par}\vspace{3mm}{\color{AlgoOrange}\rule{3cm}{1.2pt}}\par\vspace{3mm}{\color{AlgoGray}\insertsubtitle}\vfill
+\end{frame}
+\begin{frame}{학습 목표}
+강의가 끝나면 다음을 할 수 있다.
+\begin{itemize}
+  \item 재귀 mission, base case, recursive case, progress measure를 정의한다.
+  \item 호출 스택의 push와 반환 과정을 추적한다.
+  \item 귀납법으로 정확성을, 점화식으로 효율성을 설명한다.
+  \item Binary Search, Hanoi, DFS/backtracking, Flood Fill, Power Set에 재귀를 적용한다.
+  \item 재귀 구현과 반복 구현의 시간·공간 trade-off를 비교한다.
+\end{itemize}
+\end{frame}
+\section{Part A. 재귀의 기본 원리}
+\begin{frame}{반복과 재귀}\begin{columns}[T]\column{.46\textwidth}\textbf{Iteration}: 상태를 반복문이 갱신\\[2mm]\texttt{for (i=1; i<=n; ++i)}\column{.46\textwidth}\textbf{Recursion}: 작은 동일 문제의 답을 사용\\[2mm]$S(n)=n+S(n-1)$\end{columns}\vfill 둘은 계산 능력은 같지만 문제를 표현하는 관점이 다르다.
+\end{frame}
+\begin{frame}{“자기 자신을 호출한다”만으로 부족하다}\mission{$F(n)$은 크기 $n$인 문제의 답을 반환한다.}\vspace{1mm}재귀 호출은 mission을 더 작은 입력에 위임한다. 호출 문법보다 중요한 것은 \alert{작은 답으로 큰 답을 만드는 관계}다.
+\end{frame}
+\begin{frame}{재귀의 세 요소}\threeparts{직접 답할 수 있는 가장 작은 입력}{작은 동일 문제를 호출하고 결과를 결합}{각 호출에서 입력 크기나 남은 선택 수가 감소}
+\end{frame}
+\begin{frame}{왜 무한 재귀가 생기는가?}\begin{alertblock}{잘못된 예}\texttt{f(n) = 1 + f(n)} 또는 \texttt{f(n)=f(n+1)}\end{alertblock}base case가 있어도 호출이 그곳으로 \textbf{도달하지 않으면} 종료하지 않는다. 결국 call stack overflow가 발생한다.
+\end{frame}
+\begin{frame}{설계 체크리스트}\begin{enumerate}\item mission을 한 문장으로 썼는가?\item base case가 모든 경로를 막는가?\item recursive call이 mission과 같은가?\item progress measure가 엄격히 감소하는가?\item 반환값/변경 상태를 어떻게 결합·복구하는가?\end{enumerate}
+\vfill\sectiontakeaway{코드가 짧다는 사실과 실행이 빠르다는 사실은 다르다.}
+\end{frame}

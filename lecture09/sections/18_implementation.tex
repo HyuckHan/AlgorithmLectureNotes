@@ -1,0 +1,35 @@
+\subsection{구현·테스트}
+\begin{frame}{Java API}
+\small\begin{itemize}
+\item \texttt{naiveAll}, \texttt{rabinKarpAll}, \texttt{buildLps}, \texttt{kmpAll}
+\item \texttt{buildHorspoolShift}, \texttt{horspoolAll}
+\item first-match wrappers return \(-1\)
+\item empty pattern all-match policy: \([0]\)
+\item main comparison loops allocate no substring
+\end{itemize}
+\end{frame}
+\begin{frame}{C API}
+\small\begin{itemize}
+\item explicit \texttt{unsigned char *} and \texttt{size\_t} lengths
+\item byte-oriented exact semantics
+\item \texttt{SIZE\_MAX} first-match sentinel
+\item growable result with allocation-failure propagation
+\item portable overflow-safe modular add/subtract/multiply
+\end{itemize}
+\end{frame}
+\begin{frame}{Invariant Validators}
+\small\begin{tabular}{p{.22\linewidth}p{.68\linewidth}}\toprule
+all matchers&strictly increasing, true matches, no omission vs oracle\\
+Rabin--Karp&window hash regenerated at every shift\\
+BuildLPS&each entry and multi-fallback chain checked\\
+KMP&fallback and overlap outputs agree with Naive\\
+Horspool&positive shift, mismatch progress, full occurrence agreement\\\bottomrule
+\end{tabular}
+\end{frame}
+\begin{frame}{Test Matrix}
+\small\begin{itemize}\item empty/\(m>n\)/no/begin/end/overlap/repeated cases\item deliberate collision and negative rolling expression\item four fixed LPS tables; consecutive fallback chain 포함\item TIGER/RATIONAL tables; long mismatch progress regression\item Java UTF-16 code-unit / C UTF-8 byte-offset examples\item 6,000 random small cases per language, fixed seed\item ASan/UBSan bounds check for C\end{itemize}
+\end{frame}
+\begin{frame}{구현·테스트 Checkpoint}
+\begin{enumerate}\item built-in \texttt{indexOf}를 구현에 사용했는가?\item collision candidate를 어떻게 검증하는가?\item Java와 C의 string unit은 같은가?\end{enumerate}
+\begin{exampleblock}{답}아니다; 직접 character/byte 비교; Java code unit과 C byte로 다르다.\end{exampleblock}
+\end{frame}

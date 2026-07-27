@@ -1,0 +1,40 @@
+\section{Part M. Unweighted·DAG Shortest Paths}
+\begin{frame}{Unweighted Shortest Path = BFS}
+모든 edge weight가 1이면:
+\[
+dist[v]=\text{minimum number of edges from }s.
+\]
+BFS layer invariant가 곧 shortest-path correctness다.
+\end{frame}
+\begin{frame}{왜 Weighted Graph에 BFS는 틀릴 수 있는가?}
+\centering\begin{tikzpicture}[x=2cm]
+\node[gvertex](s)at(0,0){s};\node[gvertex](a)at(2,1){a};\node[gvertex](t)at(4,0){t};
+\draw[garrow](s)--node[above]{1}(a);\draw[garrow](a)--node[above]{1}(t);\draw[garrow](s)--node[below]{10}(t);
+\end{tikzpicture}
+\begin{alertblock}{BFS}한 edge인 \(s\to t\)를 선택하지만 weight 10. 최단 weight path는 \(s\to a\to t\), weight 2.\end{alertblock}
+\end{frame}
+\begin{frame}{DAG Shortest Paths}
+\scriptsize\begin{algorithmic}[1]
+\Procedure{DAGShortestPaths}{$G,s$}\State \(order\gets\Call{TopologicalSort}{G}\)
+\State 모든 \(dist\gets\infty,\ parent\gets\NIL;\ dist[s]\gets0\)
+\ForAll{$u$ in \(order\)}\If{$dist[u]\ne\infty$}\ForAll{$(u,v,w)\in Adj[u]$}\State\Call{Relax}{$u,v,w$}\EndFor\EndIf\EndFor\EndProcedure
+\end{algorithmic}
+\end{frame}
+\begin{frame}{DAG에서는 Negative Edge도 가능}
+\begin{itemize}\item cycle이 없으므로 negative cycle도 없다.\item topological order가 모든 predecessor를 먼저 처리한다.\item 각 edge 한 번 relax: \(\Theta(V+E)\) with adjacency list.\end{itemize}
+\gtakeaway{Lecture 5 DP의 evaluation order와 같은 구조다.}
+\end{frame}
+\begin{frame}{DAG Relaxation Trace}
+\[
+s\to a:3,\ s\to b:2,\ a\to c:-4,\ b\to c:1
+\]
+\begin{tikzpicture}
+\node[pq]at(0,.9){Topo order: \(s,a,b,c\)};
+\node[callout]at(0,0){\only<1>{after \(s\): \(d[a]=3,d[b]=2\)}\only<2>{after \(a\): \(d[c]=-1\)}\only<3>{after \(b\): candidate 3, no update}};
+\node[callout]at(0,-.9){answer \(d[c]=-1\), path \(s\to a\to c\)};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Part M Checkpoint}
+\begin{enumerate}\item unweighted SP algorithm은?\item DAG SP가 negative edge를 허용하는 이유는?\item DAG SP list complexity는?\end{enumerate}
+\begin{exampleblock}{답}BFS; cycle이 없고 topo order로 relax; \(\Theta(V+E)\).\end{exampleblock}
+\end{frame}

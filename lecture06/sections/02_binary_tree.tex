@@ -1,0 +1,101 @@
+\subsection{Binary Tree의 형태와 표현}
+\begin{frame}{Binary Tree의 정확한 정의}
+\begin{itemize}
+\item 각 node는 최대 두 child를 가진다.
+\item left child와 right child는 서로 구별된다.
+\item child가 하나뿐이어도 left인지 right인지가 구조의 일부다.
+\end{itemize}
+\end{frame}
+\begin{frame}{같은 Key, 다른 Binary Tree}
+\begin{columns}\column{.48\textwidth}\centering
+\begin{tikzpicture}\node[st node](a)at(0,0){A};\node[st node](b)at(-1,-1){B};\draw[st edge](a)--node[left,font=\scriptsize]{L}(b);\end{tikzpicture}
+\begin{block}{왼쪽 child}A의 left가 B\end{block}
+\column{.48\textwidth}\centering
+\begin{tikzpicture}\node[st node](a)at(0,0){A};\node[st node](b)at(1,-1){B};\draw[st edge](a)--node[right,font=\scriptsize]{R}(b);\end{tikzpicture}
+\begin{block}{오른쪽 child}A의 right가 B\end{block}
+\end{columns}
+\end{frame}
+\begin{frame}{Binary Tree 응용}
+\begin{description}
+\item[Expression Tree] operator가 internal node, operand가 leaf
+\item[Huffman Tree] prefix-free code를 만드는 weighted tree
+\item[Heap] complete binary tree를 array로 저장
+\item[Search Tree] order invariant로 후보를 줄임
+\end{description}
+\end{frame}
+\begin{frame}{Full · Perfect · Complete}
+\small\begin{tabular}{>{\bfseries}p{.21\textwidth}p{.70\textwidth}}\toprule
+용어&정의\\\midrule
+Full&모든 node의 child 수가 0 또는 2\\
+Perfect&모든 internal node가 두 child이고 모든 leaf가 같은 depth\\
+Complete&마지막 level 전까지 가득 차고 마지막 level은 왼쪽부터 채움\\\bottomrule
+\end{tabular}
+\begin{alertblock}{핵심 교정}Full이라고 해서 반드시 모든 leaf가 같은 depth인 것은 아니다.\end{alertblock}
+\end{frame}
+\begin{frame}{세 형태를 눈으로 구분}
+\centering\begin{tikzpicture}[x=1cm,y=.95cm]
+% Full but not perfect
+\begin{scope}[shift={(-5,0)}]
+\node[st node](fr)at(0,1.8){1};
+\node[st node](f2)at(-1,.7){2}; \node[st node](f3)at(1,.7){3};
+\node[st node](f6)at(.3,-.4){6}; \node[st node](f7)at(1.7,-.4){7};
+\draw[st edge](fr)--(f2)(fr)--(f3)(f3)--(f6)(f3)--(f7);
+\node[font=\bfseries]at(0,-1.25){Full};
+\node[font=\scriptsize,text=AlgoGray]at(0,-1.7){not perfect: leaf depth가 다름};
+\end{scope}
+% Perfect
+\begin{scope}
+\node[st node](pr)at(0,1.8){1};
+\node[st node](p2)at(-1,.7){2}; \node[st node](p3)at(1,.7){3};
+\node[st node](p4)at(-1.7,-.4){4}; \node[st node](p5)at(-.3,-.4){5};
+\node[st node](p6)at(.3,-.4){6}; \node[st node](p7)at(1.7,-.4){7};
+\draw[st edge](pr)--(p2)(pr)--(p3)(p2)--(p4)(p2)--(p5)(p3)--(p6)(p3)--(p7);
+\node[font=\bfseries]at(0,-1.25){Perfect};
+\node[font=\scriptsize,text=AlgoGray]at(0,-1.7){모든 leaf의 depth가 같음};
+\end{scope}
+% Complete but not perfect
+\begin{scope}[shift={(5,0)}]
+\node[st node](cr)at(0,1.8){1};
+\node[st node](c2)at(-1,.7){2}; \node[st node](c3)at(1,.7){3};
+\node[st node](c4)at(-1.7,-.4){4}; \node[st node](c5)at(-.3,-.4){5};
+\node[st node](c6)at(.3,-.4){6};
+\draw[st edge](cr)--(c2)(cr)--(c3)(c2)--(c4)(c2)--(c5)(c3)--(c6);
+\node[font=\bfseries]at(0,-1.25){Complete};
+\node[font=\scriptsize,text=AlgoGray]at(0,-1.7){not perfect: 마지막 level이 일부만 채워짐};
+\end{scope}
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Perfect Tree의 Node 수}
+edge-height가 $h$이면 level $0,\ldots,h$가 모두 차므로
+\[
+n=1+2+\cdots+2^h=2^{h+1}-1.
+\]
+height를 level 수 $H=h+1$로 세는 교재에서는 $n=2^H-1$로 쓴다.
+\begin{block}{주의}일반 full tree에는 이 공식이 성립하지 않는다.\end{block}
+\end{frame}
+\begin{frame}{Linked Representation}
+\begin{columns}\column{.47\textwidth}
+\begin{tikzpicture}
+\node[draw=AlgoBlue,thick,rectangle split,rectangle split parts=4,minimum width=35mm](n){parent\nodepart{two}key\nodepart{three}left\nodepart{four}right};
+\end{tikzpicture}
+\column{.50\textwidth}
+\begin{itemize}
+\item 필수: key/data, left, right
+\item optional: parent
+\item sparse arbitrary tree에 자연스럽다.
+\end{itemize}
+\end{columns}
+\end{frame}
+\begin{frame}{Parent Pointer의 Trade-off}
+\begin{columns}[T]\column{.48\textwidth}\begin{block}{장점}successor, predecessor, upward navigation이 쉽다.\end{block}
+\column{.48\textwidth}\begin{block}{비용}node당 memory가 늘고 rotation/transplant마다 일관되게 갱신해야 한다.\end{block}\end{columns}
+\sttakeaway{Pointer를 추가하면 연산은 편해지지만 invariant도 하나 늘어난다.}
+\end{frame}
+\begin{frame}{Array Representation은 언제 좋은가?}
+\begin{itemize}
+\item complete tree: index 관계로 parent/child를 계산 → Lecture 3 heap
+\item 1-based: parent $\lfloor i/2\rfloor$, children $2i$, $2i+1$
+\item sparse arbitrary tree: 빈 slot이 많아져 비효율적
+\end{itemize}
+\stcheckpoint{Linked와 array 중 AVL/RB Tree에는 어느 표현이 자연스러운가? \textbf{답:} rotation과 sparse shape 때문에 linked.}
+\end{frame}

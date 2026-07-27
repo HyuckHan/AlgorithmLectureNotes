@@ -1,0 +1,54 @@
+\begin{frame}{Lecture 5 개념 Map}
+\centering\begin{tikzpicture}[every node/.style={tree node,align=center,font=\small,minimum width=25mm}]
+\node[chosen](d)at(0,0){Dynamic Programming};
+\node(s)at(-4,-1.25){State\\부분 문제 의미};
+\node(t)at(-1.35,-1.25){Transition\\dependency};
+\node(o)at(1.35,-1.25){Order\\top-down / bottom-up};
+\node(a)at(4,-1.25){Answer\\value / reconstruction};
+\node(c)at(0,-2.65){states $\times$ work\\time complexity};
+\foreach \x in {s,t,o,a}\draw[dp edge](d)--(\x);
+\draw[dp edge](t)--(c);\draw[dp edge](o)--(c);
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Fibonacci · Matrix Path Quiz}
+\begin{enumerate}
+\item Fibonacci의 State, Base Case, Answer는?
+\item memoization 후 각 non-base transition은 몇 번 평가되는가?
+\item Matrix $dp[i][j]$의 의미와 $dp[3][3]$, $dp[4][4]$은?
+\item 1-row Matrix DP의 update 방향과 전체 시간은?
+\end{enumerate}
+\end{frame}
+\begin{frame}{LCS Quiz}
+\begin{enumerate}
+\item $dp[i][j]$의 State 의미와 Base Case는?
+\item match/mismatch Transition은?
+\item 수학의 $X[i]$와 0-based 코드의 현재 문자는 어떻게 대응하는가?
+\item 예제 LCS 길이와 가능한 문자열 하나는? 답은 유일한가?
+\end{enumerate}
+\end{frame}
+\begin{frame}{Maximum Subarray · Concept Quiz}
+\begin{enumerate}
+\item $bestEndingAt[i]$와 $bestOverall$은 어떻게 다른가?
+\item recurrence와 all-negative convention은?
+\item State 수 × Transition 비용으로 세 예제의 시간을 설명하라.
+\item optimal substructure와 overlap은 어떻게 다르며, Greedy의 추가 성질은?
+\end{enumerate}
+\end{frame}
+\begin{frame}{Quiz 정답 I}
+\small\begin{itemize}
+\item Fibonacci: State $F(i)$, Base $F(0)=0,F(1)=1$, Answer $F(n)$; 각 non-base transition은 한 번 평가된다.
+\item Matrix State는 시작점부터 $(i,j)$까지의 최소합. $dp[3][3]=28$, $dp[4][4]=40$; 1-row는 left-to-right, time $\Theta(nm)$.
+\item LCS Base는 row/column 0. match는 diagonal $+1$, mismatch는 up/left의 max.
+\item 수학의 $X[i]$는 0-based 코드의 \texttt{X[i-1]}; 길이 4, 예: \texttt{BCBA}. LCS는 유일하지 않다.
+\end{itemize}
+\end{frame}
+\begin{frame}{Quiz 정답 II와 흔한 오류}
+\small\begin{itemize}
+\item $bestEndingAt[i]$는 반드시 $i$에서 끝나는 값, $bestOverall$은 모든 끝점의 최댓값이다.
+\item $ending[i]=\max(A[i],ending[i-1]+A[i])$; all-negative도 가장 큰 단일 원소다.
+\item Fibonacci/Matrix/LCS/Kadane은 각각 $n$, $nm$, $mn$, $n$ state와 $\Theta(1)$ transition을 가진다.
+\item optimal substructure는 최적해 구성, overlap은 같은 state 반복이다. Greedy에는 greedy-choice property가 추가로 필요하다.
+\item 흔한 오류: 경계 초기화, min/max, answer 위치, sentinel, reconstruction 정보 손실.
+\end{itemize}
+\dptakeaway{State의 의미 → dependency → 평가 순서 → answer와 reconstruction 순서로 설계한다.}
+\end{frame}

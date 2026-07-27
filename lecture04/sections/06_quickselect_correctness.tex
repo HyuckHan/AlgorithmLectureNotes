@@ -1,0 +1,29 @@
+\begin{frame}{Partition 뒤에 아는 사실}
+distinct-key 입력에서는
+\[A[p..q-1]<A[q]<A[q+1..r],\qquad k=q-p+1.\]
+따라서 pivot은 현재 subarray의 정확한 $k$th order statistic이다.
+\vfill\muted{일반 Lomuto contract는 왼쪽이 $\le A[q]$, 오른쪽이 $>A[q]$다. strict inequality는 distinct-key 가정에서만 사용한다.}
+\end{frame}
+\begin{frame}{Recursive Invariant}
+\begin{block}{Invariant}각 recursive call의 subarray에는 원래 요청한 값이 있고, $i$는 그 subarray 안에서의 상대 rank다.\end{block}
+\begin{description}
+\item[Initialization]유효한 최초 call은 요청한 order-statistic instance를 포함한다.
+\item[Maintenance]$i<k$면 left에서 rank $i$, $i>k$면 정확히 $k$개를 제거하고 right에서 rank $i-k$를 찾는다.
+\item[Termination]$i=k$이거나 한 원소만 남는다. 모든 재귀 call의 subarray는 엄격히 작다.
+\end{description}
+\vfill\muted{Invariant는 partial correctness를, 크기 감소는 termination을 보인다. 둘을 합치면 total correctness다.}
+\end{frame}
+\begin{frame}{Duplicate Key 주의}
+Lomuto의 $\le pivot$ 규칙에서는 같은 값들이 pivot 양쪽의 한쪽에 모일 수 있다.
+\begin{itemize}\item 선택한 pivot instance의 index $q$는 확정\item 같은 값의 order-statistic rank는 interval일 수 있음\item 값 반환은 맞지만 설명을 단일한 “값의 rank”로 단순화하면 혼동\end{itemize}
+\[
+[2,4_a,4_b,4_c,9]\quad\Longrightarrow\quad
+\text{value }4\text{ covers ranks }2\text{--}4
+\]
+\end{frame}
+\begin{frame}{3-way Partition이면 중복도 명확하다}
+\[A[p..lt-1]<v,\quad A[lt..gt]=v,\quad A[gt+1..r]>v\]
+\begin{align*}L&=lt-p, & E&=gt-lt+1\end{align*}
+$i\le L$이면 left, $i\le L+E$이면 $v$, 아니면 right에서 rank $i-L-E$.
+\vfill\muted{정답이 포함된 한쪽만 남긴다는 사실은 정확성뿐 아니라 수행시간도 결정한다.}
+\end{frame}

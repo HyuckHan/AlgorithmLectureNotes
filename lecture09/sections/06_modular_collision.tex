@@ -1,0 +1,36 @@
+\subsection{Modular Hash와 Collision}
+\begin{frame}{왜 Modulus가 필요한가?}
+\[
+value(x)=\Theta(d^m)\quad\Rightarrow\quad hash(x)=value(x)\bmod q.
+\]
+\begin{itemize}
+\item modulus는 \textbf{저장되는 hash 값}을 \(0,\ldots,q-1\)로 제한한다.
+\item intermediate multiplication/subtraction은 구현에서 별도로 overflow를 피해야 한다.
+\item \(q\)가 작을수록 collision 가능성이 커지며 \(d,q\)와 input 가정이 expected cost에 영향을 준다.
+\end{itemize}
+\begin{block}{Lecture 9 C}portable modular add/subtract/multiply로 intermediate overflow 없이 수학적 modular arithmetic을 구현한다.\end{block}
+\end{frame}
+\begin{frame}{Modular Rolling Update}
+\[
+h=d^{m-1}\bmod q
+\]
+\[
+next=\bigl(d(current-code(T[s])h)+code(T[s+m])\bigr)\bmod q.
+\]
+\begin{block}{정규화}\(\operatorname{normalizedMod}(x,q)=((x\bmod q)+q)\bmod q\).\end{block}
+\end{frame}
+\begin{frame}{Negative Remainder 함정}
+\begin{columns}[T]\column{.48\textwidth}
+\begin{alertblock}{Java/C remainder}\(-3\bmod 5\)가 음수일 수 있다.\end{alertblock}
+\column{.48\textwidth}
+\begin{block}{안전한 구현}unsigned modular subtraction 또는 update 후 \(hash<0\)이면 \(q\)를 더한다.\end{block}
+\end{columns}
+\scheckpoint{Lecture 9 C 구현은 overflow-safe unsigned modular multiplication과 subtraction을 사용한다.}
+\end{frame}
+\begin{frame}{Collision은 오류가 아니라 Candidate다}
+\centering\begin{tikzpicture}
+\node[smhash]at(0,1){\only<1|handout:0>{\(h(P)=h(W)\Rightarrow\candidatebadge\)}\only<2|handout:1>{\(P\ne W\Rightarrow\collisionbadge\)}};
+\node[smnote]at(0,0){\only<1|handout:0>{hash candidate: 아직 match 아님}\only<2|handout:1>{verification이 false positive를 제거}};
+\end{tikzpicture}
+\begin{block}{Exactness}collision이 많으면 느려질 뿐, verification이 있으면 결과의 정확성은 유지된다.\end{block}
+\end{frame}

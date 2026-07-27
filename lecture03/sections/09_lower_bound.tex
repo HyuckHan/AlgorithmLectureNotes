@@ -1,0 +1,51 @@
+\begin{frame}{Comparison Model}
+표준 결정 트리 증명은 $n$개의 key가 모두 서로 다르고, 알고리즘이 “$a_i<a_j$인가?”의 답만 얻는 경우를 본다.
+\begin{itemize}\item 한 비교는 yes/no 두 갈래\item 실행은 decision tree의 root-to-leaf path\item 서로 다른 permutation은 서로 다른 leaf에 도달해야 함\end{itemize}
+\muted{중복이 있으면 가능한 순서는 줄 수 있지만, worst-case 하한은 distinct-key 입력만 고려해도 성립한다.}
+\end{frame}
+\begin{frame}{$n=3$ Decision Tree}
+\centering\begin{tikzpicture}[
+  level distance=14mm,
+  level 1/.style={sibling distance=72mm},
+  level 2/.style={sibling distance=36mm},
+  level 3/.style={sibling distance=18mm},
+  every node/.style={tree node,font=\small,minimum width=18mm},
+  edge from parent/.style={draw=AlgoBlue,thick},
+  edge label/.style={draw=none,fill=white,font=\small,inner sep=1pt}
+]
+\node{$a<b?$}
+ child{node{$b<c?$}
+   child{node{$a<b<c$} edge from parent node[edge label,left]{yes}}
+   child{node{$a<c?$}
+     child{node{$a<c<b$} edge from parent node[edge label,left]{yes}}
+     child{node{$c<a<b$} edge from parent node[edge label,right]{no}}
+     edge from parent node[edge label,right]{no}}
+   edge from parent node[edge label,left]{yes}}
+ child{node{$a<c?$}
+   child{node{$b<a<c$} edge from parent node[edge label,left]{yes}}
+   child{node{$b<c?$}
+     child{node{$b<c<a$} edge from parent node[edge label,left]{yes}}
+     child{node{$c<b<a$} edge from parent node[edge label,right]{no}}
+     edge from parent node[edge label,right]{no}}
+   edge from parent node[edge label,right]{no}};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{왜 $\Omega(n\log n)$인가?}
+$n!$개의 입력 순서를 구별하려면 leaf가 적어도 $n!$개 필요하다.
+\[
+\text{height }h\text{인 binary tree의 leaf}\le2^h
+\quad\Longrightarrow\quad
+2^h\ge n!,\quad h\ge\log_2(n!).
+\]
+\[
+n!\ge(n/2)^{n/2}
+\quad\Longrightarrow\quad
+\log_2(n!)=\Theta(n\log n).
+\]
+따라서 어떤 comparison sort도 worst case에 $\Omega(n\log n)$ comparisons가 필요하다.
+\end{frame}
+\begin{frame}{하한의 적용 범위}
+\begin{alertblock}{모든 정렬의 하한이 아니다}key를 비교만 한다는 model의 하한이다.\end{alertblock}
+Counting/Radix Sort는 key 범위나 digit을 직접 사용하므로 조건이 맞으면 $\Theta(n+k)$ 또는 $\Theta(d(n+b))$가 가능하다.
+\vfill\muted{비교 하한에 맞는 또 다른 정렬을 만들기 위해, 최댓값을 효율적으로 관리하는 Heap을 사용한다.}
+\end{frame}

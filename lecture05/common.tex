@@ -1,0 +1,35 @@
+\tikzset{
+ dp cell/.style={draw=AlgoRule,thick,minimum width=9mm,minimum height=8mm,fill=white,font=\small},
+ dp done/.style={dp cell,fill=AlgoBlue!10,draw=AlgoBlue},
+ dp answer/.style={dp cell,fill=green!14,draw=green!45!black,very thick},
+ dp current/.style={dp cell,fill=AlgoOrange!22,draw=AlgoOrange,very thick},
+ dp dependency/.style={dp cell,fill=AlgoBlueTwo!16,draw=AlgoBlueTwo,very thick},
+ dp inactive/.style={dp cell,fill=AlgoGray!10,text=AlgoGray},
+ dp repeat/.style={tree node,draw=AlgoOrange,very thick,fill=AlgoOrange!18},
+ dp edge/.style={-Latex,thick,draw=AlgoBlueTwo},
+ dp path/.style={-Latex,ultra thick,draw=AlgoOrange},
+ error cell/.style={dp cell,draw=red!70!black,fill=red!10}
+}
+\newcommand{\dpstate}[1]{\begin{block}{State 의미}#1\end{block}}
+\newcommand{\dpcheck}[1]{\begin{exampleblock}{Checkpoint}#1\end{exampleblock}}
+\newcommand{\dptakeaway}[1]{\begin{takeaway}#1\end{takeaway}}
+\newcommand{\dpdesign}[5]{%
+\begin{tikzpicture}[node distance=1.5mm,every node/.style={align=left}]
+\node[tree node,minimum width=.92\linewidth,text width=.86\linewidth] (s)
+  {\textbf{State}\quad #1};
+\node[tree node,minimum width=.92\linewidth,text width=.86\linewidth,below=of s] (t)
+  {\textbf{Transition}\quad #2};
+\node[tree node,minimum width=.92\linewidth,text width=.86\linewidth,below=of t] (b)
+  {\textbf{Base Case}\quad #3};
+\node[tree node,minimum width=.92\linewidth,text width=.86\linewidth,below=of b] (o)
+  {\textbf{Evaluation Order}\quad #4};
+\node[tree node,minimum width=.92\linewidth,text width=.86\linewidth,below=of o] (a)
+  {\textbf{Answer}\quad #5};
+\draw[dp edge] (s)--(t);\draw[dp edge] (t)--(b);
+\draw[dp edge] (b)--(o);\draw[dp edge] (o)--(a);
+\end{tikzpicture}}
+\newcommand{\matrixfour}[1]{%
+\begin{tikzpicture}[x=1cm,y=.82cm]
+\foreach \r/\vals in {0/{6,7,12,5},1/{5,3,11,18},2/{7,17,3,3},3/{8,10,14,9}}
+  \foreach \v [count=\c from 0] in \vals {\node[dp cell,#1] at (\c,-\r){\v};}
+\end{tikzpicture}}

@@ -1,0 +1,19 @@
+\begin{frame}{Hirschberg Algorithm Preview}
+\optional[Appendix]\hfill
+LCS 길이 계산의 row compression과 divide-and-conquer를 결합하여
+\[
+\Theta(mn)\text{ time},\qquad \Theta(\min(m,n))\text{ space}
+\]
+로 실제 LCS를 복원할 수 있다. 본 강의에서는 아이디어만 다룬다.
+\end{frame}
+\begin{frame}{Maximum Subarray D\&C Preview}
+\optional[Appendix]\hfill
+왼쪽 최적, 오른쪽 최적, midpoint를 가로지르는 최적 구간을 비교한다.
+\[
+T(n)=2T(n/2)+\Theta(n)=\Theta(n\log n).
+\]
+Kadane은 “끝점이 현재 index인 최적 suffix”를 재사용해 선형시간을 얻는다.
+\end{frame}
+\begin{frame}{다음 강의로}
+\begin{itemize}\item state를 더 작게 만들 수 있는가?\item transition을 더 빠르게 계산할 수 있는가?\item reconstruction과 memory 최적화는 어떻게 균형을 잡는가?\end{itemize}
+\end{frame}

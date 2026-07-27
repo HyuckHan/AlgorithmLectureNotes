@@ -1,0 +1,20 @@
+\section{Part D. Deterministic Linear Selection}
+\begin{frame}{Worst-case Linear가 필요하다면?}
+random choice에 의존하지 않고 partition이 너무 기울어지지 않게 만들고 싶다.
+\mission{pivot 품질을 보장하되, pivot을 찾는 overhead도 $O(n)$ 이하여야 한다.}
+\end{frame}
+\begin{frame}{정확한 Median을 Pivot으로 쓰면?}
+완벽한 $1:1$ partition을 얻지만 median을 찾는 일이 바로 selection 문제다.
+\begin{alertblock}{순환 질문}정답을 pivot으로 찾기 위해 정답을 먼저 구할 수는 없다.\end{alertblock}
+\end{frame}
+\begin{frame}{충분히 좋은 Pivot을 싸게 찾자}
+\begin{enumerate}\item 5개씩 묶어 작은 median들을 만든다.\item 그 medians의 median을 재귀적으로 찾는다.\item 이 값은 양쪽에서 일정 비율을 제거하도록 보장한다.\end{enumerate}
+\end{frame}
+\begin{frame}{이 알고리즘의 이름}
+\begin{description}
+\item[Median of Medians] 보장된 pivot을 만드는 technique
+\item[BFPRT Selection] 이 technique을 사용하는 역사적 algorithm name
+\item[DeterministicSelect] 본 강의 pseudocode의 이름
+\end{description}
+본문에서는 \alert{DeterministicSelect}로 통일하며, pivot은 Median of Medians로 선택한다. 목표는 worst-case $\Theta(n)$이다.
+\end{frame}

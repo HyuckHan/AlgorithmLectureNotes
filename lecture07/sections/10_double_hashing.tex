@@ -1,0 +1,57 @@
+\subsection{Double Hashing}
+\begin{frame}{Double Hashing}
+\[
+h(k,i)=\bigl(h_1(k)+i\,h_2(k)\bigr)\bmod m.
+\]
+\begin{itemize}\item $h_1$은 home bucket, $h_2$는 step size\item $h_2(k)\ne0$\item full cycle을 위해 $\gcd(h_2(k),m)=1$\end{itemize}
+\begin{block}{prime capacity 예}$m$이 prime이면 $h_2(k)=1+(k\bmod(m-1))$ 같은 형태를 사용할 수 있다.\end{block}
+\end{frame}
+\begin{frame}{원본 Double-Hash 예제 검증}
+\[
+m=13,\quad h_1(k)=k\bmod13,\quad h_2(k)=(k\bmod11)+1.
+\]
+\scriptsize\centering\begin{tabular}{c|ccclc}\toprule
+key&$h_1$&$h_2$&$\gcd(h_2,13)$&probe sequence&final\\\midrule
+15&2&5&1&2&2\\
+19&6&9&1&6&6\\
+28&2&7&1&$2,9$&9\\
+41&2&9&1&$2,11$&11\\
+67&2&2&1&$2,4$&4\\\bottomrule
+\end{tabular}
+\end{frame}
+\begin{frame}{Double-Hash Probe Animation}
+\centering\begin{tikzpicture}[x=.8cm]
+\foreach \i in {0,...,12}{\node[ht empty,minimum width=8mm](s\i)at(\i,0){E};\node[font=\tiny,text=AlgoGray]at(\i,-.5){\i};}
+\node[ht occupied,minimum width=8mm]at(s2){15};\node[ht occupied,minimum width=8mm]at(s6){19};
+\only<1|handout:0>{\node[callout]at(6,1.2){28: $h_1=2,h_2=7$};\node[ht collision,minimum width=8mm]at(s2){15};}
+\only<2|handout:0>{\node[ht probe,minimum width=8mm]at(s9){28};\node[callout]at(6,1.2){$(2+1\cdot7)\bmod13=9$};}
+\only<3|handout:0>{\node[ht occupied,minimum width=8mm]at(s9){28};\node[ht collision,minimum width=8mm]at(s2){15};\node[ht probe,minimum width=8mm]at(s11){41};\node[callout]at(6,1.2){41: step 9, final 11};}
+\only<4|handout:1>{\node[ht occupied,minimum width=8mm]at(s9){28};\node[ht occupied,minimum width=8mm]at(s11){41};\node[ht probe,minimum width=8mm]at(s4){67};\node[callout]at(6,1.2){67: step 2, final 4};}
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Step과 Capacity가 서로소가 아니면}
+\[
+m=12,\quad h_2(k)=4:\qquad j,\ j+4,\ j+8,\ j,\ldots
+\]
+\centering\begin{tikzpicture}[x=.72cm]
+\foreach \i in {0,...,11}{\node[ht empty,minimum width=8mm](s\i)at(\i,0){E};\node[font=\tiny,text=AlgoGray]at(\i,-.5){\i};}
+\node[ht probe,minimum width=8mm]at(s1){H};\node[ht collision,minimum width=8mm]at(s5){+4};\node[ht collision,minimum width=8mm]at(s9){+8};
+\end{tikzpicture}
+\begin{alertblock}{결과}$\gcd(4,12)=4$라서 3개 slot만 순환한다. 빈 slot이 많아도 insertion이 실패할 수 있다.\end{alertblock}
+\end{frame}
+\begin{frame}{Linear vs Quadratic vs Double}
+\scriptsize\centering\begin{tabular}{llll}\toprule
+&Linear&Quadratic&Double\\\midrule
+formula&$h'+i$&$h'+c_1i+c_2i^2$&$h_1+ih_2$\\
+primary cluster&큼&완화&완화\\
+secondary cluster&있음&same home 공유&크게 완화\\
+coverage&항상 full cycle&parameter 의존&$\gcd(h_2,m)=1$\\
+locality&좋음&중간&낮을 수 있음\\
+계산&가장 단순&제곱 offset&두 hash\\\bottomrule
+\end{tabular}
+\begin{alertblock}{주의}Double hashing도 collision을 제거하지 않는다. probe sequence를 다양하게 할 뿐이다.\end{alertblock}
+\end{frame}
+\begin{frame}{Double Hashing Checkpoint}
+\begin{enumerate}\item key 67의 $h_1,h_2$, final slot은?\item $\gcd(h_2,m)=1$이 필요한 이유는?\item double hashing에도 collision이 가능한가?\end{enumerate}
+\begin{exampleblock}{답}$2,2$, final 4; 모든 slot을 순환하기 위해; 가능하다.\end{exampleblock}
+\end{frame}

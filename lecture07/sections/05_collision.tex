@@ -1,0 +1,60 @@
+\section{Part C. Collision Resolution}
+\begin{frame}{원본 정수 예제: \texorpdfstring{$m=13$}{m=13}}
+\centering
+\begin{tabular}{ccc}\toprule
+key&calculation&bucket index\\\midrule
+25&$25\bmod13$&12\\
+13&$13\bmod13$&0\\
+16&$16\bmod13$&3\\
+15&$15\bmod13$&2\\
+7&$7\bmod13$&7\\\bottomrule
+\end{tabular}
+\vspace{4mm}
+\htrowthirteen{13,E,15,16,E,E,E,7,E,E,E,E,25}
+\end{frame}
+\begin{frame}{INSERT 29: Collision}
+\centering\begin{tikzpicture}[x=.78cm]
+\foreach \i in {0,...,12}{\node[ht empty,minimum width=8mm](s\i)at(\i,0){E};\node[font=\tiny,text=AlgoGray]at(\i,-.5){\i};}
+\node[ht occupied,minimum width=8mm]at(s0){13};\node[ht occupied,minimum width=8mm]at(s2){15};
+\node[ht occupied,minimum width=8mm]at(s7){7};\node[ht occupied,minimum width=8mm]at(s12){25};
+\only<1|handout:0>{\node[ht occupied,minimum width=8mm]at(s3){16};\node[callout]at(6,1.2){$h(29)=29\bmod13=3$};}
+\only<2|handout:0>{\node[ht collision,minimum width=8mm]at(s3){16};\node[callout]at(6,1.2){bucket 3 occupied: collision};}
+\only<3|handout:1>{\node[ht collision,minimum width=8mm]at(s3){16};\node[callout]at(6,1.2){resolution policy가\\29의 실제 위치를 정한다};}
+\end{tikzpicture}
+\[
+h(k_1)=h(k_2),\quad k_1\ne k_2.
+\]
+\end{frame}
+\begin{frame}{Pigeonhole Principle}
+\[
+|U|>m\quad\Longrightarrow\quad \exists k_1\ne k_2:\ h(k_1)=h(k_2)
+\]
+\centering\begin{tikzpicture}[scale=.80,transform shape]
+\foreach \y/\v in {1.5/a,.5/b,-.5/c,-1.5/d}{\node[hash box](k\v)at(-3,\y){key \v};}
+\foreach \y/\v in {1/0,0/1,-1/2}{\node[ht slot](b\v)at(2,\y){bucket \v};}
+\draw[st edge](ka)--(b0)(kb)--(b1)(kc)--(b2);\draw[probe arrow](kd)--(b1);
+\end{tikzpicture}
+\httakeaway{Collision은 hash table의 오류가 아니라 유한 table로 compress할 때 정상적으로 해결해야 하는 현상이다.}
+\end{frame}
+\begin{frame}{Collision, Probability, Duplicate}
+\small\centering\begin{tabular}{lll}\toprule
+개념&조건&처리\\\midrule
+collision probability&collision이 생길 가능성&hash quality/load로 관리\\
+actual collision&$k_1\ne k_2$, same index&chaining/probing\\
+duplicate key&$k_1$과 $k_2$가 logically equal&map value update\\\bottomrule
+\end{tabular}
+\begin{alertblock}{중요}같은 hash code가 equality를 의미하지 않는다. equality check는 collision resolution 안에서 반드시 수행한다.\end{alertblock}
+\end{frame}
+\begin{frame}{Collision Resolution Overview}
+\footnotesize\centering
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{llll}\toprule
+방법&collision 뒤 이동&대표 강점&대표 위험\\\midrule
+chaining&bucket collection&높은 load 허용&pointer/allocation\\
+linear&$+1,+2,\ldots$&locality&primary clustering\\
+quadratic&제곱 offset&run 완화&coverage/secondary cluster\\
+double hash&key별 step&sequence 분산&step--capacity 조건\\\bottomrule
+\end{tabular}
+\begin{block}{공통 출발점}같은 home collision에서 시작하며 equality 검사와 bounded search가 필요하다. 차이는 collision 뒤의 이동 정책이다.\end{block}
+\htcheckpoint{“Open addressing은 추가 공간이 전혀 없다”가 부정확한 이유는? \quad \textbf{답:} linked node는 피하지만 빈 capacity와 EMPTY/DELETED metadata가 필요하다.}
+\end{frame}

@@ -1,0 +1,56 @@
+\section{Part E. Comparison, Summary, and Quiz}
+\begin{frame}{네 예제의 State와 Transition}
+\small\centering
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{lll}\toprule
+Problem&State&Transition\\\midrule
+Fibonacci&$F(i)$&이전 두 state의 합\\
+Matrix Path&cell까지 최소합&위/왼쪽 predecessor의 min\\
+LCS&두 prefix의 길이&diagonal 또는 up/left max\\
+Max Subarray&$i$에서 끝나는 최대합&extend/restart\\\bottomrule
+\end{tabular}
+\dptakeaway{DP의 차이는 table 모양이 아니라 state의 의미와 dependency graph에 있다.}
+\end{frame}
+\begin{frame}{네 예제의 Base · Order · Answer}
+\small\centering
+\renewcommand{\arraystretch}{1.18}
+\begin{tabular}{llll}\toprule
+Problem&Base Case&Evaluation Order&Answer\\\midrule
+Fibonacci&$F(0),F(1)$&left-to-right&$F(n)$\\
+Matrix Path&start, first row/column&row-major&$dp[n][m]$\\
+LCS&row/column 0&row-major&$dp[m][n]$\\
+Max Subarray&$ending[0]=A[0]$&left-to-right&$bestOverall$\\\bottomrule
+\end{tabular}
+\end{frame}
+\begin{frame}{복잡도와 Reconstruction 비교}
+\small\centering\begin{tabular}{lccc}\toprule
+Problem&Time&기본 space&Reconstruction\\\midrule
+Fibonacci&$\Theta(n)$&$\Theta(n)$ or $\Theta(1)$&해당 없음\\
+Matrix Path&$\Theta(nm)$&$\Theta(nm)$&parent 또는 역추적\\
+LCS&$\Theta(mn)$&$\Theta(mn)$&table backtracking\\
+Max Subarray&$\Theta(n)$&$\Theta(1)$&경계 변수\\\bottomrule
+\end{tabular}
+\end{frame}
+\begin{frame}{Top-Down을 선택할 때}
+\begin{itemize}\item state space는 크지만 실제 방문 state가 적음\item recurrence가 자연스럽고 evaluation order가 복잡함\item 빠른 prototype이 중요함\end{itemize}
+\begin{alertblock}{비용}recursion overhead와 stack overflow 가능성을 확인한다.\end{alertblock}
+\end{frame}
+\begin{frame}{Bottom-Up을 선택할 때}
+\begin{itemize}\item 대부분의 state를 계산\item dependency order가 명확\item memory locality와 iteration 성능이 중요\item rolling array 최적화가 가능\end{itemize}
+\dptakeaway{어느 방식이 항상 더 빠르다고 단정할 수 없다.}
+\end{frame}
+\begin{frame}{Divide-and-Conquer · DP · Greedy}
+\small\centering
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{llll}\toprule
+&Divide-and-Conquer&Dynamic Programming&Greedy\\\midrule
+subproblem&주로 disjoint&overlap 가능&선택 후 축소\\
+계산&각 부분을 독립 해결&state 저장·재사용&현재 선택을 확정\\
+순서&재귀 분할/결합&dependency order&choice order\\
+핵심 조건&분할과 결합&정확한 recurrence&greedy-choice proof\\\bottomrule
+\end{tabular}
+\vfill\muted{Optimal substructure는 DP와 Greedy 모두에 나타날 수 있으므로 둘을 구분하는 충분조건이 아니다.}
+\end{frame}
+\begin{frame}{DP 설계 Checklist}
+\small\begin{enumerate}\item state 의미가 완전한 문장인가?\item base와 transition이 모든 경계를 덮는가?\item dependency보다 뒤에 계산하는가?\item answer cell·복원 정보가 명확한가?\item state 수와 transition 비용을 곱했는가?\item 압축 후에도 필요한 해를 복원할 수 있는가?\end{enumerate}
+\end{frame}

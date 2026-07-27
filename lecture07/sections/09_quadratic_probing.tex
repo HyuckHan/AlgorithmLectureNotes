@@ -1,0 +1,60 @@
+\subsection{Quadratic Probing}
+\begin{frame}{Quadratic Probing}
+\[
+h(k,i)=\bigl(h'(k)+c_1i+c_2i^2\bigr)\bmod m.
+\]
+원본 단순형은 $m=13$, $c_1=0$, $c_2=1$:
+\[
+h(k,i)=\bigl(h'(k)+i^2\bigr)\bmod13.
+\]
+\httakeaway{offset가 $0,1,4,9,16,\ldots$로 커져 contiguous primary run의 영향을 완화한다.}
+\end{frame}
+\begin{frame}{Quadratic Trace: 30 삽입}
+\centering
+\begin{tabular}{c|cccccc}\toprule
+입력&15&18&43&37&45&30\\
+home&2&5&4&11&6&4\\
+final&2&5&4&11&6&8\\\bottomrule
+\end{tabular}
+\vspace{5mm}
+\begin{tikzpicture}[x=.8cm]
+\foreach \i in {0,...,12}{\node[ht empty,minimum width=8mm](s\i)at(\i,0){E};\node[font=\tiny,text=AlgoGray]at(\i,-.5){\i};}
+\foreach \i/\v in {2/15,4/43,5/18,6/45,11/37}{\node[ht occupied,minimum width=8mm]at(s\i){\v};}
+\only<1|handout:0>{\node[ht collision,minimum width=8mm]at(s4){43};\node[callout]at(6,1.2){$i=0$: $4+0=4$};}
+\only<2|handout:0>{\node[ht collision,minimum width=8mm]at(s5){18};\node[callout]at(6,1.2){$i=1$: $4+1=5$};}
+\only<3|handout:1>{\node[ht probe,minimum width=8mm]at(s8){30};\node[callout]at(6,1.2){$i=2$: $4+4=8$};}
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Coverage는 자동 보장이 아니다}
+\[
+(h'+i^2)\bmod13,\quad i=0,1,\ldots
+\]
+\centering\begin{tabular}{c|rrrrrrrr}\toprule
+$i$&0&1&2&3&4&5&6&7\\
+$i^2\bmod13$&0&1&4&9&3&12&10&10\\\bottomrule
+\end{tabular}
+\begin{alertblock}{중요}$i=6$과 $i=7$부터 repeated offset이 보인다. $m,c_1,c_2$와 load에 따라 일부 slot을 방문하지 않아 table이 덜 찼어도 insertion이 실패할 수 있다.\end{alertblock}
+\end{frame}
+\begin{frame}{Secondary Clustering}
+\centering\begin{tikzpicture}[node distance=7mm]
+\node[hash box](a){15: home 2};
+\node[hash box,below=of a](b){28: home 2};
+\node[hash box,below=of b](c){41: home 2};
+\node[hash box,right=25mm of b](p){shared sequence\\$2,3,6,11,5,\ldots$};
+\draw[probe arrow](a)--(p);\draw[probe arrow](b)--(p);\draw[probe arrow](c)--(p);
+\end{tikzpicture}
+\begin{block}{정의}같은 initial hash value를 갖는 key들이 동일한 quadratic probe sequence를 따라가는 현상이다.\end{block}
+\end{frame}
+\begin{frame}{Primary vs Secondary Clustering}
+\small\centering\begin{tabular}{lll}\toprule
+&Primary&Secondary\\\midrule
+대표 방식&linear probing&quadratic probing\\
+합쳐지는 key&서로 다른 home도 가능&같은 home\\
+원인&contiguous occupied run&동일 offset sequence\\
+결과&run의 자기 강화&같은 home끼리 같은 경로\\\bottomrule
+\end{tabular}
+\end{frame}
+\begin{frame}{Quadratic Probing Checkpoint}
+\begin{enumerate}\item 30의 probe indices는?\item quadratic probing이 모든 slot을 방문한다고 말할 수 있는가?\item secondary clustering의 정확한 정의는?\end{enumerate}
+\begin{exampleblock}{답}$4,5,8$; parameter/capacity policy 없이는 아니다; 같은 home key들이 같은 quadratic sequence를 공유하는 현상.\end{exampleblock}
+\end{frame}

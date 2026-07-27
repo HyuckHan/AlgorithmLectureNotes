@@ -1,0 +1,28 @@
+\begin{frame}{MAX-HEAPIFY의 전제}
+\mission{node $i$만 heap property를 어겼고 왼쪽·오른쪽 subtree는 max-heap일 때, $A[i]$를 아래로 내려 전체를 고친다.}
+\begin{alertblock}{Precondition}임의의 망가진 배열 전체를 한 번의 HEAPIFY로 고칠 수 있는 것은 아니다.\end{alertblock}
+\end{frame}
+\begin{frame}{재귀 MAX-HEAPIFY}
+\small\begin{algorithmic}[1]\Procedure{MaxHeapify}{$A,i,heapSize$}\State $l\gets2i$; $r\gets2i+1$; $largest\gets i$\If{$l\le heapSize$ and $A[l]>A[largest]$}\State $largest\gets l$\EndIf\If{$r\le heapSize$ and $A[r]>A[largest]$}\State $largest\gets r$\EndIf\If{$largest\ne i$}\State \Call{Swap}{$A[i],A[largest]$}\State \Call{MaxHeapify}{$A,largest,heapSize$}\EndIf\EndProcedure\end{algorithmic}
+\end{frame}
+\begin{frame}{반복형 MAX-HEAPIFY}
+\begin{algorithmic}[1]\While{true}\State $largest\gets$ largest of $i,2i,2i+1$ within heap\If{$largest=i$}\State \textbf{break}\EndIf\State \Call{Swap}{$A[i],A[largest]$}\State $i\gets largest$\EndWhile\end{algorithmic}
+\begin{block}{장점}같은 경로를 따르되 recursion call overhead가 없다.\end{block}
+\end{frame}
+\begin{frame}{MAX-HEAPIFY: 위반을 아래로 이동}
+\centering\begin{tikzpicture}[scale=.98]
+\only<1>{\heaparraytree{4,14,10,8,7,9,3,2,1,0}{1}{10}}
+\only<2>{\heaparraytree{14,4,10,8,7,9,3,2,1,0}{2}{10}}
+\only<3>{\heaparraytree{14,8,10,4,7,9,3,2,1,0}{4}{10}}
+\only<4>{\heaparraytree{14,8,10,4,7,9,3,2,1,0}{4}{10}}
+\end{tikzpicture}
+\vspace{-1mm}\only<1|handout:0>{4와 큰 child 14 비교}\only<2|handout:0>{swap 후 index 2에서 재개}\only<3|handout:0>{다시 큰 child 8과 swap}\only<4|handout:1>{index 4에서 두 child 2, 1보다 크므로 종료}
+\end{frame}
+\begin{frame}{정확성과 시간}
+\begin{itemize}\item 두 child 중 더 큰 값을 parent 위치로 올렸으므로, swap 뒤 위쪽 node는 두 child보다 크거나 같아 max-heap property를 만족한다.\item 유일하게 남을 수 있는 위반은 선택한 child subtree로 내려간다.\item 한 level당 $O(1)$, heap 높이 $\lfloor\log_2 n\rfloor$.\end{itemize}
+\[T(n)=\Theta(\log n)\quad\text{in the worst case}\]
+\muted{현재 node가 이미 두 child보다 크면 더 일찍 멈출 수 있다.}
+\end{frame}
+\begin{frame}{MAX-HEAPIFY Takeaway}
+\sortingtakeaway{두 subtree가 이미 heap이라는 precondition 아래, 한 root-to-leaf path만 검사한다.}
+\end{frame}

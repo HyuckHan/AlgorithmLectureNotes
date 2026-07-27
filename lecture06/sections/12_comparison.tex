@@ -1,0 +1,42 @@
+\subsection{Search Tree 비교와 선택}
+\begin{frame}{Search Tree 종합 비교}
+\small\centering\begin{tabular}{lccc}\toprule
+Structure&Height&SEARCH / INSERT / DELETE&Cost model · guarantee\\\midrule
+plain BST&worst $\Theta(n)$&$\Theta(h)$&CPU · balance 없음\\
+AVL&$\Theta(\log n)$&$\Theta(\log n)$&CPU · strict BF\\
+RB Tree&$\Theta(\log n)$&$\Theta(\log n)$&CPU · color invariant\\
+B-Tree&$\Theta(\log_t n)$&worst $\Theta(\log_t n)$ page I/O&page · fixed $t$, occupancy\\\bottomrule
+\end{tabular}
+\begin{block}{비교 원칙}
+CPU operation과 page I/O를 같은 숫자로 해석하지 않는다. B-Tree bound는 고정 minimum degree와 occupancy invariant를 전제로 한다.
+\end{block}
+\end{frame}
+\begin{frame}{AVL vs Red-Black Tree}
+\small\begin{tabular}{lll}\toprule
+관점&AVL&RB Tree\\\midrule
+balance&더 엄격&더 느슨\\
+height/search&보통 더 짧은 path&$h\le2\log_2(n+1)$\\
+insert rotation&최대 double rotation&상수 회전 + recolor\\
+delete&여러 ancestor 가능&여러 fixup case\\
+적합&search-heavy&update-heavy ordered map\\
+복잡도&중간&더 높음\\\bottomrule
+\end{tabular}
+\end{frame}
+\begin{frame}{구조를 실제 Application에 연결하기}
+\footnotesize\centering
+\begin{tabular}{@{}l>{\raggedright\arraybackslash}p{.30\textwidth}>{\raggedright\arraybackslash}p{.45\textwidth}@{}}\toprule
+Structure&대표 application&선택 이유\\\midrule
+plain BST&교육용·작은 ordered set&단순하지만 worst-case balance 없음\\
+AVL&read-heavy in-memory dictionary&더 엄격한 height\\
+RB Tree&update-heavy ordered map&회전과 recolor의 균형\\
+B-Tree / B+Tree&database·filesystem index&page I/O와 range scan\\
+Hash table&compiler symbol table의 equality lookup&expected $\Theta(1)$, order 없음\\\bottomrule
+\end{tabular}
+\begin{block}{Cost model}
+AVL/RB는 pointer와 CPU/cache locality, B-Tree는 page와 I/O 수가 핵심이다. Hash는 min/max/successor와 ordered iteration이 어렵다.
+\end{block}
+\end{frame}
+\begin{frame}{구조 선택 Checkpoint}
+\begin{enumerate}\item memory-resident search-heavy dictionary?\item update-heavy ordered map?\item database page index?\item adversarial input 가능 plain BST?\end{enumerate}
+\begin{exampleblock}{한 답}AVL; RB Tree; B-Tree; balance guarantee가 없으므로 피하거나 self-balancing tree 사용.\end{exampleblock}
+\end{frame}

@@ -1,0 +1,22 @@
+\begin{frame}{가장 단순한 해법: Sort then Select}
+\begin{algorithmic}[1]
+\Require{$p\le r$ and $1\le i\le r-p+1$}
+\Procedure{SelectBySorting}{$A,p,r,i$}
+\State \Call{ComparisonSort}{$A[p..r]$}
+\State \Return $A[p+i-1]$
+\EndProcedure
+\end{algorithmic}
+\[T(n)=\Theta(n\log n),\qquad n=r-p+1\]
+\muted{일반 comparison model의 정렬을 기준으로 한 비용이다. Key 범위 같은 추가 구조를 이용하는 정렬은 별도다.}
+\end{frame}
+\begin{frame}{하나만 필요한데 전체 순서를 만든다}
+minimum/maximum은 한 번의 scan으로 $\Theta(n)$에 찾을 수 있다.
+\begin{block}{질문}$i$th order statistic도 partition을 이용해 불필요한 쪽을 버릴 수 있을까?\end{block}
+전체 정렬이 후속 작업에 필요하다면 sort-then-select도 합리적이다.
+\vfill\muted{전체 순서가 필요하지 않다면 partition 뒤 목표 rank가 없는 쪽을 버릴 수 있다.}
+\end{frame}
+\section{Part B. Quickselect}
+\begin{frame}{Quick Sort와 Quickselect}
+\begin{columns}[T]\column{.47\textwidth}\begin{block}{Quick Sort}partition 뒤 \alert{양쪽 모두} 재귀 호출\\$T(q)+T(n-q-1)$\end{block}\column{.47\textwidth}\begin{block}{Quickselect}목표 rank가 있는 \alert{한쪽만} 재귀 호출\\$T(\text{one side})$\end{block}\end{columns}
+\vspace{4mm}\centering\begin{tikzpicture}[every node/.style={tree node,minimum width=20mm},node distance=8mm and 12mm]\node[chosen](p){pivot};\node[below left=of p](l){left};\node[below right=of p](r){right};\draw[-Latex,AlgoGray](p)--(l);\draw[-Latex,AlgoOrange,very thick](p)--node[right]{follow}(r);\node[below=2mm of l,draw=none,fill=none,font=\scriptsize,text=AlgoGray]{discard};\end{tikzpicture}
+\end{frame}

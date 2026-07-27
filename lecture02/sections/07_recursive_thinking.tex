@@ -1,0 +1,65 @@
+\section{Part C. 재귀적으로 문제 설계하기}
+\begin{frame}{수학 함수만 재귀적인가?}배열 구간, 트리의 subtree, 미로의 현재 cell, 남은 선택 집합도 \textbf{같은 형태의 더 작은 문제}를 만든다.\sectiontakeaway{자료가 아니라 문제의 구조가 재귀적이다.}
+\end{frame}
+\begin{frame}{암시적 상태를 명시적 매개변수로}
+“배열에서 찾기” 대신
+\mission{\texttt{search(A,x,begin,end)}는 정렬된 $A[begin..end]$에서 $x$와 같은 원소의 인덱스를 반환한다.}
+\begin{itemize}
+  \item $A[begin..end]$는 비감소 순서로 정렬되어 있다.
+  \item $begin,end$는 모두 포함되는(inclusive) 인덱스다.
+  \item 중복값이 있으면 임의의 matching index를 반환한다.
+\end{itemize}
+\end{frame}
+\begin{frame}{반복형 이진 탐색(Iterative Binary Search)}\small 상태 $begin,end$를 loop가 갱신한다.\[mid=begin+(end-begin)/2\]이 식은 $begin+end$의 integer overflow를 피한다. Best time $\Th(1)$, worst time $\Th(\log n)$, extra space $\Th(1)$.
+\end{frame}
+\begin{frame}[fragile]{재귀형 이진 탐색(Recursive Binary Search)}\begin{lstlisting}
+int bsearch(int A[], int x, int begin, int end) {
+  if (begin > end) return -1;
+  int mid = begin + (end - begin) / 2;
+  if (A[mid] == x) return mid;
+  if (x < A[mid]) return bsearch(A,x,begin,mid-1);
+  return bsearch(A,x,mid+1,end);
+}
+\end{lstlisting}
+\vfill\muted{최초 호출은 0-based 배열에서 \texttt{bsearch(A,x,0,n-1)}이다.}
+\end{frame}
+\begin{frame}{이진 탐색: 후보 구간 축소}\centering
+\Large\textbf{target $x=16$}\par\smallskip
+\begin{tikzpicture}[x=1.22cm,y=1cm]
+\foreach \i/\v in {0/2,1/5,2/8,3/12,4/16,5/23,6/38}{
+  \node[draw=AlgoRule,minimum width=1.08cm,minimum height=.78cm,fill=white] (a\i) at (\i,0) {\v};
+  \node[font=\small,text=AlgoGray] at (\i,.68) {\i};
+}
+\node[font=\small,text=AlgoGray,anchor=east] at (-.65,.68) {index};
+\only<1|handout:0>{
+  \node[draw=AlgoOrange,very thick,minimum width=1.08cm,minimum height=.78cm,fill=AlgoOrange!20] at (3,0) {\bfseries 12};
+  \node[below=5pt of a0,font=\small] {$begin=0$};
+  \node[below=5pt of a3,font=\small,text=AlgoOrangeText] {$mid=3$};
+  \node[below=5pt of a6,font=\small] {$end=6$};
+  \node[above=3pt of a3,text=AlgoOrangeText,font=\small\bfseries] {$A[mid]=12<x$};
+}
+\only<2|handout:0>{
+  \foreach \i/\v in {0/2,1/5,2/8,3/12}{
+    \node[draw=AlgoRule,minimum width=1.08cm,minimum height=.78cm,fill=AlgoGray!18,text=AlgoGray] at (\i,0) {\v};
+    \draw[AlgoGray] (\i-.38,-.24)--(\i+.38,.24);
+  }
+  \node[draw=AlgoOrange,very thick,minimum width=1.08cm,minimum height=.78cm,fill=AlgoOrange!20] at (5,0) {\bfseries 23};
+  \node[below=5pt of a4,font=\small] {$begin=4$};
+  \node[below=5pt of a6,font=\small] {$end=6$};
+  \node[above=3pt of a5,text=AlgoOrangeText,font=\small\bfseries] {$mid=5:\ A[mid]=23>x$};
+}
+\only<3|handout:1>{
+  \foreach \i/\v in {0/2,1/5,2/8,3/12,5/23,6/38}{
+    \node[draw=AlgoRule,minimum width=1.08cm,minimum height=.78cm,fill=AlgoGray!18,text=AlgoGray] at (\i,0) {\v};
+    \draw[AlgoGray] (\i-.38,-.24)--(\i+.38,.24);
+  }
+  \node[draw=AlgoOrange,very thick,minimum width=1.08cm,minimum height=.78cm,fill=AlgoOrange!25] at (4,0) {\bfseries 16};
+  \node[below=5pt of a4,font=\small,text=AlgoOrangeText] {$begin=mid=end=4$};
+  \node[above=3pt of a4,text=AlgoOrangeText,font=\small\bfseries] {$mid=4:\ A[mid]=x$};
+}
+\end{tikzpicture}
+\vfill\normalsize 비교 결과에 맞는 \textbf{한쪽 inclusive 구간만} 다음 호출로 넘긴다.
+\end{frame}
+\begin{frame}{반복형과 재귀형 비교}\begin{tabular}{@{}lcc@{}}\toprule&iterative&recursive\\\midrule worst time&$\Th(\log n)$&$\Th(\log n)$\\worst extra space&$\Th(1)$&$\Th(\log n)$ stack\\표현&상태 갱신&구간 mission\\\bottomrule\end{tabular}
+\vfill\muted{Binary Search는 한 개의 작은 문제를 선택했다. Hanoi는 두 개의 작은 호출과 하나의 현재 작업을 결합한다.}
+\end{frame}

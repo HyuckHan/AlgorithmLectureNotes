@@ -1,0 +1,108 @@
+\section{Part C. AVL Tree}
+\begin{frame}{AVL Invariant와 Balance Factor}
+\[
+BF(x)=h(x.left)-h(x.right),\qquad |BF(x)|\le1.
+\]
+\begin{itemize}\item $BF=+2$: left-heavy\item $BF=-2$: right-heavy\item empty height $=-1$, leaf height $=0$\end{itemize}
+\begin{alertblock}{부호 convention}원본의 right-left 대신 left-right를 사용한다. 모든 case와 코드가 이 부호를 따른다.\end{alertblock}
+\end{frame}
+\begin{frame}{Height를 Node에 저장하는 이유}
+\[
+h(x)=1+\max(h(x.left),h(x.right))
+\]
+\begin{itemize}\item 매번 subtree를 순회하면 update 하나가 비싸진다.\item rotation 뒤 영향을 받은 node의 height를 아래에서 위 순서로 재계산한다.\item validator는 저장 height와 실제 height를 함께 검사한다.\end{itemize}
+\end{frame}
+\begin{frame}{Right Rotation은 무엇을 보존하는가?}
+\centering
+\only<1|handout:0>{\begin{tikzpicture}[x=1.2cm,y=.9cm]
+\node[avl node](y)at(0,0){y};\node[avl node](x)at(-1.5,-1){x};\node[st node](c)at(1.5,-1){C};
+\node[st node](a)at(-2.2,-2){A};\node[st node](b)at(-.8,-2){B};
+\draw[st edge](y)--(x)(y)--(c)(x)--(a)(x)--(b);\node[callout]at(4,-1){right rotate at y};
+\end{tikzpicture}}
+\only<2|handout:1>{\begin{tikzpicture}[x=1.2cm,y=.9cm]
+\node[avl node](x)at(0,0){x};\node[st node](a)at(-1.5,-1){A};\node[avl node](y)at(1.5,-1){y};
+\node[st node](b)at(.8,-2){B};\node[st node](c)at(2.2,-2){C};
+\draw[st edge](x)--(a)(x)--(y)(y)--(b)(y)--(c);\node[callout]at(4,-1){A, x, B, y, C};
+\end{tikzpicture}}
+\[
+\text{inorder before}=\text{inorder after}=A,x,B,y,C.
+\]
+\end{frame}
+\begin{frame}{Rotation Pointer Update}
+\begin{center}
+\keyterm{structural transformation}
+$\;\to\;$ \keyterm{pointer updates}
+$\;\to\;$ \keyterm{height updates}
+\end{center}
+\small\begin{algorithmic}[1]
+\Procedure{RotateRight}{$y$}
+\State $x\gets y.left$; $B\gets x.right$
+\State $x.right\gets y$; $y.left\gets B$
+\State parent/root link가 $y$ 대신 $x$를 가리키게 갱신
+\State $h(y)$ 갱신; $h(x)$ 갱신
+\State\Return $x$
+\EndProcedure
+\end{algorithmic}
+\begin{block}{Left rotation}모든 left/right를 바꾼 symmetric operation.\end{block}
+\end{frame}
+\begin{frame}{LL Case: Single Right Rotation}
+\centering
+\only<1|handout:0>{\begin{tikzpicture}[scale=1.3,transform shape,level distance=11mm,sibling distance=22mm]\node[st violation]{30\\{\tiny BF=+2}}child{node[st current]{20}child{node[st node]{10}}child[missing]{}}child[missing]{};\end{tikzpicture}}
+\only<2|handout:1>{\begin{tikzpicture}[scale=1.3,transform shape,level distance=11mm,sibling distance=22mm]\node[st done]{20\\{\tiny BF=0}}child{node[st node]{10}}child{node[st node]{30}};\end{tikzpicture}}
+\begin{block}{판별과 검증}left-heavy $z=30$, left-left → \texttt{RIGHT-ROTATE}$(30)$.\\
+before/after inorder $=10,20,30$; after $h(10)=h(30)=0$, $h(20)=1$, 모든 $BF=0$.\end{block}
+\end{frame}
+\begin{frame}{RR Case: Single Left Rotation}
+\centering
+\only<1|handout:0>{\begin{tikzpicture}[scale=1.3,transform shape,level distance=11mm,sibling distance=22mm]\node[st violation]{10\\{\tiny BF=-2}}child[missing]{}child{node[st current]{20}child[missing]{}child{node[st node]{30}}};\end{tikzpicture}}
+\only<2|handout:1>{\begin{tikzpicture}[scale=1.3,transform shape,level distance=11mm,sibling distance=22mm]\node[st done]{20\\{\tiny BF=0}}child{node[st node]{10}}child{node[st node]{30}};\end{tikzpicture}}
+\begin{block}{판별과 검증}right-heavy $z=10$, right-right → \texttt{LEFT-ROTATE}$(10)$.\\
+before/after inorder $=10,20,30$; after $h(10)=h(30)=0$, $h(20)=1$, 모든 $BF=0$.\end{block}
+\end{frame}
+\begin{frame}{LR Case: Double Rotation}
+\centering
+\only<1|handout:0>{\begin{tikzpicture}[scale=1.15,transform shape,level distance=11mm,sibling distance=22mm]\node[st violation]{30\\{\tiny BF=+2}}child{node[st current]{10}child[missing]{}child{node[st node]{20}}}child[missing]{};\end{tikzpicture}}
+\only<2|handout:0>{\begin{tikzpicture}[scale=1.15,transform shape,level distance=11mm,sibling distance=22mm]\node[st violation]{30}child{node[st current]{20}child{node[st node]{10}}child[missing]{}}child[missing]{};\end{tikzpicture}}
+\only<3|handout:1>{\begin{tikzpicture}[scale=1.15,transform shape,level distance=11mm,sibling distance=22mm]\node[st done]{20\\{\tiny BF=0}}child{node[st node]{10}}child{node[st node]{30}};\end{tikzpicture}}
+\begin{block}{연산과 검증}\texttt{LEFT-ROTATE}$(10)$, then \texttt{RIGHT-ROTATE}$(30)$.\\
+\only<1|handout:0>{inner shape를 확인한다.}\only<2|handout:0>{첫 rotation으로 LL 형태를 만든다.}\only<3|handout:1>{두 번째 rotation과 bottom-up height update를 마친다.}\\
+before/after inorder $=10,20,30$; after $h(10)=h(30)=0$, $h(20)=1$, 모든 $BF=0$.\end{block}
+\end{frame}
+\begin{frame}{RL Case: Double Rotation}
+\centering
+\only<1|handout:0>{\begin{tikzpicture}[scale=1.15,transform shape,level distance=11mm,sibling distance=22mm]\node[st violation]{10\\{\tiny BF=-2}}child[missing]{}child{node[st current]{30}child{node[st node]{20}}child[missing]{}};\end{tikzpicture}}
+\only<2|handout:0>{\begin{tikzpicture}[scale=1.15,transform shape,level distance=11mm,sibling distance=22mm]\node[st violation]{10}child[missing]{}child{node[st current]{20}child[missing]{}child{node[st node]{30}}};\end{tikzpicture}}
+\only<3|handout:1>{\begin{tikzpicture}[scale=1.15,transform shape,level distance=11mm,sibling distance=22mm]\node[st done]{20\\{\tiny BF=0}}child{node[st node]{10}}child{node[st node]{30}};\end{tikzpicture}}
+\begin{block}{연산과 검증}\texttt{RIGHT-ROTATE}$(30)$, then \texttt{LEFT-ROTATE}$(10)$.\\
+\only<1|handout:0>{inner shape를 확인한다.}\only<2|handout:0>{첫 rotation으로 RR 형태를 만든다.}\only<3|handout:1>{두 번째 rotation과 bottom-up height update를 마친다.}\\
+before/after inorder $=10,20,30$; after $h(10)=h(30)=0$, $h(20)=1$, 모든 $BF=0$.\end{block}
+\end{frame}
+\begin{frame}{네 Case를 한 표로}
+\centering\begin{tabular}{cccl}\toprule
+$BF(z)$&child 방향&case&rotation\\\midrule
+$+2$&left-left&LL&right$(z)$\\
+$-2$&right-right&RR&left$(z)$\\
+$+2$&left-right&LR&left(child), right$(z)$\\
+$-2$&right-left&RL&right(child), left$(z)$\\\bottomrule
+\end{tabular}
+\end{frame}
+\begin{frame}{AVL INSERT Workflow}
+\begin{enumerate}\item ordinary BST insertion\item path를 거슬러 height update\item 첫 unbalanced ancestor $z$ 탐색\item key 방향으로 LL/RR/LR/RL 판별\item $O(1)$ rotation\item 새 subtree root를 parent에 연결\end{enumerate}
+\end{frame}
+\begin{frame}{AVL INSERT Complexity}
+\begin{itemize}
+\item search path $O(\log n)$
+\item height update $O(\log n)$
+\item rotation 1회 또는 2회: $O(1)$
+\item total $O(\log n)$
+\end{itemize}
+\sttakeaway{Rotation 수가 상수여도, path를 찾고 height를 갱신하는 비용은 남는다.}
+\end{frame}
+\begin{frame}{AVL DELETE는 왜 더 까다로운가?}
+\begin{itemize}\item ordinary BST delete 후 upward height update\item subtree height 감소가 여러 ancestor의 balance를 바꿀 수 있음\item insertion과 달리 여러 ancestor에서 rotation이 필요할 수 있음\item total $O(\log n)$\end{itemize}
+\end{frame}
+\begin{frame}{AVL Checkpoint}
+\begin{enumerate}\item $BF=left-right$에서 $BF=-2$는 어느 쪽 heavy인가?\item 30,10,20 삽입은 무슨 case인가?\item rotation 전후 반드시 같은 traversal은?\end{enumerate}
+\begin{exampleblock}{답}right-heavy; LR; inorder.\end{exampleblock}
+\sttakeaway{다음 RB Tree도 같은 rotation을 쓴다. 다만 BF가 아니라 color와 black-height가 repair 시점을 정한다.}
+\end{frame}

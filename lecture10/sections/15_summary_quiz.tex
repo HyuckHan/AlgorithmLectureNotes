@@ -1,0 +1,33 @@
+\subsection{Summary와 Quiz}
+\begin{frame}{Lecture 10 Summary}
+\begin{itemize}
+\item state-space tree는 implicit decision model이다.
+\item Backtracking은 sound feasibility pruning을 사용한다.
+\item Branch-and-Bound는 incumbent와 optimistic objective bound를 사용한다.
+\item A*는 \(f=g+h\)를 사용하며 consistent \(h\)에서는 current goal을 extract할 때 종료한다.
+\item 세 방법 모두 최악에는 exponential일 수 있다.
+\end{itemize}
+\end{frame}
+\begin{frame}{Quiz 1: State-Space Basics}
+\begin{enumerate}\item binary decision depth \(n\)의 leaves는?\item candidate와 feasible의 차이는?\item implicit tree의 의미는?\end{enumerate}
+\begin{exampleblock}{답}\(2^n\); complete state와 constraint를 만족한 complete state; 필요한 child만 on demand 생성한다.\end{exampleblock}
+\end{frame}
+\begin{frame}{Quiz 2: Backtracking}
+\begin{enumerate}\item promising false가 보장해야 하는 것은?\item false positive의 영향은?\item Apply 뒤 반드시 대응해야 하는 연산은?\end{enumerate}
+\begin{exampleblock}{답}어떤 descendant도 feasible하지 않음; 느려지지만 correctness 유지; Undo.\end{exampleblock}
+\end{frame}
+\begin{frame}{Quiz 3: Examples}
+\begin{enumerate}\item N-Queens diagonal conflict 식은?\item positive Subset Sum의 두 prune 조건은?\item \([1,3,4]\)가 AP에서 즉시 prune되는 이유는?\end{enumerate}
+\begin{exampleblock}{답}\(|r_1-r_2|=|c_1-c_2|\); \(s>W\), \(s+r<W\); adjacent differences가 이미 2와 1이다.\end{exampleblock}
+\end{frame}
+\begin{frame}{Quiz 4: Branch-and-Bound}
+\begin{enumerate}\item maximization prune inequality는?\item fractional knapsack이 safe UB인 이유는?\item least-cost B\&B는 어떤 PQ를 쓰는가?\end{enumerate}
+\begin{exampleblock}{답}\(UB\le INC\); 0/1 constraint를 완화한 superset optimum; lower bound min-PQ.\end{exampleblock}
+\end{frame}
+\begin{frame}{Quiz 5: A*}
+\begin{enumerate}\item \(g=7,h=4\)이면 \(f\)는?\item goal 발견 즉시 종료해도 되는가?\item consistency 식은?\item inconsistent \(h\)에서 필요한 정책은?\end{enumerate}
+\begin{exampleblock}{답}11; 아니며 current non-stale minimum으로 extract할 때 종료; \(h(u)\le w(u,v)+h(v)\); 더 좋은 \(g\)가 오면 CLOSED를 reopen한다.\end{exampleblock}
+\end{frame}
+\begin{frame}{Final Checkpoint}
+\sscheckpoint{“왜 이 subtree를 보지 않아도 되는가?”를 feasibility contradiction, incumbent bound, 또는 admissible heuristic의 언어로 정확히 답할 수 있어야 한다.}
+\end{frame}

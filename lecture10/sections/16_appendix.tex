@@ -1,0 +1,30 @@
+\subsection{Appendix}
+\begin{frame}{Appendix: Exact Recursive DFS Simulation}
+State-space search에서 iterative DFS가 recursion과 같은 finish behavior를 재현하려면 단순 vertex stack이 아니라
+\[
+(state,\ next\ candidate\ index)
+\]
+frame을 저장한다. Apply 전 position과 Undo 시점을 함께 기록해야 한다.
+\end{frame}
+\begin{frame}{Appendix: N-Queens Bit Mask}
+\[
+available=\neg(columns\lor diagLeft\lor diagRight)\ \&\ mask.
+\]
+lowest set bit를 하나씩 선택하고 diagonal mask를 shift한다. node 수의 최악 차수는 바꾸지 않지만 상수 인자를 크게 줄인다.
+\end{frame}
+\begin{frame}{Appendix: Consistency \(\Rightarrow\) Admissibility}
+goal에서 \(h(goal)=0\). 최적 path \(n=v_0,\ldots,v_k=goal\)에 consistency를 반복 적용하면
+\[
+h(n)\le\sum_{i=0}^{k-1}w(v_i,v_{i+1})+h(goal)=h^*(n).
+\]
+\end{frame}
+\begin{frame}{Appendix: Unsafe Bound Counterexample}
+Maximization node의 true descendant optimum이 100인데 잘못 계산한 \(UB=80\), incumbent가 90이면
+\[
+80\le90
+\]
+으로 optimal branch를 prune한다. bound는 tight하기 전에 반드시 optimistic해야 한다.
+\end{frame}
+\begin{frame}{다음 강의로}
+\sstakeaway{State model, traversal policy, pruning proof를 분리해서 생각하면 새로운 combinatorial search도 같은 설계 언어로 분석할 수 있다.}
+\end{frame}

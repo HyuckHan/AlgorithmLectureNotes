@@ -1,0 +1,84 @@
+\begin{frame}[fragile]{팩토리얼(Factorial)}\begin{lstlisting}
+long factorial(int n) {
+    if (n == 0) return 1;
+    return n * factorial(n - 1);
+}
+\end{lstlisting}\threeparts{$n=0\Rightarrow1$}{$n\cdot factorial(n-1)$}{$n$ 감소}\hfill Time $\Th(n)$, depth $\Th(n)$.
+\vfill\muted{분석 가정: 결과가 C의 \texttt{long} 범위를 넘지 않는다.}
+\end{frame}
+\begin{frame}[fragile]{거듭제곱(Power) $x^n$}\begin{lstlisting}
+long power(long x, int n) {
+    if (n == 0) return 1;
+    return x * power(x, n - 1);
+}
+\end{lstlisting}\mission{$x^n$ 반환 ($n\ge0$).}\hfill Time/depth $\Th(n)$.
+\vfill\muted{분석 가정: 중간 곱셈과 결과에 산술 overflow가 없다.}
+\end{frame}
+\begin{frame}{피보나치(Fibonacci)}\[F_0=0,\quad F_1=1,\quad F_n=F_{n-1}+F_{n-2}.\]\threeparts{$n<2\Rightarrow n$}{$fib(n-1)+fib(n-2)$}{$n$이 1 또는 2 감소}
+\end{frame}
+\begin{frame}{피보나치 호출 트리}\centering
+\begin{tikzpicture}[
+  level distance=10.5mm,
+  level 1/.style={sibling distance=76mm},
+  level 2/.style={sibling distance=38mm},
+  level 3/.style={sibling distance=19mm},
+  level 4/.style={sibling distance=10mm},
+  every node/.style=tree node,
+  edge from parent/.style={draw=AlgoGray}
+]
+\node{$F_5$}
+ child{node{$F_4$}
+   child{node[chosen]{$F_3$}
+     child{node[draw=AlgoBlue,very thick,fill=AlgoLight]{$F_2$} child{node{$F_1$}} child{node{$F_0$}}}
+     child{node{$F_1$}}}
+   child{node[draw=AlgoBlue,very thick,fill=AlgoLight]{$F_2$} child{node{$F_1$}} child{node{$F_0$}}}}
+ child{node[chosen]{$F_3$}
+   child{node[draw=AlgoBlue,very thick,fill=AlgoLight]{$F_2$} child{node{$F_1$}} child{node{$F_0$}}}
+   child{node{$F_1$}}};
+\end{tikzpicture}
+\vfill\small \textcolor{AlgoOrangeText}{■ 반복 $F_3$}\quad
+\textcolor{AlgoBlue}{■ 반복 $F_2$}\quad
+같은 입력의 부분문제이지만 서로 다른 호출과 activation record다.
+\par\smallskip $T(n)=\Th(\ph^n)$이며, $O(2^n)$은 편리한 상한이다.
+\end{frame}
+\begin{frame}{메모이제이션(Memoization) 미리보기}\texttt{fib(n)} 결과를 처음 계산할 때 저장하면 같은 입력의 답을 다시 계산하지 않는다.
+\begin{takeaway}
+같은 입력의 답을 저장하면 이후 호출 트리를 다시 확장하지 않는다.
+\end{takeaway}
+\[\text{naive }\Th(\ph^n)\quad\longrightarrow\quad\text{memoized }\Th(n)\]
+\muted{Dynamic Programming에서 체계적으로 다룬다.}
+\end{frame}
+\begin{frame}[fragile]{문자열 길이}\begin{lstlisting}
+size_t length(const char *s) {
+    if (*s == '\0') return 0;
+    return 1 + length(s + 1);
+}
+\end{lstlisting}\threeparts{널 문자 \texttt{'\textbackslash0'}}{첫 문자를 제외한 suffix 길이+1}{포인터가 한 칸 전진}
+\end{frame}
+\begin{frame}[fragile]{문자열 순방향 출력}\begin{lstlisting}
+void print_chars(const char *s) {
+    if (*s == '\0') return;
+    printf("%c", *s);       // before call
+    print_chars(s + 1);
+}
+\end{lstlisting}출력은 호출 단계에서 일어난다. Time/depth $\Th(n)$.
+\end{frame}
+\begin{frame}[fragile]{역방향 출력: 호출 뒤의 코드}\begin{lstlisting}
+void print_reverse(const char *s) {
+    if (*s == '\0') return;
+    print_reverse(s + 1);
+    printf("%c", *s);       // after return
+}
+\end{lstlisting}\only<1>{\Large\texttt{"ABC"}: 출력 없이 끝까지 호출}\only<2>{\Large 반환하며 \texttt{C $\to$ CB $\to$ CBA}}
+\end{frame}
+\begin{frame}[fragile]{정수를 이진수로 출력}\begin{lstlisting}
+void print_binary(unsigned n) {
+    if (n >= 2) print_binary(n / 2);
+    printf("%u", n % 2);
+}
+\end{lstlisting}$13$: $6\to3\to1$을 먼저 호출한 뒤 나머지 $1,0,1,1$을 출력한다.
+\vfill $n\ge1$에서 time/depth $\Th(\log n)$이며, $n=0$은 상수 시간이다.
+\end{frame}
+\begin{frame}{기본 예제 Checkpoint}\begin{tabular}{@{}llll@{}}\toprule 문제&입력 감소&호출 수&시간\\\midrule factorial&$n-1$&1&$\Th(n)$\\string&suffix&1&$\Th(n)$\\binary print&$n/2$&1&$\Th(\log(n+1))$\\Fibonacci&$n-1,n-2$&2&$\Th(\ph^n)$\\\bottomrule\end{tabular}
+\vfill\muted{호출의 형태를 수행시간 함수로 옮기면 점화식이 된다.}
+\end{frame}

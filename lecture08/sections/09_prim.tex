@@ -1,0 +1,63 @@
+\section{Part I. Prim Algorithm}
+\begin{frame}{Prim의 핵심 상태}
+\begin{description}\item[key[v]]현재 tree에 \(v\)를 연결하는 cheapest \emph{single edge} weight\item[parent[v]]그 edge의 tree-side endpoint\item[Q]아직 tree 밖에 있는 vertices의 min-priority queue\end{description}
+\begin{alertblock}{Dijkstra와 다름}Prim key는 한 edge, Dijkstra dist는 source부터 누적 path weight다.\end{alertblock}
+\end{frame}
+\begin{frame}{Prim Pseudocode}
+\scriptsize\begin{algorithmic}[1]
+\Procedure{Prim}{$G,r$}\ForAll{$v\in V$}\State \(key[v]\gets\infty,\ parent[v]\gets\NIL\)\EndFor
+\State \(key[r]\gets0;\ Q\gets\Call{MinPriorityQueue}{V,key}\)
+\While{$Q\ne\emptyset$}\State \(u\gets\Call{ExtractMin}{Q}\)
+\ForAll{$(u,v,w)\in Adj[u]$}\If{$v\in Q$ \textbf{ and } $w<key[v]$}
+\State \(parent[v]\gets u,\ key[v]\gets w\); \Call{DecreaseKey}{$Q,v,w$}\EndIf\EndFor\EndWhile
+\State\Return \(\{(parent[v],v):v\ne r\}\)\EndProcedure
+\end{algorithmic}
+\end{frame}
+\begin{frame}{Prim Trace I: Start at A}
+\small\[
+\begin{array}{c|rrrrrrr}v&A&B&C&D&E&F&G\\\hline
+key&0&\infty&\infty&\infty&\infty&\infty&\infty\\parent&-&-&-&-&-&-&-
+\end{array}
+\]
+\begin{block}{Extract A}update \(B:8/A,\ C:9/A,\ D:11/A\).\end{block}
+\end{frame}
+\begin{frame}{Prim Trace II: Key Updates}
+\centering\begin{tikzpicture}[x=.82cm,y=.72cm]
+\node[gvertex](a)at(0,0){A};\node[gvertex](b)at(1.4,1.4){B};\node[gvertex](c)at(3,1.5){C};
+\node[gvertex](d)at(4.5,0){D};\node[gvertex](e)at(2.2,3){E};\node[gvertex](f)at(4.3,3){F};\node[gvertex](g)at(5.8,1.5){G};
+\draw[gedge](a)--node[left,font=\tiny]{8}(b)(a)--node[below left,font=\tiny]{9}(c)(a)--node[below,font=\tiny]{11}(d);
+\draw[gedge](b)--node[above left,font=\tiny]{10}(e)(c)--node[left,font=\tiny]{5}(e)(c)--node[below,font=\tiny]{13}(d)(c)--node[above,font=\tiny]{12}(f);
+\draw[gedge](d)--node[right,font=\tiny]{8}(f)(d)--node[below right,font=\tiny]{8}(g)(f)--node[above right,font=\tiny]{7}(g);
+\only<1->{\draw[gmst](a)--(b);}\only<2->{\draw[gmst](a)--(c);}\only<3->{\draw[gmst](c)--(e);}
+\only<4->{\draw[gmst](a)--(d);}\only<5->{\draw[gmst](d)--(f);}\only<6->{\draw[gmst](f)--(g);}
+\only<1>{\node[gcurrent]at(b){B};}\only<2>{\node[gcurrent]at(c){C};}\only<3>{\node[gcurrent]at(e){E};}
+\only<4>{\node[gcurrent]at(d){D};}\only<5>{\node[gcurrent]at(f){F};}\only<6>{\node[gcurrent]at(g){G};}
+\node[pq]at(9,2.8){Extract: \only<1>{B}\only<2>{C}\only<3>{E}\only<4>{D}\only<5>{F}\only<6>{G}};
+\node[callout]at(9,1.5){Update: \only<1>{E=10/B}\only<2>{E=5/C,\ F=12/C}\only<3>{none}\only<4>{F=8/D,\ G=8/D}\only<5>{G=7/F}\only<6>{done}};
+\node[callout]at(9,.2){Selected: \only<1>{AB8}\only<2>{AC9}\only<3>{CE5}\only<4>{AD11}\only<5>{DF8}\only<6>{FG7}};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Prim 결과 검증}
+\[
+T=\{AB8,AC9,CE5,AD11,DF8,FG7\},\qquad w(T)=48.
+\]
+\begin{itemize}\item edge 수 \(=6=|V|-1\)\item connected and acyclic\item every selected edge exists\end{itemize}
+\end{frame}
+\begin{frame}{Prim에서 “Relaxation”의 의미}
+\[
+\text{if }w(u,v)<key[v]\text{ then }key[v]\gets w(u,v).
+\]
+\begin{alertblock}{Shortest-path relaxation 아님}\(key[v]\)에 \(key[u]+w(u,v)\)를 더하지 않는다. current tree로 들어오는 가장 싼 한 edge만 비교한다.\end{alertblock}
+\end{frame}
+\begin{frame}{Prim Complexity}
+\small\begin{tabular}{ll}\toprule
+implementation&time\\\midrule
+binary heap + list&\(O((V+E)\log V)\), connected이면 \(O(E\log V)\)\\
+matrix + simple array&\(O(V^2)\)\\
+Fibonacci heap (theory)&\(O(E+V\log V)\)\\\bottomrule
+\end{tabular}
+\end{frame}
+\begin{frame}{Part I Checkpoint}
+\begin{enumerate}\item Prim key의 의미는?\item parent를 왜 저장하는가?\item matrix Prim 비용은?\end{enumerate}
+\begin{exampleblock}{답}tree에 잇는 cheapest edge; 실제 MST edge 복원; \(O(V^2)\).\end{exampleblock}
+\end{frame}

@@ -1,0 +1,56 @@
+\subsection{KMP Search}
+\begin{frame}{KMP Search Pseudocode}
+\tiny\begin{algorithmic}[1]
+\Procedure{KMPSearch}{$T,P$}\State \(n\gets|T|,m\gets|P|,result\gets[]\)
+\If{\(m=0\)}\State\Return policy-defined result\EndIf
+\State \(lps\gets\Call{BuildLPS}{P};\ i,j\gets0\)
+\While{\(i<n\)}
+\If{\(T[i]=P[j]\)}\State \(i\gets i+1;\ j\gets j+1\)
+\If{\(j=m\)}\State append \(i-m\); \(j\gets lps[j-1]\)\EndIf
+\ElsIf{\(j>0\)}\State \(j\gets lps[j-1]\)
+\Else\State \(i\gets i+1\)\EndIf
+\EndWhile\State\Return \(result\)\EndProcedure
+\end{algorithmic}
+\end{frame}
+\begin{frame}{KMP Trace Setup}
+\[
+T=\texttt{BAABXBAABABAA},\qquad P=\texttt{BAABABAA}.
+\]
+\[
+lps=[0,0,0,1,2,1,2,3].
+\]
+\begin{block}{관찰}첫 네 문자 \texttt{BAAB} 뒤 \(T[4]=\texttt{X}\)에서 mismatch가 나고, 실제 occurrence는 shift 5다.\end{block}
+\end{frame}
+\begin{frame}{KMP Mismatch와 Recovery}
+\centering\begin{tikzpicture}[x=.56cm,y=.72cm]
+\smrow{2.4}{T}{B,A,A,B,X,B,A,A,B,A,B,A,A}
+\only<1|handout:0>{\smshiftrow{1.0}{P}{0}{B,A,A,B,A,B,A,A}}
+\only<2|handout:0>{\smshiftrow{1.0}{P}{3}{B,A,A,B,A,B,A,A}}
+\only<3|handout:0>{\smshiftrow{1.0}{P}{4}{B,A,A,B,A,B,A,A}}
+\only<4-|handout:1>{\smshiftrow{1.0}{P}{5}{B,A,A,B,A,B,A,A}}
+\only<1|handout:0>{\node[smbad]at(4,2.4){X};\node[smbad]at(4,1.0){A};}
+\only<2|handout:0>{\node[smbad]at(4,2.4){X};\node[smbad]at(4,1.0){A};}
+\only<3|handout:0>{\node[smbad]at(4,2.4){X};\node[smbad]at(4,1.0){B};}
+\only<4|handout:0>{\node[smactive]at(5,2.4){B};\node[smactive]at(5,1.0){B};}
+\only<5|handout:1>{\foreach \x/\c in {5/B,6/A,7/A,8/B,9/A,10/B,11/A,12/A}{\node[smverified]at(\x,2.4){\c};\node[smverified]at(\x,1.0){\c};}}
+\node[smhash,text width=.78\linewidth]at(5.9,-.25){%
+\only<1|handout:0>{\(i=4,j=4\): \texttt{X}\(\ne\)\texttt{A}. 이미 맞은 \texttt{BAAB}의 정보를 버리지 않는다.}%
+\only<2|handout:0>{\(j\gets lps[3]=1\): 길이 1의 border만 재사용하고 같은 \texttt{X}를 비교한다.}%
+\only<3|handout:0>{다시 mismatch이므로 \(j\gets lps[0]=0\). text index \(i\)는 아직 4다.}%
+\only<4|handout:0>{\(j=0\) mismatch 뒤 \(i\gets5\). 새 alignment의 첫 문자가 일치한다.}%
+\only<5|handout:1>{shift 5에서 match. text를 되돌리지 않고 occurrence를 찾았다.}};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Overlapping Match}
+\[
+T=\texttt{AAAAA},\quad P=\texttt{AAA},\quad lps=[0,1,2].
+\]
+\centering\begin{tikzpicture}
+\node[smhash]at(0,.8){\only<1|handout:0>{match at 0; \(j\gets lps[2]=2\)}\only<2|handout:1>{continue \(\Rightarrow\) matches \([0,1,2]\)}};
+\node[smnote]at(0,-.3){match 후 \(j=0\)으로 초기화하면 overlap 정보를 버린다};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{KMP Search Checkpoint}
+\begin{enumerate}\item mismatch이고 \(j>0\)이면 \(i\)는 증가하는가?\item \(j=0\) mismatch이면?\item match 후 overlap을 위해 \(j\)는?\end{enumerate}
+\begin{exampleblock}{답}아니다; \(i\gets i+1\); \(lps[m-1]\).\end{exampleblock}
+\end{frame}

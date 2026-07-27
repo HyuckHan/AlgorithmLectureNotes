@@ -1,0 +1,54 @@
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{theme/beamerthemealgorithms}
+\setsansfont{Noto Sans}[Scale=0.98,AutoFakeSlant=0.15]
+\setmainfont{Noto Sans}[Scale=0.98,AutoFakeSlant=0.15]
+\setmonofont{Noto Sans Mono}[Scale=0.90]
+\newfontfamily\lecturefooterfont{Noto Sans}
+\usepackage{kotex,amsmath,amssymb,mathtools,booktabs,array,multirow}
+\setsanshangulfont{Noto Sans CJK KR}[Scale=0.98,AutoFakeSlant=0.15]
+\setmainhangulfont{Noto Sans CJK KR}[Scale=0.98,AutoFakeSlant=0.15]
+\setmonohangulfont{Noto Sans Mono CJK KR}[Scale=0.90]
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,matrix,decorations.pathreplacing,backgrounds,patterns,shapes.geometric}
+\usepackage{pgfplots}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\algrenewcommand\textproc[1]{\textbf{#1}}
+\input{lecture02/common.tex}
+\input{lecture03/common.tex}
+\input{lecture04/common.tex}
+\input{lecture05/common.tex}
+\input{lecture06/common.tex}
+\input{lecture07/common.tex}
+\input{lecture08/common.tex}
+\input{lecture09/common.tex}
+\pgfplotsset{compat=1.18,compat/show suggested version=false}
+\title{문자열 매칭\\[-1mm]\large String Matching}
+\subtitle{Naive Search, Rolling Hash, KMP와 Horspool}
+\author{Algorithm Lecture Notes}
+\date{}
+\setbeamerfont{subtitle}{size=\large}
+\setbeamertemplate{frame numbering}{\lecturefooterfont\insertframenumber/\inserttotalframenumber}
+\mode<handout>{\AtBeginSection[]{}}
+\begin{document}
+\input{lecture09/sections/01_problem.tex}
+\input{lecture09/sections/02_naive.tex}
+\input{lecture09/sections/03_redundancy.tex}
+\input{lecture09/sections/04_rabin_karp_intro.tex}
+\input{lecture09/sections/05_rolling_hash.tex}
+\input{lecture09/sections/06_modular_collision.tex}
+\input{lecture09/sections/07_rabin_karp_analysis.tex}
+\input{lecture09/sections/08_border.tex}
+\input{lecture09/sections/09_kmp_idea.tex}
+\input{lecture09/sections/10_lps_table.tex}
+\input{lecture09/sections/11_kmp_preprocessing.tex}
+\input{lecture09/sections/12_kmp_search.tex}
+\input{lecture09/sections/13_kmp_analysis.tex}
+\input{lecture09/sections/14_boyer_moore_intro.tex}
+\input{lecture09/sections/15_bad_character.tex}
+\input{lecture09/sections/16_horspool.tex}
+\input{lecture09/sections/17_comparison.tex}
+\input{lecture09/sections/18_implementation.tex}
+\input{lecture09/sections/19_summary_quiz.tex}
+\input{lecture09/sections/20_appendix.tex}
+\end{document}

@@ -1,0 +1,83 @@
+\subsection{N-Queens}
+\begin{frame}{N-Queens의 State 설계}
+\begin{description}
+\item[State] row \(0,\ldots,r-1\) 배치, \(position[row]=column\).
+\item[Decision] row \(r\)에 queen을 놓을 column.
+\item[Promising] 같은 column과 diagonal에 이전 queen이 없음.
+\item[Complete] \(r=n\).
+\end{description}
+\[
+c_1=c_2\quad\text{or}\quad |r_1-r_2|=|c_1-c_2|
+\quad\Longrightarrow\quad conflict.
+\]
+\end{frame}
+\begin{frame}{4-Queens Board와 State}
+\centering\begin{tikzpicture}[x=.8cm,y=.8cm]
+\foreach \r in{0,...,3}\foreach \c in{0,...,3}{
+ \pgfmathtruncatemacro{\shade}{mod(\r+\c,2)}
+ \ifnum\shade=0
+   \node[board,fill=AlgoLight]at(\c,3-\r){};
+ \else
+   \node[board,fill=white]at(\c,3-\r){};
+ \fi
+}
+\only<1|handout:0>{\node[ssnote]at(6,1.5){row 0, candidate col 1};}
+\only<2-5|handout:0>{\node[board,fill=AlgoOrange!18]at(1,3){Q};}
+\only<2|handout:0>{\node[ssnote]at(6,1.5){\(position=[1]\), depth 1};}
+\only<3-5|handout:0>{\node[board,fill=AlgoBlue!15]at(3,2){Q};}
+\only<3|handout:0>{\node[ssnote]at(6,1.5){\(position=[1,3]\), promising};}
+\only<4|handout:0>{\node[board,fill=red!12,draw=red,ultra thick]at(2,1){\(\times\)};\node[ssnote]at(6,1.5){row 2, col 2: diagonal conflict, candidate backtrack};}
+\only<5|handout:0>{\node[board,fill=green!12,draw=green!45!black,ultra thick]at(0,1){Q};\node[ssnote]at(6,1.5){row 2, col 0: promising};}
+\only<6|handout:1>{\node[board,fill=green!12,draw=green!45!black,ultra thick]at(1,3){Q};\node[board,fill=green!12,draw=green!45!black,ultra thick]at(3,2){Q};\node[board,fill=green!12,draw=green!45!black,ultra thick]at(0,1){Q};\node[board,fill=green!12,draw=green!45!black,ultra thick]at(2,0){Q};\node[ssinc]at(6,1.5){\(\checkmark [1,3,0,2]\)};}
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{4-Queens Partial State Tree}
+\centering\begin{tikzpicture}[level distance=11mm,sibling distance=28mm]
+\node[ssnode]{[]}
+ child{node[sscurrent]{[1]} child{node[sscurrent]{[1,3]} child{node[ssdead]{[1,3,0]} edge from parent node[left,font=\tiny]{conflict}} child{node[ssvalid]{[1,3,0,2]}}}}
+ child{node[ssnode]{[2]} child{node[ssvalid]{[2,0,3,1]}}};
+\node[ssnote]at(0,-3.3){두 solution: \([1,3,0,2]\), \([2,0,3,1]\)};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{N-Queens Pseudocode}
+\scriptsize\begin{algorithmic}[1]
+\Procedure{Place}{$row$}
+\If{\(row=n\)}\State output \(position\); \Return\EndIf
+\For{\(col\gets0\) to \(n-1\)}
+\If{\(\neg usedColumn[col]\land\neg diag_1[row-col+n-1]\land\neg diag_2[row+col]\)}
+\State mark three arrays; \(position[row]\gets col\)
+\State \Call{Place}{row+1}
+\State unmark three arrays
+\EndIf\EndFor
+\EndProcedure
+\end{algorithmic}
+\end{frame}
+\begin{frame}{Promising Check: \(O(r)\)에서 \(O(1)\)}
+\begin{columns}
+\column{.48\linewidth}
+\begin{block}{Naive}새 queen을 이전 \(r\)개와 비교: \(O(r)\).\end{block}
+\column{.48\linewidth}
+\begin{block}{Boolean arrays}\texttt{usedColumn[c]}\\\texttt{diag1[r-c+n-1]}\\\texttt{diag2[r+c]}\\check/update \(O(1)\).\end{block}
+\end{columns}
+\begin{alertblock}{여전히 exponential}한 node의 검사가 빨라질 뿐, 최악의 state count는 polynomial로 바뀌지 않는다.\end{alertblock}
+\end{frame}
+\begin{frame}{Apply/Undo Invariant}
+\[
+\text{rows }0..r-1\text{ conflict-free}
+\]
+\[
+\texttt{usedColumn},\texttt{diag1},\texttt{diag2}
+\quad\Longleftrightarrow\quad
+\texttt{position[0..r-1]}.
+\]
+\sscheckpoint{Undo에서 diagonal 하나라도 복구하지 않으면 이후 sibling의 valid placement를 잘못 prune한다.}
+\end{frame}
+\begin{frame}{N-Queens 검증 결과}
+\[
+N(1)=1,\quad N(2)=N(3)=0,\quad N(4)=2,\quad N(8)=92.
+\]
+\begin{itemize}\item 각 solution의 column uniqueness와 두 diagonal을 validator로 재검사한다.\item deterministic column order로 결과 순서를 재현한다.\end{itemize}
+\end{frame}
+\begin{frame}{N-Queens Takeaway}
+\sstakeaway{N-Queens는 state를 한 row씩 확장하고, local conflict가 모든 descendant에도 남는다는 사실로 subtree를 안전하게 prune한다.}
+\end{frame}

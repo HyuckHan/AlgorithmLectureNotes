@@ -1,0 +1,56 @@
+\subsection{Naive Matching}
+\begin{frame}{Naive Matching Pseudocode}
+\scriptsize\begin{algorithmic}[1]
+\Procedure{NaiveMatch}{$T,P$}\State \(n\gets|T|,\ m\gets|P|,\ result\gets[]\)
+\If{\(m=0\)}\State\Return policy-defined result\EndIf
+\For{\(s\gets0\) to \(n-m\)}\State \(j\gets0\)
+\While{\(j<m\) \textbf{ and } \(T[s+j]=P[j]\)}\State \(j\gets j+1\)\EndWhile
+\If{\(j=m\)}\State append \(s\) to \(result\)\EndIf\EndFor
+\State\Return \(result\)\EndProcedure
+\end{algorithmic}
+\end{frame}
+\begin{frame}{Naive Alignment Trace}
+\centering\begin{tikzpicture}[x=.82cm,y=.9cm]
+\smindices{1.65}{C,A,B,A,B,A,C}
+\smrow{1}{T}{C,A,B,A,B,A,C}
+\only<1|handout:0>{\smshiftrow{0}{P}{0}{A,B,A}\node[smnote]at(3.4,0){\(s=0:\ C\ne A\ \mismatchmark\)};}
+\only<2|handout:0>{\smshiftrow{0}{P}{1}{A,B,A}\node[smnote]at(4.3,0){\(s=1:\ A=B? \) compare};}
+\only<3|handout:0>{\smshiftrow{0}{P}{1}{A,B,A}\node[smnote]at(4.5,-.9){\(A=B=A\): \(\checkmark\) prefix};}
+\only<4|handout:1>{\smshiftrow{0}{P}{1}{A,B,A}\node[smhash]at(4.7,0){\(\verifiedbadge\) match at 1};}
+\end{tikzpicture}
+\begin{block}{표식}\(\checkmark\): match,\quad \(\times\): mismatch,\quad border: current comparison.\end{block}
+\end{frame}
+\begin{frame}{Alignment 수와 Comparison 수}
+\[
+\#alignments=n-m+1,\qquad
+\#comparisons\le(n-m+1)m.
+\]
+\begin{itemize}\item alignment 하나가 곧 comparison 하나는 아니다.\item mismatch 위치에 따라 같은 alignment의 비용이 달라진다.\end{itemize}
+\end{frame}
+\begin{frame}{Naive의 반복문 최악 예}
+\[
+T=\texttt{AAAAAAAAAAB},\qquad P=\texttt{AAAAAB}.
+\]
+\centering\begin{tikzpicture}
+\node[smnote]at(0,1){\only<1|handout:0>{\(s=0\): AAAAA 뒤 \(A\ne B\)}\only<2|handout:0>{\(s=1\): 같은 긴 prefix 재비교}\only<3|handout:1>{\(s=5\): AAAAA 뒤 match}};
+\node[smhash]at(0,0){\only<1|handout:0>{5 match + 1 mismatch}\only<2|handout:0>{이미 본 text 문자를 다시 비교}\only<3|handout:1>{occurrence at 5}};
+\end{tikzpicture}
+\stakeaway{일치했던 prefix 정보를 다음 shift에서 버리는 것이 중복 비교의 원인이다.}
+\end{frame}
+\begin{frame}{Naive Complexity}
+\[
+\text{worst } \Theta((n-m+1)m)=O(nm).
+\]
+\begin{itemize}
+\item best: 각 alignment 첫 문자에서 mismatch
+\[
+\Theta(n-m+1)=O(n).
+\]
+\item \(m\)이 고정이거나 \(m\le cn\)인 상수 \(c<1\)이면 \(\Theta(n)\)으로 쓸 수 있다.
+\item space: \(\Theta(1)\), result 제외
+\end{itemize}
+\end{frame}
+\begin{frame}{Naive Matching Checkpoint}
+\begin{enumerate}\item \(n=12,m=4\)이면 alignment 수는?\item worst에서 한 alignment의 최대 comparison은?\item overlapping occurrence를 허용하면 match 후 shift는?\end{enumerate}
+\begin{exampleblock}{답}9; 4; 다음 \(s+1\)도 검사한다.\end{exampleblock}
+\end{frame}

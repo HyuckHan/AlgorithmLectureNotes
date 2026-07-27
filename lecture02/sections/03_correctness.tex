@@ -1,0 +1,10 @@
+\begin{frame}{재귀와 귀납법은 같은 계단을 오른다}\begin{description}\item[Base]가장 작은 입력에서 직접 확인\item[Hypothesis]작은 입력에서 mission이 맞다고 가정\item[Step]그 결과를 사용해 현재 입력도 맞음을 보임\end{description}
+\end{frame}
+\begin{frame}{$sum(n)$ 정확성: 직관}\mission{$sum(n)$은 $1+\cdots+n$을 반환한다.}\begin{itemize}\item $n=0$: 0을 반환하므로 맞다.\item $sum(n-1)$이 $1+\cdots+(n-1)$이라면 $n$을 더한 값은 $1+\cdots+n$.\end{itemize}
+\end{frame}
+\begin{frame}{$sum(n)$ 정확성: 코드와 증명}\begin{tabular}{@{}ll@{}}\toprule 코드 & 증명 역할\\\midrule\texttt{if (n==0) return 0} & base case\\\texttt{sum(n-1)} & induction hypothesis 사용\\\texttt{n + ...} & induction step의 결합\\\bottomrule\end{tabular}
+\end{frame}
+\begin{frame}{팩토리얼(Factorial)의 정확성}\[n!=\begin{cases}1&n=0\\n(n-1)!&n>0\end{cases}\]\small $factorial(n-1)=(n-1)!$이라 가정하면 반환값은 $n(n-1)!=n!$. 입력 $n-1$은 감소하므로 종료한다.
+\end{frame}
+\begin{frame}{정확성과 효율성은 별개}\begin{columns}[T]\column{.46\textwidth}\begin{block}{Correctness}모든 허용 입력에서 mission을 달성하는가?\end{block}\column{.46\textwidth}\begin{block}{Efficiency}시간·공간이 입력에 따라 얼마나 증가하는가?\end{block}\end{columns}\vfill Fibonacci의 순진한 재귀는 맞지만 매우 비효율적이다.
+\end{frame}

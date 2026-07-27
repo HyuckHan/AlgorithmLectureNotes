@@ -1,0 +1,33 @@
+\tikzset{
+ gvertex/.style={circle,draw=AlgoBlue,thick,fill=white,minimum size=9mm,font=\small\bfseries,inner sep=1pt},
+ gcurrent/.style={gvertex,draw=AlgoOrange,ultra thick,fill=AlgoOrange!18},
+ gseen/.style={gvertex,fill=AlgoBlue!10,draw=AlgoBlueTwo},
+ gdone/.style={gvertex,fill=AlgoBlue!18,draw=AlgoBlue,ultra thick},
+ ginactive/.style={gvertex,draw=AlgoGray,text=AlgoGray,fill=AlgoGray!8},
+ gcycle/.style={gvertex,draw=red!75!black,ultra thick,fill=red!12},
+ gedge/.style={draw=AlgoRule,thick},
+ garrow/.style={gedge,-Latex},
+ gtree/.style={draw=AlgoBlueTwo,ultra thick},
+ gtreearrow/.style={gtree,-Latex},
+ gactive/.style={draw=AlgoOrange,ultra thick,-Latex},
+ gback/.style={draw=red!75!black,ultra thick,-Latex,dashed},
+ gmst/.style={draw=AlgoBlue,ultra thick,double},
+ greject/.style={draw=red!70!black,thick,dashed},
+ gnegative/.style={draw=red!70!black,thick,-Latex},
+ gcut/.style={draw=AlgoOrange,ultra thick,dashed},
+ gtable/.style={draw=AlgoRule,fill=AlgoLight,minimum width=11mm,minimum height=6mm,font=\scriptsize},
+ qcell/.style={draw=AlgoBlue,thick,fill=white,minimum width=10mm,minimum height=7mm,font=\small},
+ qfront/.style={qcell,draw=AlgoOrange,ultra thick,fill=AlgoOrange!16},
+ dsu/.style={draw=AlgoBlue,thick,rounded corners,fill=AlgoLight,minimum width=16mm,minimum height=7mm,font=\small},
+ pq/.style={draw=AlgoBlue,rounded corners,fill=AlgoLight,inner sep=2mm,font=\small},
+ relax/.style={draw=AlgoOrange,ultra thick,rounded corners,fill=AlgoOrange!12,inner sep=2mm}
+}
+\newcommand{\ginf}{\ensuremath{\infty}}
+\newcommand{\gtakeaway}[1]{\begin{takeaway}#1\end{takeaway}}
+\newcommand{\gmission}[1]{\begin{block}{Mission}#1\end{block}}
+\newcommand{\gcheckpoint}[1]{\begin{exampleblock}{Checkpoint}#1\end{exampleblock}}
+\newcommand{\queueview}[1]{\begin{tikzpicture}[baseline=-.5ex,x=.72cm]\foreach \v [count=\i from 0] in {#1}{\node[qcell]at(\i,0){\v};}\end{tikzpicture}}
+\newcommand{\statelegend}{\tikz[baseline=-.6ex]\node[ginactive,minimum size=5mm]{W};\ undiscovered\quad
+\tikz[baseline=-.6ex]\node[gseen,minimum size=5mm]{G};\ discovered\quad
+\tikz[baseline=-.6ex]\node[gdone,minimum size=5mm]{B};\ finished}
+\newcommand{\graphcomplexity}[2]{\begin{block}{Representation matters}Adjacency list: #1\qquad Adjacency matrix: #2\end{block}}

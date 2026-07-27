@@ -1,0 +1,41 @@
+\begin{frame}{Master Theorem 형식의 의미}
+\[
+T(1)=\Th(1),\qquad T(n)=aT(n/b)+f(n).
+\]
+\begin{description}\item[$a$]생기는 하위 문제 수\item[$n/b$]각 하위 문제 크기\item[$f(n)$]분할·결합 등 현재 노드의 일\end{description}
+\vfill\muted{설명을 위해 $n$을 $b$의 거듭제곱으로 둔다. 일반적인 $n$의 floor/ceiling은 점근적 결과를 바꾸지 않는다.}
+\end{frame}
+\begin{frame}{왜 $n^{\log_ba}$인가?}깊이 $\log_bn$에서 leaf 수는\[a^{\log_bn}=n^{\log_ba}.\]leaf 하나의 비용이 상수라면 이것이 재귀 호출 부분의 총 규모다.
+\end{frame}
+\begin{frame}{두 작업량의 경쟁}\centering\begin{tikzpicture}[node distance=13mm,scale=1.15,transform shape]\node[stack] (r) {재귀 작업 $n^{\log_ba}$};\node[stack,right=of r] (f) {현재 작업 $f(n)$};\draw[<->,very thick,AlgoOrange] (r)--(f);\end{tikzpicture}\vfill 어느 쪽이 다항식 차이로 더 큰가, 또는 같은가를 본다.
+\end{frame}
+\begin{frame}{예제 1: leaf가 지배(leaf-dominated)}
+\optional[추가 예제]\hfill
+\[T(1)=\Th(1),\qquad T(n)=2T(n/3)+\Th(1).\]
+$n^{\log_32}$가 상수보다 크므로
+\[T(n)=\Th(n^{\log_32}).\]
+\end{frame}
+\begin{frame}{예제 2: root가 지배(root-dominated)}
+\optional[추가 예제]\hfill
+\[T(1)=\Th(1),\quad T(n)=2T(n/4)+\Th(n),\quad n^{\log_42}=n^{1/2}.\]
+현재 작업 $n$이 더 크고 \textbf{정규성 조건(regularity condition)}도 만족한다:
+$2(n/4)=n/2$. 따라서 $T(n)=\Th(n)$.
+\end{frame}
+\begin{frame}{예제 3: level별 균형(balanced)과 Mergesort}
+\[T(1)=\Th(1),\qquad T(n)=2T(n/2)+\Th(n).\]
+$n^{\log_22}=n$과 결합 비용이 균형을 이루므로 $\Th(n\log n)$이다.
+Mergesort는 절반 정렬 2회와 선형 merge이므로 이 식을 따른다.
+\end{frame}
+\begin{frame}{Master Theorem: 기본형의 세 경우}\small
+\renewcommand{\arraystretch}{1.45}
+\begin{tabular}{@{}>{\bfseries}p{.12\textwidth}p{.36\textwidth}p{.22\textwidth}p{.20\textwidth}@{}}
+\toprule 경우&조건 ($\epsilon>0$)&결과&직관\\\midrule
+Case 1&$f(n)=O(n^{\log_ba-\epsilon})$&$\Th(n^{\log_ba})$&leaf가 지배\\
+Case 2&$f(n)=\Th(n^{\log_ba})$&$\Th(n^{\log_ba}\log n)$&level별 균형\\
+Case 3&$f(n)=\Omega(n^{\log_ba+\epsilon})$&$\Th(f(n))$&root가 지배\\\bottomrule
+\end{tabular}
+\vfill\muted{다항식 차이를 가정하는 기본형이다. Case 3에는
+$af(n/b)\le c f(n)$인 어떤 $c<1$이 존재하는 정규성 조건이 필요하다.}
+\par\smallskip
+\muted{분석 도구를 익혔으므로, 이제 실제 문제의 상태를 작은 동일 문제로 표현해 본다.}
+\end{frame}

@@ -1,0 +1,33 @@
+\begin{frame}{State를 먼저 정의하라}
+\dpstate{\texttt{dp[i][j]}가 무엇을 뜻하는지 완전한 문장으로 말할 수 있어야 한다.}
+\begin{alertblock}{순서}DP table을 먼저 만들지 말고 state의 의미를 먼저 정의한다.\end{alertblock}
+\end{frame}
+\begin{frame}{DP 핵심 설계 Template}
+\small
+\dpdesign
+{부분 문제의 의미를 완전한 문장으로 정의}
+{더 작은 dependency state로 recurrence 구성}
+{더 이상 transition을 적용하지 않는 경계 정의}
+{모든 dependency가 먼저 계산되는 순서 선택}
+{원문제의 값이 저장되는 state 명시}
+\end{frame}
+\begin{frame}{Template 다음의 Engineering Check}
+\begin{enumerate}
+\item dependency graph와 evaluation order가 일치하는가?
+\item 값뿐 아니라 실제 solution reconstruction이 필요한가?
+\item computed state 수와 state당 transition 비용은 얼마인가?
+\item 기본 table과 recursion stack의 공간은 얼마인가?
+\item space optimization 후에도 answer와 복원이 가능한가?
+\end{enumerate}
+\end{frame}
+\begin{frame}{복잡도는 State 수 × Transition 비용}
+\[
+\text{time}=(\text{계산되는 state 수})\times(\text{state당 transition 비용})
+\]
+\begin{exampleblock}{예}Matrix Path는 $nm$개 state, 각 state에서 두 predecessor 비교: $\Theta(nm)$.\end{exampleblock}
+\end{frame}
+\begin{frame}{설계 오류 Checkpoint}
+\begin{itemize}\item 의미 없는 \texttt{dp[i][j]}\item base case 누락\item dependency보다 먼저 계산\item answer cell을 모름\item length만 구하고 실제 해를 복원하지 못함\end{itemize}
+\dptakeaway{표의 모양보다 state의 의미와 dependency graph가 먼저다.}
+\vfill\muted{이제 DP가 정답을 보존하는 조건을 정리한 뒤 같은 template를 실제 문제에 적용한다.}
+\end{frame}

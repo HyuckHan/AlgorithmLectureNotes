@@ -1,0 +1,31 @@
+\section{Part B. 기본 Comparison Sort}
+\begin{frame}{Selection Sort의 Mission과 Invariant}
+\mission{아직 정렬되지 않은 구간에서 최댓값을 골라 오른쪽 끝으로 보낸다.}
+\begin{block}{Loop invariant}pass 뒤 sorted suffix에는 가장 큰 원소들이 최종 위치에 있고, active prefix는 남은 입력 record들의 permutation이다.\end{block}
+\end{frame}
+\begin{frame}{Selection Sort 의사코드}
+\begin{algorithmic}[1]\Procedure{SelectionSort}{$A[1..n]$}\For{$last\gets n$ downto $2$}\State $max\gets1$\For{$i\gets2$ to $last$}\If{$A[i]>A[max]$}\State $max\gets i$\EndIf\EndFor\State \Call{Swap}{$A[max],A[last]$}\EndFor\EndProcedure\end{algorithmic}
+\end{frame}
+\begin{frame}{Selection Sort: 한 Pass씩 확정하기}
+\centering\begin{tikzpicture}[x=1.18cm]
+\only<1>{\def\vals{{29,10,14,37,13}}\def\last{5}\def\hi{4}}
+\only<2>{\def\vals{{29,10,14,13,37}}\def\last{4}\def\hi{1}}
+\only<3>{\def\vals{{13,10,14,29,37}}\def\last{3}\def\hi{3}}
+\only<4>{\def\vals{{13,10,14,29,37}}\def\last{2}\def\hi{1}}
+\only<5>{\def\vals{{10,13,14,29,37}}\def\last{0}\def\hi{0}}
+\foreach \i in {1,...,5}{\pgfmathparse{\vals[\i-1]}\edef\v{\pgfmathresult}\ifnum\i>\last\node[sort done] at (\i,0){\v};\else\ifnum\i=\hi\node[sort current] at (\i,0){\v};\else\node[sort cell] at (\i,0){\v};\fi\fi\node[font=\small,text=AlgoGray] at (\i,-.55){\i};}
+\end{tikzpicture}
+\vspace{4mm}\only<1|handout:0>{최댓값 37을 찾는다.}\only<2|handout:0>{pass 1: $[29,10,14,13,37]$}\only<3|handout:0>{pass 2: $[13,10,14,29,37]$}\only<4|handout:0>{pass 3: 14는 이미 제자리다.}\only<5|handout:1>{pass 4: 13과 10을 swap하여 정렬 완료.}
+\end{frame}
+\begin{frame}{Selection Sort의 비용}
+\[\sum_{last=2}^{n}(last-1)=\frac{n(n-1)}2\quad\text{comparisons}\]
+\begin{itemize}\item best = average = worst: $\Theta(n^2)$\item swap은 최대 $n-1$회 — write가 비싼 환경에는 장점\item 비교 횟수는 입력의 기존 순서와 무관\end{itemize}
+\end{frame}
+\begin{frame}{Selection Sort Takeaway}
+\begin{columns}[T]\column{.48\textwidth}\begin{block}{장점}단순함, $O(1)$ 공간, 적은 swap\end{block}\column{.48\textwidth}\begin{alertblock}{한계}$\Theta(n^2)$, 기본 구현은 unstable, non-adaptive\end{alertblock}\end{columns}
+\smallskip
+\begin{exampleblock}{왜 unstable인가?}
+$[2_a,2_b,1]$에서 첫 최댓값 $2_a$를 끝과 swap하면 $[1,2_b,2_a]$가 되어 동등 record의 순서가 뒤집힌다.
+\end{exampleblock}
+\muted{Selection은 최종 위치를 직접 선택한다. Bubble은 인접한 역전을 반복해서 제거하여 같은 suffix를 확정한다.}
+\end{frame}

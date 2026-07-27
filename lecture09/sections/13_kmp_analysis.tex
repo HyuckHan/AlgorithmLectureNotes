@@ -1,0 +1,24 @@
+\subsection{KMP Correctness와 Complexity}
+\begin{frame}{KMP Search Invariant}
+loop의 다음 comparison 직전에
+\[
+P[0..j-1]=T[i-j..i-1].
+\]
+\(j\)는 현재 text prefix의 suffix와 일치하는 pattern prefix 길이다.
+\end{frame}
+\begin{frame}{왜 Occurrence를 건너뛰지 않는가?}
+mismatch 전 matched prefix의 가능한 재정렬은 그 prefix의 border에서만 시작할 수 있다. \(lps[j-1]\)는 가장 긴 후보이므로 더 긴 불가능한 shift를 모두 안전하게 제거한다.
+\begin{block}{유지}fallback 뒤에도 이미 확인된 suffix \(=\) prefix 관계가 invariant를 보존한다.\end{block}
+\end{frame}
+\begin{frame}{KMP Complexity}
+\[
+\underbrace{\Theta(m)}_{\text{BuildLPS}}
++\underbrace{\Theta(n)}_{\text{Search}}
+=\Theta(n+m),\qquad space=\Theta(m).
+\]
+\begin{itemize}\item \(i\)는 감소하지 않는다.\item \(j\)의 증가와 fallback 총량은 linear하게 bounded된다.\end{itemize}
+\end{frame}
+\begin{frame}{KMP Takeaway}
+\stakeaway{KMP는 text를 왼쪽으로 되돌리지 않고 border를 재사용해 worst-case linear time을 보장한다.}
+\scheckpoint{search만 \(\Theta(n)\)이라 말할 때도 preprocessing \(\Theta(m)\)을 함께 명시한다.}
+\end{frame}

@@ -1,0 +1,58 @@
+\begin{frame}{Optimal Substructure}
+\begin{block}{최적화 문제에서의 정의}원문제의 최적해를 구성하는 관련 부분해도 그 subproblem의 최적해여야 한다.\end{block}
+\begin{exampleblock}{Matrix Path}$(i,j)$까지의 최적 경로가 위에서 왔다면, 그 위 cell까지의 prefix도 최적이어야 한다.\end{exampleblock}
+\begin{alertblock}{교체 논증}prefix가 최적이 아니라면 더 작은 prefix로 바꾸어 전체 경로를 개선할 수 있어 원래 경로의 최적성과 모순이다.\end{alertblock}
+\end{frame}
+\begin{frame}{Overlapping Subproblems}
+\begin{block}{정의}재귀적으로 정의한 subproblem state가 여러 계산 경로에서 반복된다.\end{block}
+\begin{columns}[T]\column{.48\textwidth}\begin{block}{Call tree}같은 state가 여러 node로 복제\end{block}
+\column{.48\textwidth}\begin{block}{Dependency DAG}같은 state를 하나로 합쳐 저장·재사용\end{block}\end{columns}
+\end{frame}
+\begin{frame}{Quick Sort와 Matrix Path}
+\small\centering\begin{tabular}{lll}\toprule
+&Quick Sort&Matrix Path\\\midrule
+subproblem&partition subarray&grid prefix\\
+관계&주로 disjoint&ancestor state overlap\\
+재사용&필요 없음&핵심\\
+전형적 전략&divide-and-conquer&dynamic programming\\\bottomrule
+\end{tabular}
+\dptakeaway{차이는 재귀 문법이 아니라 subproblem graph의 구조다.}
+\end{frame}
+\begin{frame}{Optimal Substructure만으로 DP인가?}
+\begin{itemize}
+\item optimal substructure는 최적화 recurrence의 정당성을 설명하지만, 이것만으로 DP가 되지는 않는다.
+\item DP의 계산 이득은 같은 state가 반복되는 overlap과 저장·재사용에서 나온다.
+\item Fibonacci처럼 최적화가 아닌 DP에서는 optimal substructure 대신 정확한 state recurrence가 핵심이다.
+\item Greedy도 optimal substructure를 가질 수 있지만 greedy-choice property가 추가로 필요하다.
+\end{itemize}
+\end{frame}
+\begin{frame}{Greedy Counterexample: Local Cell만 보지 말자}
+\begin{columns}[T]
+\column{.48\textwidth}\centering
+\textbf{local greedy}\par\smallskip
+\begin{tikzpicture}[x=1cm,y=.82cm]
+\foreach \r/\vals in {0/{1,2,100},1/{3,100,1},2/{1,1,1}}
+  \foreach \v [count=\c from 0] in \vals {
+    \pgfmathtruncatemacro{\chosen}{(\r==0)||(\c==2)}
+    \ifnum\chosen=1\node[dp current]at(\c,-\r){\v};
+    \else\node[dp cell]at(\c,-\r){\v};\fi}
+\end{tikzpicture}
+\[
+1+2+100+1+1=105
+\]
+\column{.48\textwidth}\centering
+\textbf{optimal path}\par\smallskip
+\begin{tikzpicture}[x=1cm,y=.82cm]
+\foreach \r/\vals in {0/{1,2,100},1/{3,100,1},2/{1,1,1}}
+  \foreach \v [count=\c from 0] in \vals {
+    \pgfmathtruncatemacro{\chosen}{(\c==0)||(\r==2)}
+    \ifnum\chosen=1\node[dp answer]at(\c,-\r){\v};
+    \else\node[dp cell]at(\c,-\r){\v};\fi}
+\end{tikzpicture}
+\[
+1+3+1+1+1=7
+\]
+\end{columns}
+\dptakeaway{가능한 predecessor의 최적값을 비교하는 DP와 현재 값 하나를 확정하는 greedy는 다르다.}
+\vfill\muted{DP가 작동하는 이유를 정리했다. 이제 동일한 설계 template를 grid와 문자열 문제에 적용한다.}
+\end{frame}

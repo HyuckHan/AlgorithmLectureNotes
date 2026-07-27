@@ -1,0 +1,41 @@
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{theme/beamerthemealgorithms}
+\setsansfont{Noto Sans}[Scale=0.98,AutoFakeSlant=0.15]
+\setmainfont{Noto Sans}[Scale=0.98,AutoFakeSlant=0.15]
+\setmonofont{Noto Sans Mono}[Scale=0.90]
+\newfontfamily\lecturefooterfont{Noto Sans}
+\usepackage{kotex,amsmath,amssymb,mathtools,booktabs,array,multirow}
+\setsanshangulfont{Noto Sans CJK KR}[Scale=0.98,AutoFakeSlant=0.15]
+\setmainhangulfont{Noto Sans CJK KR}[Scale=0.98,AutoFakeSlant=0.15]
+\setmonohangulfont{Noto Sans Mono CJK KR}[Scale=0.90]
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,trees,matrix,decorations.pathreplacing,backgrounds}
+\usepackage{pgfplots}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\algrenewcommand\textproc[1]{\textbf{#1}}
+\input{lecture02/common.tex}
+\input{lecture03/common.tex}
+\input{lecture04/common.tex}
+\input{lecture05/common.tex}
+\pgfplotsset{compat=1.18,compat/show suggested version=false}
+\title{동적 계획법 · Dynamic Programming}
+\subtitle{중복되는 부분 문제에서 최적해까지}
+\author{Algorithm Lecture Notes}
+\date{}
+\setbeamertemplate{frame numbering}{\lecturefooterfont\insertframenumber/\inserttotalframenumber}
+\mode<handout>{\AtBeginSection[]{}}
+\begin{document}
+\input{lecture05/sections/01_motivation.tex}
+\input{lecture05/sections/02_fibonacci.tex}
+\input{lecture05/sections/03_memoization_tabulation.tex}
+\input{lecture05/sections/04_dp_workflow.tex}
+\input{lecture05/sections/06_optimal_substructure.tex}
+\input{lecture05/sections/05_matrix_path.tex}
+\input{lecture05/sections/07_lcs.tex}
+\input{lecture05/sections/08_lcs_reconstruction.tex}
+\input{lecture05/sections/09_maximum_subarray.tex}
+\input{lecture05/sections/10_comparison.tex}
+\input{lecture05/sections/11_summary_quiz.tex}
+\input{lecture05/sections/12_appendix.tex}
+\end{document}

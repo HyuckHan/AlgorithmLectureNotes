@@ -1,0 +1,81 @@
+\begin{frame}{Maximum Sum Contiguous Subarray}
+\mission{정수 배열의 비어 있지 않은 연속 구간 중 합이 최대인 구간과 그 합을 반환한다.}
+\begin{alertblock}{Nonempty convention}모두 음수이면 0이 아니라 가장 큰 단일 원소가 정답이다.\end{alertblock}
+\end{frame}
+\begin{frame}{Brute Force: 모든 구간 확인}
+\small\begin{algorithmic}[1]
+\State $best\gets A[0]$
+\For{$i\gets0$ \textbf{to} $n-1$}
+\State $sum\gets0$
+\For{$j\gets i$ \textbf{to} $n-1$}
+\State $sum\gets sum+A[j]$; 경계와 $best$ 갱신
+\EndFor\EndFor
+\end{algorithmic}
+\begin{itemize}\item time $\Theta(n^2)$, auxiliary $\Theta(1)$\item prefix sum을 써도 모든 $\Theta(n^2)$ 구간을 보면 시간은 그대로\end{itemize}
+\end{frame}
+\begin{frame}{Maximum Subarray DP 설계 Template}
+\small
+\dpdesign
+{$bestEndingAt[i]$: index $i$에서 반드시 끝나는 최대합}
+{$\max(A[i],bestEndingAt[i-1]+A[i])$}
+{$bestEndingAt[0]=A[0]$}
+{$i=1,2,\ldots,n-1$의 왼쪽에서 오른쪽}
+{$bestOverall=\max_i bestEndingAt[i]$와 그 구간}
+\end{frame}
+\begin{frame}{Extend인가 Restart인가?}
+\small
+\begin{columns}[T]\column{.48\textwidth}\begin{block}{Extend}이전 최적 suffix에 $A[i]$를 붙인다.\end{block}
+\column{.48\textwidth}\begin{block}{Restart}$A[i]$에서 새 구간을 시작한다.\end{block}\end{columns}
+\[
+bestOverall\gets\max(bestOverall,bestEndingAt[i]).
+\]
+\dptakeaway{이전 suffix가 음수이면 어떤 미래 구간에도 붙일 이유가 없다.}
+\begin{alertblock}{State와 answer를 구분}
+$bestEndingAt[i]$는 반드시 $i$에서 끝나지만, $bestOverall$은 지금까지 본 모든 끝점 중 최댓값이다.
+\end{alertblock}
+\end{frame}
+\begin{frame}{Kadane Trace I}
+\centering\scriptsize
+\begin{tabular}{r|r|r|r|r}\toprule$i$&$A[i]$&extend&restart&ending/overall\\\midrule
+0&-2&--&-2&-2/-2\\
+1&1&-1&1&1/1\\
+2&-3&-2&-3&-2/1\\
+3&4&2&4&4/4\\
+4&-1&3&-1&3/4\\\bottomrule
+\end{tabular}
+\begin{block}{현재 선택}$i=3$에서 restart하여 candidate interval $[4]$를 시작한다.\end{block}
+\end{frame}
+\begin{frame}{Kadane Trace II}
+\centering\scriptsize
+\begin{tabular}{r|r|r|r|r|l}\toprule$i$&$A[i]$&extend&restart&ending&best interval\\\midrule
+5&2&5&2&5&$[4,-1,2]$\\
+6&1&6&1&6&$[4,-1,2,1]$\\
+7&-5&1&-5&1&unchanged\\
+8&4&5&4&5&unchanged\\\bottomrule
+\end{tabular}
+\[
+\text{maximum sum}=6,\qquad [4,-1,2,1].
+\]
+\end{frame}
+\begin{frame}{All-Negative Checkpoint}
+\[
+A=[-8,-3,-6,-2,-5,-4]
+\]
+\begin{exampleblock}{답}최대합은 $-2$, 구간은 index 3의 단일 원소 $[-2]$이다(0-based).\end{exampleblock}
+\dptakeaway{0으로 초기화하면 빈 구간을 허용하는 다른 문제를 풀게 된다.}
+\end{frame}
+\begin{frame}{Kadane Code Contract}
+\begin{itemize}\item 결과: \texttt{sum}, \texttt{start}, \texttt{end}\item $n=0$은 invalid input\item 합은 \texttt{long long} 사용; 그래도 범위 초과 가능성은 caller가 고려\item tie: 합이 같으면 짧은 구간, 다시 같으면 작은 시작 index\end{itemize}
+\begin{block}{복잡도}
+$n$개 state $\times\Theta(1)$ transition $=\Theta(n)$ time,
+auxiliary space $\Theta(1)$.
+\end{block}
+\end{frame}
+\begin{frame}{Brute Force · D\&C · Kadane}
+\centering\begin{tabular}{lcc}\toprule방법&시간&핵심\\\midrule
+모든 구간&$\Theta(n^2)$&start/end 열거\\
+Divide-and-Conquer&$\Theta(n\log n)$&crossing interval\\
+Kadane DP&$\Theta(n)$&최적 suffix 재사용\\\bottomrule
+\end{tabular}
+\vfill\muted{세 문제의 state와 dependency를 비교해 공통 설계 원칙을 정리하자.}
+\end{frame}

@@ -1,0 +1,59 @@
+\subsection{Summary와 Quiz}
+\begin{frame}{Hash와 String Quiz}
+\small\begin{enumerate}
+\item key, hash code, bucket index를 한 문장씩 구분하라.
+\item collision과 duplicate는 어떻게 다른가?
+\item $m=13$에서 $h(29)$는? 어떤 stored key와 충돌하는가?
+\item multiplication trace $k=25,m=13$의 결과는?
+\item ASCII sum이 anagram을 구분하지 못하는 이유는?
+\item Horner update와 Java equal-key contract는?
+\end{enumerate}
+\end{frame}
+\begin{frame}{Chaining과 Probing Quiz}
+\small\begin{enumerate}
+\item chaining $m=7$, keys $10,17,24$의 chain은?
+\item linear example에서 38의 probe sequence/final slot은?
+\item primary와 secondary clustering을 구분하라.
+\item quadratic example에서 30의 probe sequence는?
+\item double hash에서 67의 $h_1,h_2$, final slot은?
+\item $h_2$와 $m$의 gcd 조건은 왜 필요한가?
+\end{enumerate}
+\end{frame}
+\begin{frame}{Deletion · Load · Design Quiz}
+\small\begin{enumerate}
+\item key 1을 EMPTY로 지우면 38 search가 실패하는 이유는?
+\item tombstone reuse 전에 duplicate search를 계속하는 이유는?
+\item chaining과 OA에서 $\alpha$의 가능한 범위 차이는?
+\item resize가 단순 copy가 아닌 이유와 migration 총비용은?
+\item expected, amortized, worst를 구분하라.
+\item cache, leaderboard, range scan에는 각각 무엇을 선택하는가?
+\end{enumerate}
+\end{frame}
+\begin{frame}{Quiz 정답 I}
+\small\begin{itemize}
+\item key는 logical identity, hash code는 key에서 만든 integer, index는 capacity 범위로 줄인 위치.
+\item collision은 unequal keys의 same index; duplicate는 equal logical key.
+\item $29\bmod13=3$, stored key 16과 collision.
+\item multiplication result 5; ASCII sum은 order를 버림.
+\item \texttt{hash=hash*B+code(c)}; $a.equals(b)\Rightarrow$ equal hash codes.
+\end{itemize}
+\end{frame}
+\begin{frame}{Quiz 정답 II}
+\small\begin{itemize}
+\item head insertion chain $24\to17\to10$.
+\item 38: $12,0,1,2,3,4,5,6$, final 6.
+\item primary: different homes도 contiguous run에 합류; secondary: same home이 same quadratic sequence.
+\item 30: $4,5,8$.
+\item 67: $h_1=2,h_2=2$, final 4; gcd 1이어야 full cycle.
+\end{itemize}
+\end{frame}
+\begin{frame}{Quiz 정답 III}
+\small\begin{itemize}
+\item EMPTY는 search를 조기 종료시켜 뒤의 38을 놓친다; DELETED에서는 계속한다.
+\item 같은 key가 tombstone 뒤에 있을 수 있어 update 여부를 먼저 확인한다.
+\item chaining $\alpha\ge0$이고 1 초과 가능; OA는 $0\le\alpha<1$.
+\item capacity가 index를 바꾸므로 reinsert; doubling migration 합 $<2n$.
+\item resize 없는 연산의 expected는 hashing randomness; resize 포함 PUT은 amortized expected $\Theta(1)$; individual resizing PUT과 worst case는 $\Theta(n)$일 수 있다.
+\item cache: hash; leaderboard: balanced tree; range scan: B-Tree 계열.
+\end{itemize}
+\end{frame}

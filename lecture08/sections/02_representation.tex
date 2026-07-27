@@ -1,0 +1,62 @@
+\section{Part B. Graph Representation}
+\begin{frame}{Adjacency Matrix}
+\[
+A[i][j]=\begin{cases}1&(i,j)\in E\\0&(i,j)\notin E.\end{cases}
+\]
+\begin{itemize}\item directed: row $i\to$ column $j$\item undirected: $A=A^\mathsf{T}$\item edge existence $\Theta(1)$, neighbor iteration $\Theta(V)$, space $\Theta(V^2)$\end{itemize}
+\end{frame}
+\begin{frame}{Matrix 방향을 읽는 법}
+\begin{columns}[T]\column{.45\textwidth}
+\centering\begin{tikzpicture}[x=1.5cm]\node[gvertex](a)at(0,0){0};\node[gvertex](b)at(2,0){1};\draw[garrow](a)--node[above]{edge}(b);\end{tikzpicture}
+\column{.5\textwidth}
+\[
+\begin{array}{c|cc}&0&1\\\hline0&0&1\\1&0&0\end{array}
+\]
+\end{columns}
+\gtakeaway{행은 source, 열은 destination이다. $A[0][1]=1$은 $0\to1$이다.}
+\end{frame}
+\begin{frame}{Weighted Matrix의 0 함정}
+\[
+W[i][j]=\begin{cases}0&i=j\\w(i,j)&(i,j)\in E\\\infty&(i,j)\notin E.\end{cases}
+\]
+\begin{alertblock}{구분}실제 zero-weight edge는 $0$으로 저장할 수 있다. no-edge도 $0$으로 쓰면 두 상태를 잃는다. 별도 boolean 또는 \(\infty\) sentinel을 사용한다.\end{alertblock}
+\end{frame}
+\begin{frame}{Adjacency List}
+\[
+\operatorname{Adj}[u]=[(v_1,w_1),(v_2,w_2),\ldots].
+\]
+\begin{itemize}\item space $\Theta(V+E)$\item neighbors of $u$: $\Theta(\deg(u))$\item all edges: $\Theta(V+E)$\item 단순 list의 edge existence: $O(\deg(u))$\end{itemize}
+\begin{block}{Undirected}logical edge $\{u,v\}$ 하나를 두 entry $u\to v$, $v\to u$로 저장한다. 상수 2는 $\Theta(V+E)$에서 사라진다.\end{block}
+\end{frame}
+\begin{frame}{Matrix에서 List로 변환}
+\centering\begin{tikzpicture}[x=1.05cm,y=.65cm]
+\only<1>{\node[callout]at(2,1){row 0: \(0,1,1,0\)};\node[callout]at(2,-.1){nonzero column을 찾는다};}
+\only<2>{\node[callout]at(2,1){\(\operatorname{Adj}[0]=[1,2]\)};\node[callout]at(2,-.1){row 1,2,3도 반복};}
+\only<3>{\node[callout]at(2,1){matrix scan: \(\Theta(V^2)\)};\node[callout]at(2,-.1){list storage: \(\Theta(V+E)\)};}
+\end{tikzpicture}
+\gcheckpoint{Weighted matrix에서는 \(\infty\)가 아닌 entry를 list의 \((to,weight)\)로 옮긴다.}
+\end{frame}
+\begin{frame}{Representation 비교}
+\small\centering\begin{tabular}{lcc}\toprule&Matrix&List\\\midrule
+space&$\Theta(V^2)$&$\Theta(V+E)$\\edge lookup&$\Theta(1)$&$O(\deg(u))$\\neighbors&$\Theta(V)$&$\Theta(\deg(u))$\\best fit&dense, lookup-heavy&sparse, traversal\\weighted&sentinel 필요&\((to,w)\) entry\\\bottomrule\end{tabular}
+\end{frame}
+\begin{frame}{왜 Matrix BFS/DFS는 \(\Theta(V^2)\)인가?}
+\begin{block}{List}실제로 저장된 adjacency entry만 훑는다: \(\Theta(V+E)\).\end{block}
+\begin{block}{Matrix}각 vertex의 row에서 가능한 \(V\)개 neighbor를 모두 검사한다: \(V\cdot V=\Theta(V^2)\).\end{block}
+\gtakeaway{알고리즘 이름만으로 시간복잡도를 말하지 말고 representation을 붙인다.}
+\end{frame}
+\begin{frame}{Graph API Contract}
+\small\begin{tabular}{ll}\toprule
+정책&강의 구현\\\midrule
+vertex&\(0\le v<n\), bounds 검증\\
+duplicate&동일 \((u,v)\)는 weight update\\
+zero weight&valid edge\\
+undirected&reverse entry 동기화\\
+ownership&graph가 adjacency storage 소유\\\bottomrule
+\end{tabular}
+\begin{exampleblock}{파일}\texttt{Graph.java}, \texttt{graph.h}, \texttt{graph.c}\end{exampleblock}
+\end{frame}
+\begin{frame}{Part B Checkpoint}
+\begin{enumerate}\item sparse graph traversal에 자연스러운 표현은?\item undirected logical edge 하나는 list entry 몇 개인가?\item matrix BFS 비용은?\end{enumerate}
+\begin{exampleblock}{답}adjacency list; 2개; \(\Theta(V^2)\).\end{exampleblock}
+\end{frame}

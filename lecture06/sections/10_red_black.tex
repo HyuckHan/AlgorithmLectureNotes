@@ -1,0 +1,138 @@
+\section{Part D. Red-Black Tree}
+\begin{frame}{Red-Black Tree의 다섯 Invariant}
+\small\begin{enumerate}
+\item 모든 node는 red 또는 black.
+\item root는 black.
+\item 모든 NIL leaf는 black.
+\item red node의 두 child는 black.
+\item 한 node에서 descendant NIL까지 모든 path의 black node 수가 같다.
+\end{enumerate}
+\end{frame}
+\begin{frame}{NIL은 Data Leaf가 아니다}
+\begin{columns}\column{.52\textwidth}\centering
+\begin{tikzpicture}[level distance=11mm,sibling distance=24mm]
+\node[rb black]{10\\B}child{node[rb red]{5\\R}child{node[st nil]{NIL}}child{node[st nil]{NIL}}}child{node[rb red]{15\\R}child{node[st nil]{NIL}}child{node[st nil]{NIL}}};
+\end{tikzpicture}
+\column{.44\textwidth}
+\begin{itemize}\item ordinary leaf: key를 가진 internal node\item NIL: 모든 missing child를 나타내는 black sentinel\item 구현은 shared sentinel 하나 사용 가능\end{itemize}
+\end{columns}
+\end{frame}
+\begin{frame}{Black-Height Convention}
+\[
+bh(x)=x\text{를 제외하고 descendant NIL까지 만나는 black node 수}.
+\]
+\begin{itemize}\item NIL은 black count에 포함\item invariant 5 때문에 어느 descendant NIL path를 골라도 같다.\item 앞의 예에서 $bh(10)=1$, $bh(5)=1$.\end{itemize}
+\end{frame}
+\begin{frame}{Invariant 위반 찾기}
+\centering\begin{tikzpicture}[level distance=12mm,sibling distance=25mm]
+\node[rb black]{10\\B}child{node[rb red]{5\\R}child{node[rb red]{3\\R}}child[missing]{}}child{node[rb black]{15\\B}};
+\end{tikzpicture}
+\begin{alertblock}{위반}5R–3R edge가 invariant 4를 위반한다. 색상뿐 아니라 R/B label로 확인한다.\end{alertblock}
+\end{frame}
+\begin{frame}{RB Path는 Black Path의 두 배를 넘지 않는다}
+\begin{columns}[T]
+\column{.48\textwidth}
+\begin{block}{Invariant 4}
+red node 다음에는 반드시 black node가 온다. 따라서 한 root-to-NIL path에서 red node 수는 black node 수보다 많을 수 없다.
+\end{block}
+\column{.48\textwidth}
+\begin{block}{Path 길이}
+가장 긴 path가 red와 black을 가능한 한 번갈아 사용해도
+\[
+h\le 2\,bh(root).
+\]
+\end{block}
+\end{columns}
+\sttakeaway{남은 질문은 black-height가 커지려면 왜 node 수도 지수적으로 늘어나는가이다.}
+\end{frame}
+\begin{frame}{Black-Height가 Node 수를 강제한다}
+\begin{columns}[T]
+\column{.48\textwidth}
+\begin{block}{Base와 귀납 단계}
+$N(b)$를 black-height $b$인 subtree의 최소 internal node 수라 하자.
+\[
+N(0)=0,\qquad N(b)\ge 1+2N(b-1).
+\]
+두 child subtree 모두 black-height가 적어도 $b-1$이다.
+\end{block}
+\column{.48\textwidth}
+\begin{block}{Inductive growth}
+\[
+N(b)\ge 1+2(2^{b-1}-1)=2^b-1.
+\]
+black-height가 1 늘 때 최소 node 수도 거의 두 배가 된다.
+\end{block}
+\end{columns}
+\[
+n\ge2^{bh(root)}-1
+\Rightarrow bh(root)\le\log_2(n+1)
+\Rightarrow h\le2\log_2(n+1).
+\]
+\end{frame}
+\begin{frame}{왜 새 Node를 Red로 삽입하는가?}
+\begin{columns}[T]\column{.48\textwidth}\begin{block}{Black 삽입}새 path의 black count가 즉시 1 증가\end{block}
+\column{.48\textwidth}\begin{block}{Red 삽입}black-height는 유지; parent도 red일 때만 red-red violation\end{block}\end{columns}
+\sttakeaway{고쳐야 할 invariant를 하나로 제한한다. 마지막에는 root를 black으로 만든다.}
+\end{frame}
+\begin{frame}{RB INSERT 용어}
+\begin{description}\item[$z$] current node\item[$p$] parent\item[$g$] grandparent\item[$u$] uncle\end{description}
+\begin{alertblock}{Sentinel 전제}모든 child와 root parent는 black NIL sentinel을 가리켜 parent/uncle 접근을 일관되게 한다.\end{alertblock}
+\end{frame}
+\begin{frame}{Case 1: Uncle이 Red}
+\centering
+\only<1|handout:0>{\begin{tikzpicture}[level distance=12mm,sibling distance=28mm]\node[rb black]{g\\B}child{node[rb red]{p\\R}child{node[rb red]{z\\R}}child[missing]{}}child{node[rb red]{u\\R}};\end{tikzpicture}}
+\only<2|handout:1>{\begin{tikzpicture}[level distance=12mm,sibling distance=28mm]\node[rb red]{g\\R}child{node[rb black]{p\\B}child{node[rb red]{z\\R}}child[missing]{}}child{node[rb black]{u\\B}};\end{tikzpicture}}
+\begin{block}{Fix}$p,u\to$ black; $g\to$ red; $z\gets g$. Violation이 위로 이동할 수 있다.\end{block}
+\end{frame}
+\begin{frame}{Case 2 → Case 3: Uncle Black}
+\begin{columns}[T]\column{.48\textwidth}
+\begin{block}{Case 2: inner}$z$가 inner child면 parent를 rotation하여 outer shape로 바꿈\end{block}
+\column{.48\textwidth}
+\begin{block}{Case 3: outer}$p$ black, $g$ red로 recolor하고 $g$를 rotation\end{block}
+\end{columns}
+\begin{block}{Mirror}parent가 grandparent의 right child인 경우 left/right를 모두 바꾼다.\end{block}
+\end{frame}
+\begin{frame}{RB Insert: 41, 38, 31}
+\centering
+\only<1|handout:0>{\begin{tikzpicture}[level distance=12mm]\node[rb black]{41\\B}child{node[rb red]{38\\R}}child[missing]{};\end{tikzpicture}}
+\only<2|handout:0>{\begin{tikzpicture}[level distance=12mm]\node[rb black]{41\\B}child{node[rb red]{38\\R}child{node[rb red]{31\\R}}child[missing]{}}child[missing]{};\node[callout]at(3,-1){uncle black, outer};\end{tikzpicture}}
+\only<3|handout:1>{\begin{tikzpicture}[level distance=12mm,sibling distance=25mm]\node[rb black]{38\\B}child{node[rb red]{31\\R}}child{node[rb red]{41\\R}};\node[callout]at(3,-1){right rotate 41};\end{tikzpicture}}
+\end{frame}
+\begin{frame}{RB Insert: 12는 Recolor}
+\centering
+\only<1|handout:0>{\begin{tikzpicture}[level distance=11mm,sibling distance=28mm]\node[rb black]{38\\B}child{node[rb red]{31\\R}child{node[rb red]{12\\R}}child[missing]{}}child{node[rb red]{41\\R}};\end{tikzpicture}}
+\only<2|handout:1>{\begin{tikzpicture}[level distance=11mm,sibling distance=28mm]\node[rb black]{38\\B}child{node[rb black]{31\\B}child{node[rb red]{12\\R}}child[missing]{}}child{node[rb black]{41\\B}};\node[callout]at(3,-1){uncle red: recolor};\end{tikzpicture}}
+\end{frame}
+\begin{frame}{RB Insert: 19는 Inner → Outer}
+\centering
+\only<1|handout:0>{\begin{tikzpicture}[level distance=10mm,sibling distance=25mm]\node[rb black]{38\\B}child{node[rb black]{31\\B}child{node[rb red]{12\\R}child[missing]{}child{node[rb red]{19\\R}}}child[missing]{}}child{node[rb black]{41\\B}};\node[callout]at(3,-1.5){Case 2: left rotate 12};\end{tikzpicture}}
+\only<2|handout:1>{\begin{tikzpicture}[level distance=10mm,sibling distance=25mm]\node[rb black]{38\\B}child{node[rb black]{19\\B}child{node[rb red]{12\\R}}child{node[rb red]{31\\R}}}child{node[rb black]{41\\B}};\node[callout]at(3,-1.5){Case 3: right rotate 31};\end{tikzpicture}}
+\end{frame}
+\begin{frame}{RB Insert: 8과 Final Check}
+\centering\begin{tikzpicture}[level distance=10mm,level 1/.style={sibling distance=40mm},level 2/.style={sibling distance=20mm}]
+\node[rb black]{38\\B}child{node[rb red]{19\\R}child{node[rb black]{12\\B}child{node[rb red]{8\\R}}child[missing]{}}child{node[rb black]{31\\B}}}child{node[rb black]{41\\B}};
+\end{tikzpicture}
+\begin{itemize}\item insert 8 causes uncle-red recolor at 12/31\item root black, no red-red, every path equal black-height\end{itemize}
+\end{frame}
+\begin{frame}{RB INSERT Fixup 요약}
+\small
+\begin{block}{공통}
+$p=z.parent$, $g=p.parent$, $u=$ uncle. $u$가 red이면 $p,u$를 black, $g$를 red로 하고 $z\gets g$.
+\end{block}
+\begin{columns}[T]
+\column{.48\textwidth}
+\begin{block}{Left-parent branch: $p=g.left$}
+\begin{itemize}\item inner: $z=p.right$ → \texttt{LEFT-ROTATE}$(p)$\item outer: $p$ black, $g$ red → \texttt{RIGHT-ROTATE}$(g)$\end{itemize}
+\end{block}
+\column{.48\textwidth}
+\begin{block}{Mirrored branch: $p=g.right$}
+\begin{itemize}\item inner: $z=p.left$ → \texttt{RIGHT-ROTATE}$(p)$\item outer: $p$ black, $g$ red → \texttt{LEFT-ROTATE}$(g)$\end{itemize}
+\end{block}
+\end{columns}
+\sttakeaway{반복이 끝나면 root를 black으로 만든다. 방향 없는 ``rotate'' 표기는 사용하지 않는다.}
+\end{frame}
+\begin{frame}{RB DELETE Scope}
+\begin{itemize}\item ordinary BST delete 후 removed black이 만든 black-height deficit을 fixup\item sibling color와 near/far nephew에 따른 더 많은 case\item insertion보다 복잡하며 상세 fixup은 appendix와 코드에 둔다.\end{itemize}
+\sttakeaway{RB Tree가 delete를 지원하지만 이번 본문의 추적 목표는 insertion fixup이다.}
+\begin{block}{다음 연결}Memory pointer의 height 대신 storage page access를 줄이려면 한 node의 fan-out을 크게 만든 B-Tree가 필요하다.\end{block}
+\end{frame}

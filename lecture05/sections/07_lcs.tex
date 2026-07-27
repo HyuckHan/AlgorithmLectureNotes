@@ -1,0 +1,126 @@
+\begin{frame}{Substring과 Subsequence}
+\begin{description}\item[substring] 연속된 문자 구간\item[subsequence] 상대 순서를 유지하며 일부 문자를 삭제\item[common subsequence] 두 문자열 모두의 subsequence\end{description}
+\begin{exampleblock}{검증}\texttt{BCDB}는 \texttt{ABCBDAB}에서 index $2,3,5,7$을 선택하므로 유효하다.\end{exampleblock}
+\end{frame}
+\begin{frame}{LCS 문제}
+\[
+X=\texttt{ABCBDAB},\qquad Y=\texttt{BDCABA}
+\]
+\begin{itemize}\item LCS 길이: 4\item 가능한 답: \texttt{BCBA}, \texttt{BDAB}\item 최장 문자열은 하나가 아닐 수 있음\end{itemize}
+\end{frame}
+\begin{frame}{LCS DP 설계 Template}
+\small
+\dpdesign
+{$dp[i][j]$: $X[1..i]$, $Y[1..j]$의 LCS 길이}
+{match: diagonal $+1$; mismatch: up/left의 max}
+{$dp[0][j]=dp[i][0]=0$}
+{$i=1..m$ 바깥 loop, $j=1..n$ 안쪽 loop}
+{$dp[m][n]$; 문자열은 table dependency를 역추적}
+\end{frame}
+\begin{frame}{Brute Force는 Exponential}
+길이 $m$인 $X$의 subsequence는 $2^m$개다. 각 candidate가 길이 $n$인 $Y$의 subsequence인지 검사하면
+\[
+O(n\,2^m).
+\]
+\begin{exampleblock}{\texttt{ABC}의 8개}$\epsilon$, A, B, C, AB, AC, BC, ABC\end{exampleblock}
+\end{frame}
+\begin{frame}{LCS State와 Base Cases}
+\begin{columns}[c]
+\column{.43\textwidth}
+\dpstate{$dp[i][j]$: $X[1..i]$와 $Y[1..j]$의 LCS 길이}
+\[
+dp[0][j]=dp[i][0]=0
+\]
+\begin{block}{Answer}$dp[m][n]$에 전체 두 문자열의 LCS 길이가 있다.\end{block}
+\column{.54\textwidth}
+\centering\small
+\renewcommand{\arraystretch}{1.26}\setlength{\tabcolsep}{5.5pt}
+\begin{tabular}{c|rrrrrrr}
+&$\boldsymbol{\epsilon}$&B&D&C&A&B&A\\\hline
+$\boldsymbol{\epsilon}$&0&0&0&0&0&0&0\\
+A&0&.&.&.&.&.&.\\
+B&0&.&.&.&.&.&.\\
+C&0&.&.&.&.&.&.\\
+B&0&.&.&.&.&.&.\\
+D&0&.&.&.&.&.&.\\
+A&0&.&.&.&.&.&.\\
+B&0&.&.&.&.&.&.
+\end{tabular}
+\end{columns}
+\end{frame}
+\begin{frame}{Case 1: 마지막 문자가 같다}
+\[
+X[i]=Y[j]\quad\Longrightarrow\quad dp[i][j]=dp[i-1][j-1]+1.
+\]
+\centering\begin{tikzpicture}[x=1.3cm]
+\node[dp dependency]at(0,1){diag};\node[dp current]at(1,0){+1};\draw[dp edge](.4,.7)--(.75,.3);
+\end{tikzpicture}
+\dptakeaway{공통 문자 하나를 답 끝에 추가하고 두 prefix를 모두 줄인다.}
+\end{frame}
+\begin{frame}{Case 2: 마지막 문자가 다르다}
+\[
+X[i]\ne Y[j]\quad\Longrightarrow\quad
+dp[i][j]=\max\{dp[i-1][j],dp[i][j-1]\}.
+\]
+\begin{itemize}\item 최적해는 $X[i]$를 쓰지 않는 경우 또는 $Y[j]$를 쓰지 않는 경우 중 적어도 하나에 포함\item “임의로 하나를 버린다”가 아니라 두 최적 prefix를 비교\end{itemize}
+\end{frame}
+\begin{frame}{Naive LCS Recursion}
+\scriptsize\begin{algorithmic}[1]
+\Procedure{LCSLength}{$X,Y,m,n$}
+\If{$m=0$ \textbf{or} $n=0$}\State\Return 0\EndIf
+\If{$X[m-1]=Y[n-1]$}\State\Return $1+\Call{LCSLength}{X,Y,m-1,n-1}$\EndIf
+\State\Return $\max(\Call{LCSLength}{X,Y,m-1,n},\Call{LCSLength}{X,Y,m,n-1})$
+\EndProcedure
+\end{algorithmic}
+\begin{itemize}\item comparison은 assignment가 아님\item upper bound $O(2^{m+n})$ 수준의 exponential 호출\end{itemize}
+\end{frame}
+\begin{frame}{LCS Partial Call Tree}
+\centering\begin{tikzpicture}[level distance=11mm,level 1/.style={sibling distance=55mm},level 2/.style={sibling distance=25mm},every node/.style={tree node,font=\small}]
+\node{$L(3,4)$} child{node{$L(2,4)$} child{node[dp repeat]{$L(2,3)$}} child{node{$L(1,4)$}}}
+ child{node{$L(3,3)$} child{node{$L(3,2)$}} child{node[dp repeat]{$L(2,3)$}}};
+\node[callout]at(0,-3.5){partial call tree};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{LCS Bottom-Up}
+\small\begin{algorithmic}[1]
+\State base row와 base column을 0으로 초기화
+\For{$i\gets1$ \textbf{to} $m$}\For{$j\gets1$ \textbf{to} $n$}
+\If{$X[i-1]=Y[j-1]$}\State $dp[i][j]\gets dp[i-1][j-1]+1$
+\Else\State $dp[i][j]\gets\max(dp[i-1][j],dp[i][j-1])$\EndIf
+\EndFor\EndFor
+\State\Return $dp[m][n]$
+\end{algorithmic}
+\end{frame}
+\begin{frame}{LCS Notation과 복잡도}
+\begin{block}{Notation bridge}
+수학의 $X[1..i]$, $Y[1..j]$는 1-based prefix다.
+C/Java 문자열은 0-based이므로 현재 문자는 \texttt{X[i-1]}, \texttt{Y[j-1]}이다.
+\end{block}
+\[
+\underbrace{(m+1)(n+1)}_{\text{states}}\times
+\underbrace{\Theta(1)}_{\text{transition}}=\Theta(mn).
+\]
+\dptakeaway{Answer는 $dp[m][n]$이며, 길이가 같더라도 실제 LCS 문자열은 여러 개일 수 있다.}
+\end{frame}
+\begin{frame}{LCS Table Progression}
+\centering\large
+\renewcommand{\arraystretch}{.95}\setlength{\tabcolsep}{10pt}
+\only<1|handout:0>{\begin{tabular}{c|rrrrrrr}
+&$\boldsymbol{\epsilon}$&B&D&C&A&B&A\\\hline
+$\boldsymbol{\epsilon}$&0&0&0&0&0&0&0\\
+A&0&.&.&.&.&.&.\\B&0&.&.&.&.&.&.\\C&0&.&.&.&.&.&.\\
+B&0&.&.&.&.&.&.\\D&0&.&.&.&.&.&.\\A&0&.&.&.&.&.&.\\B&0&.&.&.&.&.&.
+\end{tabular}\\[1.5mm]\normalsize base row와 column을 먼저 0으로 초기화}
+\only<2|handout:0>{\begin{tabular}{c|rrrrrrr}
+&$\boldsymbol{\epsilon}$&B&D&C&A&B&A\\\hline
+$\boldsymbol{\epsilon}$&0&0&0&0&0&0&0\\
+A&0&0&0&0&1&1&1\\B&0&1&1&1&1&2&2\\C&0&1&1&2&2&2&2\\
+B&0&.&.&.&.&.&.\\D&0&.&.&.&.&.&.\\A&0&.&.&.&.&.&.\\B&0&.&.&.&.&.&.
+\end{tabular}\\[1.5mm]\normalsize 같은 위치에서 row progression 확인}
+\only<3|handout:1>{\begin{tabular}{c|rrrrrrr}
+&$\boldsymbol{\epsilon}$&B&D&C&A&B&A\\\hline
+$\boldsymbol{\epsilon}$&0&0&0&0&0&0&0\\
+A&0&0&0&0&1&1&1\\B&0&1&1&1&1&2&2\\C&0&1&1&2&2&2&2\\
+B&0&1&1&2&2&3&3\\D&0&1&2&2&2&3&3\\A&0&1&2&2&3&3&4\\B&0&1&2&2&3&4&4
+\end{tabular}\\[1.5mm]\normalsize 완성: answer $dp[7][6]=4$}
+\end{frame}

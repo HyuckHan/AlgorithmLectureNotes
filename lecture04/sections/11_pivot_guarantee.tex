@@ -1,0 +1,19 @@
+\begin{frame}{Median들의 절반은 $M$ 이상이다}
+medians를 정렬했을 때 $M$은 lower median이다. 따라서 적어도 절반은 $M$ 이상이고, 대칭적으로 적어도 절반은 $M$ 이하이다.
+\centering\begin{tikzpicture}[x=1.15cm]\foreach \x/\v in {0/12,1/14}\node[guaranteed less]at(\x,0){\v};\node[mom]at(2,0){16};\foreach \x/\v in {3/17,4/20}\node[guaranteed greater]at(\x,0){\v};\node[below=8mm of current bounding box.south,font=\small]{왼쪽은 $\le M$, 오른쪽은 $\ge M$};\end{tikzpicture}
+\end{frame}
+\begin{frame}{그런 Group마다 3개가 보장된다}
+full group을 정렬했을 때 median이 $M$ 이상이면 median과 오른쪽 두 값, 총 3개가 $M$ 이상이다.
+\centering\begin{tikzpicture}[x=1cm]\foreach \x/\v in {0/5,1/10}\node[unknown]at(\x,0){\v};\node[group median]at(2,0){16};\foreach \x/\v in {3/23,4/27}\node[guaranteed greater]at(\x,0){\v};\draw[decorate,decoration={brace,mirror,amplitude=5pt},AlgoOrange](1.55,-.65)--(4.45,-.65)node[midway,below=5pt]{3개가 $\ge M$};\end{tikzpicture}
+\end{frame}
+\begin{frame}{양쪽에서 약 $3n/10$을 제거한다}
+\only<1|handout:0>{\[\underbrace{\frac12}_{\text{median의 절반}}\cdot\underbrace{\frac n5}_{\text{full group 규모}}\cdot\underbrace{3}_{\text{group당 보장}}\approx\frac{3n}{10}\]}
+\only<2|handout:0>{\begin{columns}[T]\column{.47\textwidth}\begin{block}{$\le M$ 보장}$3n/10-O(1)$개 이상\end{block}\column{.47\textwidth}\begin{block}{$\ge M$ 보장}$3n/10-O(1)$개 이상\end{block}\end{columns}}
+\only<3|handout:1>{\[\text{largest retained side}\le n-\left(\frac{3n}{10}-O(1)\right)=\frac{7n}{10}+O(1)\]}
+\vspace{4mm}\centering incomplete final group, $M$의 group, even median convention이 $O(1)$ 예외를 만든다. Equal region은 bound를 더 좋게 만들 수 있다.
+\end{frame}
+\begin{frame}{Pivot 보장 Checkpoint}
+\begin{enumerate}\item 왜 “median 중 절반”만 세는가?\item 한 qualifying group에서 왜 3개인가?\item 다음 selection 문제의 최대 비율은?\end{enumerate}
+\begin{exampleblock}{답}M의 한쪽에 있는 median만 확실히 셀 수 있다; 5개 group의 median과 큰 두 값; $7/10+O(1/n)$.\end{exampleblock}
+\vfill\muted{양쪽에서 제거되는 수를 재귀 문제 크기로 옮기면 BFPRT 점화식이 된다.}
+\end{frame}

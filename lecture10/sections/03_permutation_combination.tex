@@ -1,0 +1,68 @@
+\subsection{순열과 부분집합 생성}
+\begin{frame}{원본 \texttt{pick} 코드의 문제}
+\begin{itemize}
+\item 선언되지 않은 \texttt{arr}를 recursive call에 전달한다.
+\item duplicate loop가 잘못된 bucket 위치를 비교하고 \texttt{continue} 범위도 불명확하다.
+\item \texttt{bucketSize-k-1}은 depth 의미를 숨긴다.
+\item 0/1-based, 선택 범위, base-case 출력 계약이 없다.
+\end{itemize}
+\begin{alertblock}{해석}\texttt{pick(5,...,4)}의 의도는 \(0,\ldots,4\)에서 중복 없이 4개를 고르는 \(5P_4\) 생성으로 본다.\end{alertblock}
+\end{frame}
+\begin{frame}{Permutation Pseudocode}
+\scriptsize\begin{algorithmic}[1]
+\Procedure{ChoosePermutation}{$n,k,depth,used,choice$}
+\If{\(depth=k\)}\State output \(choice[0..k-1]\); \Return\EndIf
+\For{\(value\gets0\) to \(n-1\)}
+\If{\(\neg used[value]\)}
+\State \(used[value]\gets true;\ choice[depth]\gets value\)
+\State \Call{ChoosePermutation}{$n,k,depth+1,used,choice$}
+\State \(used[value]\gets false\)
+\EndIf\EndFor
+\EndProcedure
+\end{algorithmic}
+\end{frame}
+\begin{frame}{Permutation State Tree}
+\centering\begin{tikzpicture}[level distance=11mm,sibling distance=28mm]
+\node[ssnode]{[]}
+ child{node[sscurrent]{[0]} child{node[sscurrent]{[0,1]} child{node[ssvalid]{[0,1,2]}} child{node[ssvalid]{[0,1,3]}}} child{node[ssnode]{[0,2]}}}
+ child{node[ssnode]{[1]} child{node[ssnode]{[1,0]}} child{node[ssnode]{[1,2]}}};
+\node[ssnote]at(0,-3.25){\only<1|handout:0>{state = 선택한 prefix}\only<2|handout:0>{decision = unused value}\only<3|handout:0>{used가 duplicate branch를 차단}\only<4|handout:1>{leaf마다 길이 \(k\) output}};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{\(nP_k\)의 크기와 비용}
+\[
+P(n,k)=\frac{n!}{(n-k)!},\qquad P(5,4)=120.
+\]
+\begin{itemize}
+\item 모든 output은 길이 \(k\), 원소는 distinct.
+\item full permutation은 \(n!\) leaves.
+\item 각 output을 복사하면 출력 비용만 \(\Omega(kP(n,k))\).
+\item recursion stack과 \texttt{choice}: \(\Theta(k)\), \texttt{used}: \(\Theta(n)\).
+\end{itemize}
+\end{frame}
+\begin{frame}{Combination: 순서를 제거한다}
+\scriptsize\begin{algorithmic}[1]
+\Procedure{ChooseCombination}{$n,k,start,depth,choice$}
+\If{\(depth=k\)}\State output \(choice\); \Return\EndIf
+\For{\(value\gets start\) to \(n-(k-depth)\)}
+\State \(choice[depth]\gets value\)
+\State \Call{ChooseCombination}{$n,k,value+1,depth+1,choice$}
+\EndFor
+\EndProcedure
+\end{algorithmic}
+\end{frame}
+\begin{frame}{Permutation vs Combination}
+\begin{columns}
+\column{.47\linewidth}
+\begin{block}{Permutation}\([0,1]\ne[1,0]\)\\branch: unused value\\count \(P(n,k)\)\end{block}
+\column{.47\linewidth}
+\begin{block}{Combination}\(\{0,1\}=\{1,0\}\)\\branch: increasing value\\count \(\binom nk\)\end{block}
+\end{columns}
+\[
+P(5,4)=120,\qquad \binom54=5.
+\]
+\end{frame}
+\begin{frame}{순열과 조합 Checkpoint}
+\begin{enumerate}\item \texttt{used}와 choice prefix의 invariant는?\item combination에서 \texttt{start}가 필요한 이유는?\end{enumerate}
+\begin{exampleblock}{답}\texttt{used[v]}가 참 iff \(v\)가 prefix에 정확히 한 번 존재; 같은 집합의 다른 순서를 생성하지 않기 위해서다.\end{exampleblock}
+\end{frame}

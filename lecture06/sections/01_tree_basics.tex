@@ -1,0 +1,97 @@
+\begin{frame}[plain]
+\vspace*{-8mm}
+\titlepage
+\end{frame}
+\begin{frame}{학습 목표 I}
+\begin{itemize}
+\item tree 용어와 depth/height convention을 정확히 사용한다.
+\item full, perfect, complete binary tree를 구분한다.
+\item 네 traversal을 수행하고 시간·공간 비용을 설명한다.
+\item BST의 SEARCH, INSERT, DELETE를 손으로 추적한다.
+\end{itemize}
+\end{frame}
+\begin{frame}{학습 목표 II}
+\begin{itemize}
+\item AVL의 BF와 LL/RR/LR/RL rotation을 판별한다.
+\item Red-Black invariant와 $O(\log n)$ height 직관을 설명한다.
+\item B-Tree의 split, promotion, borrow, merge를 추적한다.
+\item BST, AVL, RB Tree, B-Tree를 workload에 맞게 선택한다.
+\end{itemize}
+\end{frame}
+\section{Part A. Tree와 Binary Search Tree}
+\begin{frame}{왜 Tree인가?}
+\begin{columns}[T]\column{.48\textwidth}
+\begin{block}{계층을 표현}file system, organization hierarchy, syntax tree\end{block}
+\begin{block}{검색을 조직}symbol table, memory allocator, search index\end{block}
+\column{.48\textwidth}
+\begin{block}{저장장치까지 확장}database page와 B-Tree index\end{block}
+\mission{한 번의 비교로 후보 영역을 줄이고, 구조적 관계를 유지한다.}
+\end{columns}
+\end{frame}
+\begin{frame}{Rooted Tree의 정의}
+\begin{columns}\column{.54\textwidth}
+\begin{itemize}
+\item 하나의 root가 있다.
+\item root를 제외한 각 node는 정확히 하나의 parent를 가진다.
+\item root에서 각 node까지 unique path가 있다.
+\end{itemize}
+\column{.42\textwidth}\centering
+\begin{tikzpicture}[level distance=10mm,sibling distance=20mm]
+\node[st current]{A}child{node[st node]{B}child{node[st node]{D}}child{node[st node]{E}}}child{node[st node]{C}child{node[st node]{F}}};
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+\begin{frame}{Tree 용어: 같은 그림, 다른 관계}
+\centering
+\begin{tikzpicture}[level distance=11mm,level 1/.style={sibling distance=38mm},level 2/.style={sibling distance=18mm}]
+\node[st node,alt=<1|handout:0>{st current}{st done}](a){A}
+ child{node[st node,alt=<2|handout:0>{st current}{st done}](b){B}
+   child{node[st node,alt=<3|handout:0>{st current}{st done}](d){D}}
+   child{node[st node,alt=<3|handout:0>{st current}{st done}](e){E}}}
+ child{node[st node,alt=<2|handout:0>{st current}{st done}](c){C}
+   child{node[st node,alt=<4|handout:1>{st current}{st done}](f){F}}
+   child{node[st node,alt=<4|handout:1>{st current}{st done}](g){G}}};
+\node<1|handout:0>[callout,below=5mm of e]{A: root, degree 2};
+\node<2|handout:0>[callout,below=5mm of e]{A는 parent; B와 C는 child이자 sibling};
+\node<3|handout:0>[callout,below=5mm of e]{D와 E는 leaf; B는 internal node};
+\node<4|handout:1>[callout,below=5mm of e]{C의 subtree=\{C,F,G\}; A는 G의 ancestor};
+\end{tikzpicture}
+\end{frame}
+\begin{frame}{Ancestor · Descendant · Subtree}
+\begin{columns}[T]\column{.48\textwidth}
+\begin{block}{Transitive relation}A는 E의 ancestor, E는 A의 descendant다. parent/child를 여러 edge로 확장한 관계다.\end{block}
+\column{.48\textwidth}
+\begin{block}{Subtree}node B와 모든 descendant $\{B,D,E\}$, 그리고 그 edge로 이루어진 tree다.\end{block}
+\end{columns}
+\sttakeaway{Node degree는 child 수이고, tree degree는 모든 node degree의 최댓값이다.}
+\end{frame}
+\begin{frame}{Depth · Level · Height Convention}
+\[
+\operatorname{depth}(v)=\text{root에서 }v\text{까지 edge 수}
+\]
+\begin{itemize}
+\item root depth $=0$, level $=\text{depth}+1$
+\item node height $=$ 가장 깊은 descendant leaf까지 edge 수
+\item leaf height $=0$, empty tree height $=-1$
+\item tree height $=$ root height
+\end{itemize}
+\begin{alertblock}{Convention 확인}교재에 따라 level과 height를 node 수로 세기도 한다. 이 강의는 edge-height를 끝까지 사용한다.\end{alertblock}
+\end{frame}
+\begin{frame}{Tree의 세 가지 성질}
+node가 $n\ge1$개인 tree는 다음을 만족한다.
+\begin{enumerate}
+\item connected이며 cycle이 없다.
+\item edge가 정확히 $n-1$개다.
+\item 임의의 두 node 사이에 unique simple path가 있다.
+\end{enumerate}
+\sttakeaway{세 문장은 서로 연결된다. edge를 하나 추가하면 cycle, 하나 제거하면 disconnect가 생긴다.}
+\end{frame}
+\begin{frame}{Tree Basics Checkpoint}
+\begin{enumerate}
+\item 12개 node인 tree의 edge 수는?
+\item root depth 0일 때 depth 3 leaf의 level은?
+\item leaf와 internal node의 차이는?
+\item 두 node 사이의 path가 유일하다는 말에서 필요한 정확한 용어는?
+\end{enumerate}
+\begin{exampleblock}{답}11개; level 4; child가 0인지 아닌지; unique simple path.\end{exampleblock}
+\end{frame}

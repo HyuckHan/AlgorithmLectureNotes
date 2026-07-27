@@ -1,0 +1,47 @@
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{theme/beamerthemealgorithms}
+\definecolor{AlgoOrangeText}{HTML}{B45309}
+\setbeamercolor{alerted text}{fg=AlgoOrangeText}
+\renewcommand{\keyterm}[1]{\textcolor{AlgoOrangeText}{\bfseries #1}}
+\setsansfont{Noto Sans CJK KR}[Scale=0.98,AutoFakeSlant=0.15]
+\setmainfont{Noto Sans CJK KR}[Scale=0.98,AutoFakeSlant=0.15]
+\setmonofont{Noto Sans Mono CJK KR}[Scale=0.90]
+\newfontfamily\lecturefooterfont{Noto Sans}
+\usepackage{kotex,amsmath,amssymb,mathtools,booktabs,array,multirow}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,trees,patterns,decorations.pathreplacing,matrix}
+\usepackage{pgfplots}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\algrenewcommand\textproc[1]{\textbf{#1}}
+\input{lecture02/common.tex}
+\input{lecture03/common.tex}
+\pgfplotsset{compat=1.18,compat/show suggested version=false}
+\title{정렬 · Sorting}
+\subtitle{단순 정렬 · Heap · 선형시간 정렬 · Comparator}
+\author{Algorithm Lecture Notes}
+\date{}
+\newcommand{\Oh}{\mathcal O}\newcommand{\Om}{\Omega}\newcommand{\Th}{\Theta}
+\setbeamertemplate{frame numbering}{\lecturefooterfont\insertframenumber/\inserttotalframenumber}
+\mode<handout>{\AtBeginSection[]{}}
+\begin{document}
+\input{lecture03/sections/01_motivation.tex}
+\input{lecture03/sections/02_sorting_properties.tex}
+\input{lecture03/sections/03_selection.tex}
+\input{lecture03/sections/04_bubble.tex}
+\input{lecture03/sections/05_insertion.tex}
+\input{lecture03/sections/06_divide_conquer.tex}
+\input{lecture03/sections/07_merge_sort.tex}
+\input{lecture03/sections/08_quick_sort.tex}
+\input{lecture03/sections/09_lower_bound.tex}
+\input{lecture03/sections/10_heap_basics.tex}
+\input{lecture03/sections/11_heapify.tex}
+\input{lecture03/sections/12_build_heap.tex}
+\input{lecture03/sections/13_heap_sort.tex}
+\input{lecture03/sections/14_counting_sort.tex}
+\input{lecture03/sections/15_radix_sort.tex}
+\input{lecture03/sections/16_comparison.tex}
+\input{lecture03/sections/17_java_sorting.tex}
+\input{lecture03/sections/18_c_sorting.tex}
+\input{lecture03/sections/19_summary_quiz.tex}
+\end{document}
