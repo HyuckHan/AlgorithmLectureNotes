@@ -96,17 +96,22 @@
 \only<1|handout:0>{%
   \begin{columns}\column{.48\textwidth}\centering
   \begin{tikzpicture}[level distance=11mm,sibling distance=20mm]
-  \node[st current]{15}child{node[st inactive]{6}}child{node[st done]{18}child{node[st current]{17}}child{node[st node]{20}}};
+  \node[st current]{15}child{node[st inactive]{6}}child{node[st done]{18}child{node[st node,draw=green!45!black,ultra thick,fill=green!12]{17}}child{node[st node]{20}}};
   \end{tikzpicture}
   \begin{block}{Case 1}$succ(15)=min(18\ subtree)=17$\end{block}
   \column{.48\textwidth}
   right subtree가 있으므로 그 안의 minimum
+  \begin{align*}
+  x.right &\ne \NIL,\\[-1mm]
+  \operatorname{successor}(x)
+    &= \operatorname{minimum}(x.right).
+  \end{align*}
   \end{columns}}
 \only<2|handout:1>{%
   \begin{columns}[T]
   \column{.58\textwidth}
   \begin{block}{Case 2: right subtree가 없을 때}
-  현재 node가 ancestor의 left subtree에 속하는 첫 ancestor를 만날 때까지
+  원래 node가 ancestor의 left subtree에 속하는 첫 ancestor에 도달할 때까지
   upward 이동한다. 그 ancestor가 successor다.
   \end{block}
   \vspace{2mm}
@@ -130,10 +135,36 @@
   \end{columns}}
 \end{frame}
 \begin{frame}{SUCCESSOR 예제 검증}
-\[
-succ(15)=17,\quad succ(6)=7,\quad succ(4)=6,\quad succ(20)=\NIL.
-\]
-\begin{itemize}\item parent pointer가 있으면 upward walk가 직접 가능\item 없으면 root부터 search path를 기억하거나 다시 탐색\item predecessor는 left/right와 min/max를 바꾼 symmetric operation\end{itemize}
+\begin{columns}[T]
+\column{.48\textwidth}
+\centering
+\begin{tikzpicture}[level distance=11mm,sibling distance=20mm]
+\node[st current]{15}
+  child{node[st inactive]{6}}
+  child{node[st node]{18}
+    child{node[st node,draw=green!45!black,ultra thick,fill=green!12]{17}}
+    child{node[st node]{20}}};
+\end{tikzpicture}
+\begin{block}{Case 1}
+$15$는 right subtree가 있다.\\
+$succ(15)=\textcolor{green!45!black}{17}$
+\end{block}
+\column{.48\textwidth}
+\centering
+\begin{tikzpicture}[level distance=11mm,sibling distance=20mm]
+\node[st node,draw=green!45!black,ultra thick,fill=green!12]{6}
+  child{node[st node]{3}child[missing]{}child{node[st current]{4}}}
+  child[missing]{};
+\end{tikzpicture}
+\begin{block}{Case 2}
+$4$는 right subtree가 없다.\\
+원래 node $4$를 left subtree에 포함하는 첫 ancestor는
+\textcolor{green!45!black}{$6$}: $succ(4)=6$
+\end{block}
+\end{columns}
+\vspace{1mm}
+\centering\small
+parent pointer가 없으면 root부터 search path를 기억하거나 다시 탐색한다.
 \end{frame}
 \begin{frame}{BST 기본 연산 Checkpoint}
 \begin{enumerate}\item search(14)의 path는?\item minimum과 maximum은?\item predecessor(15)는?\item successor(20)는?\end{enumerate}
