@@ -93,16 +93,41 @@
 \begin{block}{정의}$x.key$보다 큰 key 중 가장 작은 key.\end{block}
 \end{frame}
 \begin{frame}{SUCCESSOR Animation}
-\begin{columns}\column{.48\textwidth}\centering
-\begin{tikzpicture}[level distance=11mm,sibling distance=20mm]
-\node[st current]{15}child{node[st inactive]{6}}child{node[st done]{18}child{node[st current]{17}}child{node[st node]{20}}};
-\end{tikzpicture}
-\only<1|handout:0>{\begin{block}{Case 1}$succ(15)=min(18\ subtree)=17$\end{block}}
-\only<2|handout:1>{\begin{block}{Case 2}$succ(4)=6$: 4에서 올라가 처음 left-turn 경계를 찾음\end{block}}
-\column{.48\textwidth}
-\only<1|handout:0>{right subtree가 있으므로 그 안의 minimum}
-\only<2|handout:1>{\begin{tikzpicture}\node[st done](a)at(0,0){6};\node[st node](b)at(-1,-1){3};\node[st current](c)at(.3,-2){4};\draw[st active edge](c)--(b)--(a);\end{tikzpicture}}
-\end{columns}
+\only<1|handout:0>{%
+  \begin{columns}\column{.48\textwidth}\centering
+  \begin{tikzpicture}[level distance=11mm,sibling distance=20mm]
+  \node[st current]{15}child{node[st inactive]{6}}child{node[st done]{18}child{node[st current]{17}}child{node[st node]{20}}};
+  \end{tikzpicture}
+  \begin{block}{Case 1}$succ(15)=min(18\ subtree)=17$\end{block}
+  \column{.48\textwidth}
+  right subtree가 있으므로 그 안의 minimum
+  \end{columns}}
+\only<2|handout:1>{%
+  \begin{columns}[T]
+  \column{.58\textwidth}
+  \begin{block}{Case 2: right subtree가 없을 때}
+  현재 node가 ancestor의 left subtree에 속하는 첫 ancestor를 만날 때까지
+  upward 이동한다. 그 ancestor가 successor다.
+  \end{block}
+  \vspace{2mm}
+  \centering
+  \begin{tikzpicture}[level distance=12mm,sibling distance=20mm]
+  \node[st node,draw=green!45!black,ultra thick,fill=green!12]{6}
+    child{node[st node]{3}child[missing]{}child{node[st current]{4}}}
+    child[missing]{};
+  \end{tikzpicture}
+  \column{.38\textwidth}
+  \centering
+  \begin{tikzpicture}[y=1.25cm]
+  \node[st node,draw=green!45!black,ultra thick,fill=green!12](n6)at(0,0){6};
+  \node[st node](n3)at(0,-1){3};
+  \node[st current](n4)at(0,-2){4};
+  \draw[st active edge](n4)--(n3);
+  \draw[st active edge](n3)--(n6);
+  \node[align=center,font=\small,text=green!45!black]at(0,-2.8)
+    {$succ(4)=6$\\first qualifying ancestor};
+  \end{tikzpicture}
+  \end{columns}}
 \end{frame}
 \begin{frame}{SUCCESSOR 예제 검증}
 \[
