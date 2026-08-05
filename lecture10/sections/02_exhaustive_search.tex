@@ -38,7 +38,9 @@ Best-first&priority queue&유망 node 집중&평가·memory 비용\\\bottomrule
 \node[ssnode](r)at(0,2){R};\node[ssnode](a)at(-2,.7){A};\node[ssnode](b)at(2,.7){B};
 \node[ssnode](c)at(-3,-.7){C};\node[ssnode](d)at(-1,-.7){D};\node[ssnode](e)at(1,-.7){E};\node[ssnode](f)at(3,-.7){F};
 \foreach \u/\v in{r/a,r/b,a/c,a/d,b/e,b/f}\draw[ssedge](\u)--(\v);
-\node[ssbox]at(0,-1.8){\only<1|handout:0>{DFS: R,A,C,D,B,E,F}\only<2|handout:0>{BFS: R,A,B,C,D,E,F}\only<3|handout:1>{Best-first는 score가 결정: tree는 같고 frontier 정책만 다름}};
+\visible<1->{\node[ssbox]at(0,-1.8){DFS: R,A,C,D,B,E,F};}
+\visible<2->{\node[ssbox]at(0,-2.8){BFS: R,A,B,C,D,E,F};}
+\visible<3->{\node[ssbox]at(0,-3.8){Best-first는 score가 결정: tree는 같고 frontier 정책만 다름};}
 \end{tikzpicture}
 \end{frame}
 \begin{frame}{완전탐색과 Pruning}

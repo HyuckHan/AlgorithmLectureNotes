@@ -10,7 +10,9 @@ Best-bound&PQ&가장 좋은 UB/LB&평가 집중\\\bottomrule
 \begin{frame}{Frontier Policy Animation}
 \centering\begin{tikzpicture}
 \node[ssbox]at(0,1.2){live nodes: A(UB 12), B(UB 18), C(UB 15)};
-\node[ssnote]at(0,0){\only<1|handout:0>{FIFO \(\to A\)}\only<2|handout:0>{LIFO \(\to C\)}\only<3|handout:1>{Best-bound max \(\to B\); sound bound이면 어느 순서도 optimality 유지}};
+\visible<1->{\node[ssnote]at(0,0){FIFO \(\to A\)};}
+\visible<2->{\node[ssnote]at(0,-1){LIFO \(\to C\)};}
+\visible<3->{\node[ssnote]at(0,-2){Best-bound max \(\to B\); sound bound이면 어느 순서도 optimality 유지};}
 \end{tikzpicture}
 \end{frame}
 \begin{frame}{좋은 Incumbent를 언제 찾는가?}

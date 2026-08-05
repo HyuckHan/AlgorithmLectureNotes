@@ -27,7 +27,9 @@
 \draw[ssactiveedge](s)--node[above,font=\small]{Apply \(d\)}(c);
 \draw[ssactiveedge](c)--node[above,font=\small]{Recurse}(r);
 \draw[ssactiveedge](r)to[bend left=35]node[below,font=\small]{Undo \(d\): exactly \(S\)}(s);
-\node[ssnote]at(0,-.5){\only<1|handout:0>{decision을 state에 반영}\only<2|handout:0>{promising이면 재귀}\only<3|handout:1>{return 후 Undo: sibling은 동일한 parent state에서 시작}};
+\visible<1->{\node[ssnote]at(0,-.5){decision을 state에 반영};}
+\visible<2->{\node[ssnote]at(0,-1.5){promising이면 재귀};}
+\visible<3->{\node[ssnote]at(0,-2.5){return 후 Undo: sibling은 동일한 parent state에서 시작};}
 \end{tikzpicture}
 \end{frame}
 \begin{frame}{Promising의 정확한 의미}
