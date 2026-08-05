@@ -35,18 +35,22 @@ fractional optimum은 0/1 feasible set을 포함하는 relaxation의 optimum이�
 \end{frame}
 \begin{frame}{Knapsack Best-First Trace}
 \centering\begin{tikzpicture}
-\node[ssbox]at(0,1.5){\only<1|handout:0>{root \((w0,p0,UB115)\)}\only<2|handout:0>{include A: \((2,40,UB115)\)}\only<3|handout:0>{exclude A: \((0,0,UB82)\)}\only<4|handout:0>{include B / exclude B child 생성}\only<5|handout:0>{expand exclude-B; include C: \(w12,p90\)}\only<6|handout:0>{exclude-A \(UB82\le90\Rightarrow P\)}\only<7|handout:1>{PQ empty: optimum 90}};
-\node[ssnote]at(0,0){\only<1|handout:0>{\pqview{root:115}}\only<2|handout:0>{\pqview{A:115}}\only<3|handout:0>{\pqview{A:115,\ \neg A:82}}\only<4|handout:0>{\pqview{AB:115,\ A\neg B:98,\ \neg A:82}}\only<5|handout:0>{\incbadge{90}: selected \(\{A,C\}\)}\only<6|handout:0>{objective-bound prune}\only<7|handout:1>{optimal weight 12, profit 90}};
+\node[ssbox]at(0,1.5){\only<1|handout:0>{root \((w0,p0,UB115)\)}\only<2|handout:0>{include A: \((2,40,UB115)\)}\only<3|handout:0>{exclude A: \((0,0,UB82)\)}\only<4|handout:0>{include B / exclude B child 생성}\only<5|handout:0>{AB pop: C 포함 시 \(w17>16\) 폐기; \(AB\neg C\)는 UB80으로 잔류}\only<6|handout:0>{expand exclude-B; include C: \(w12,p90\)}\only<7|handout:0>{incumbent 90 이하 prune: \(\neg A(82)\), \(AB\neg C(80)\)}\only<8|handout:1>{PQ empty: optimum 90}};
+\node[ssnote]at(0,0){\only<1|handout:0>{\pqview{root:115}}\only<2|handout:0>{\pqview{A:115}}\only<3|handout:0>{\pqview{A:115,\ \neg A:82}}\only<4|handout:0>{\pqview{AB:115,\ A\neg B:98,\ \neg A:82}}\only<5|handout:0>{\pqview{A\neg B:98,\ \neg A:82,\ AB\neg C:80}}\only<6|handout:0>{\incbadge{90}: selected \(\{A,C\}\)}\only<7|handout:0>{objective-bound prune}\only<8|handout:1>{optimal weight 12, profit 90}};
 \end{tikzpicture}
 \end{frame}
 \begin{frame}{핵심 State Tree}
-\centering\begin{tikzpicture}
+\centering\resizebox{!}{5.3cm}{\begin{tikzpicture}
 \node[sscurrent](r)at(0,2.2){0/0/115};\node[ssopen](a)at(-2,.8){2/40/115};\node[ssbound](na)at(2,.8){0/0/82};
-\node[ssopen](ab)at(-3,-.7){7/70/115};\node[ssopen](anb)at(-1,-.7){2/40/98};
-\node[ssvalid](ac)at(-1,-2.1){12/90};\node[ssbound](p)at(2,-2.1){P};
-\foreach \u/\v in{r/a,r/na,a/ab,a/anb,anb/ac,na/p}\draw[ssedge](\u)--(\v);
-\node[font=\tiny]at(0,-3){node label: weight / profit / UB};
-\end{tikzpicture}
+\node[ssopen](ab)at(-3.5,-.7){7/70/115};\node[ssopen](anb)at(-.5,-.7){2/40/98};
+\node[ssdead](abc)at(-4.8,-2.1){17/-};\node[ssbound](abnc)at(-2.8,-2.1){12/80/80};
+\node[ssvalid](ac)at(-.5,-2.1){12/90/90};\node[ssbound](p)at(2,-2.1){P};
+\foreach \u/\v in{r/a,r/na,a/ab,a/anb,ab/abc,ab/abnc,anb/ac,na/p}\draw[ssedge](\u)--(\v);
+\node[font=\tiny,text=red!70!black,below=1mm of abc]{w>W};
+\node[font=\tiny,text=red!70!black,below=1mm of abnc]{UB80\(\le\)90};
+\node[font=\tiny]at(0,-3.6){node label: weight / profit / UB};
+\node[font=\tiny]at(0,-4){P = prune,\ \ w>W = 용량 초과로 폐기};
+\end{tikzpicture}}
 \end{frame}
 \begin{frame}{Knapsack Invariants와 Bound 검증}
 \[
