@@ -93,78 +93,63 @@
 \begin{block}{정의}$x.key$보다 큰 key 중 가장 작은 key.\end{block}
 \end{frame}
 \begin{frame}{SUCCESSOR Animation}
+\centering\begin{tikzpicture}[level distance=9mm,level 1/.style={sibling distance=42mm},level 2/.style={sibling distance=22mm},level 3/.style={sibling distance=12mm}]
+\node[st node](n15){15}
+ child{node[st node](n6){6}
+   child{node[st node](n3){3}
+     child{node[st node](n2){2}}
+     child{node[st node](n4){4}}
+   }
+   child{node[st node](n7){7}
+     child[missing]{}
+     child{node[st node](n13){13}
+       child{node[st node](n9){9}}
+       child{node[st node](n14){14}}
+     }
+   }
+ }
+ child{node[st node](n18){18}
+   child{node[st node](n17){17}}
+   child{node[st node](n20){20}}
+ };
+\only<1|handout:0>{
+\node[st current]at(n15){15};
+\node[st inactive]at(n6){6};\node[st inactive]at(n3){3};\node[st inactive]at(n2){2};\node[st inactive]at(n4){4};
+\node[st inactive]at(n7){7};\node[st inactive]at(n13){13};\node[st inactive]at(n9){9};\node[st inactive]at(n14){14};
+\node[st done]at(n18){18};
+\node[st current]at(n17){17};
+\node[st inactive]at(n20){20};
+}
+\only<2|handout:1>{
+\node[st inactive]at(n15){15};
+\node[st done]at(n6){6};
+\node[st node]at(n3){3};
+\node[st current]at(n4){4};
+\node[st inactive]at(n2){2};\node[st inactive]at(n7){7};\node[st inactive]at(n13){13};\node[st inactive]at(n9){9};\node[st inactive]at(n14){14};
+\node[st inactive]at(n18){18};\node[st inactive]at(n17){17};\node[st inactive]at(n20){20};
+\draw[st active edge](n4)--(n3)--(n6);
+}
+\end{tikzpicture}
 \only<1|handout:0>{%
-  \begin{columns}\column{.48\textwidth}\centering
-  \begin{tikzpicture}[level distance=11mm,sibling distance=20mm]
-  \node[st current]{15}child{node[st inactive]{6}}child{node[st done]{18}child{node[st node,draw=green!45!black,ultra thick,fill=green!12]{17}}child{node[st node]{20}}};
-  \end{tikzpicture}
-  \begin{block}{Case 1}$succ(15)=min(18\ subtree)=17$\end{block}
-  \column{.48\textwidth}
-  right subtree가 있으므로 그 안의 minimum
-  \begin{align*}
-  x.right &\ne \NIL,\\[-1mm]
-  \operatorname{successor}(x)
-    &= \operatorname{minimum}(x.right).
-  \end{align*}
-  \end{columns}}
+\small\begin{block}{Case 1}$succ(15)=\min(18\ subtree)=17$\end{block}
+\centering\footnotesize right subtree가 있으므로 그 안의 minimum:
+$x.right\ne\NIL,\ \operatorname{successor}(x)=\operatorname{minimum}(x.right)$.
+}
 \only<2|handout:1>{%
-  \begin{columns}[T]
-  \column{.58\textwidth}
-  \begin{block}{Case 2: right subtree가 없을 때}
-  원래 node가 ancestor의 left subtree에 속하는 첫 ancestor에 도달할 때까지
-  upward 이동한다. 그 ancestor가 successor다.
-  \end{block}
-  \vspace{2mm}
-  \centering
-  \begin{tikzpicture}[level distance=12mm,sibling distance=20mm]
-  \node[st node,draw=green!45!black,ultra thick,fill=green!12]{6}
-    child{node[st node]{3}child[missing]{}child{node[st current]{4}}}
-    child[missing]{};
-  \end{tikzpicture}
-  \column{.38\textwidth}
-  \centering
-  \begin{tikzpicture}[y=1.25cm]
-  \node[st node,draw=green!45!black,ultra thick,fill=green!12](n6)at(0,0){6};
-  \node[st node](n3)at(0,-1){3};
-  \node[st current](n4)at(0,-2){4};
-  \draw[st active edge](n4)--(n3);
-  \draw[st active edge](n3)--(n6);
-  \node[align=center,font=\small,text=green!45!black]at(0,-2.8)
-    {$succ(4)=6$\\first qualifying ancestor};
-  \end{tikzpicture}
-  \end{columns}}
+\small\begin{block}{Case 2: right subtree가 없을 때}
+\footnotesize right subtree가 없으면 부모를 올라가며 현재 node가 처음으로 ancestor의 left subtree에
+놓이는 그 ancestor다. $succ(4)=6$.
+\end{block}
+}
 \end{frame}
 \begin{frame}{SUCCESSOR 예제 검증}
-\begin{columns}[T]
-\column{.48\textwidth}
-\centering
-\begin{tikzpicture}[level distance=11mm,sibling distance=20mm]
-\node[st current]{15}
-  child{node[st inactive]{6}}
-  child{node[st node]{18}
-    child{node[st node,draw=green!45!black,ultra thick,fill=green!12]{17}}
-    child{node[st node]{20}}};
-\end{tikzpicture}
-\begin{block}{Case 1}
-$15$는 right subtree가 있다.\\
-$succ(15)=\textcolor{green!45!black}{17}$
-\end{block}
-\column{.48\textwidth}
-\centering
-\begin{tikzpicture}[level distance=11mm,sibling distance=20mm]
-\node[st node,draw=green!45!black,ultra thick,fill=green!12]{6}
-  child{node[st node]{3}child[missing]{}child{node[st current]{4}}}
-  child[missing]{};
-\end{tikzpicture}
-\begin{block}{Case 2}
-$4$는 right subtree가 없다.\\
-원래 node $4$를 left subtree에 포함하는 첫 ancestor는
-\textcolor{green!45!black}{$6$}: $succ(4)=6$
-\end{block}
-\end{columns}
-\vspace{1mm}
-\centering\small
-parent pointer가 없으면 root부터 search path를 기억하거나 다시 탐색한다.
+\[
+succ(15)=17,\quad succ(6)=7,\quad succ(4)=6,\quad succ(20)=\NIL.
+\]
+\begin{itemize}
+\item parent pointer가 있으면 upward walk가 직접 가능하고, 없으면 root부터 search path를 기억하거나 다시 탐색한다.
+\item predecessor는 left/right와 min/max를 바꾼 symmetric operation이다.
+\end{itemize}
 \end{frame}
 \begin{frame}{BST 기본 연산 Checkpoint}
 \begin{enumerate}\item search(14)의 path는?\item minimum과 maximum은?\item predecessor(15)는?\item successor(20)는?\end{enumerate}
