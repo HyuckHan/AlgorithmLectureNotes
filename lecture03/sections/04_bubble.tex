@@ -8,13 +8,14 @@
 \begin{frame}{Bubble Sort: 인접 비교의 흐름}
 \optional[추가 예제]\hfill
 \centering\begin{tikzpicture}[x=1.18cm]
-\only<1>{\def\vals{{29,10,14,37,13}}\def\a{1}\def\b{2}}
-\only<2>{\def\vals{{10,29,14,37,13}}\def\a{2}\def\b{3}}
-\only<3>{\def\vals{{10,14,29,37,13}}\def\a{4}\def\b{5}}
-\only<4>{\def\vals{{10,14,29,13,37}}\def\a{0}\def\b{0}}
-\foreach \i in {1,...,5}{\pgfmathparse{\vals[\i-1]}\edef\v{\pgfmathresult}\ifnum\i=\a\node[sort current]at(\i,0){\v};\else\ifnum\i=\b\node[sort current]at(\i,0){\v};\else\ifnum\i=5\ifnum\a=0\node[sort done]at(\i,0){\v};\else\node[sort cell]at(\i,0){\v};\fi\else\node[sort cell]at(\i,0){\v};\fi\fi\fi}
+\only<1>{\def\vals{{29,10,14,37,13}}\def\a{1}\def\b{2}\def\swap{1}}
+\only<2>{\def\vals{{10,29,14,37,13}}\def\a{2}\def\b{3}\def\swap{1}}
+\only<3>{\def\vals{{10,14,29,37,13}}\def\a{3}\def\b{4}\def\swap{0}}
+\only<4>{\def\vals{{10,14,29,37,13}}\def\a{4}\def\b{5}\def\swap{1}}
+\only<5>{\def\vals{{10,14,29,13,37}}\def\a{0}\def\b{0}\def\swap{0}}
+\foreach \i in {1,...,5}{\pgfmathparse{\vals[\i-1]}\edef\v{\pgfmathresult}\ifnum\i=\a\ifnum\swap=1\node[sort current]at(\i,0){\v};\else\node[sort compared]at(\i,0){\v};\fi\else\ifnum\i=\b\ifnum\swap=1\node[sort current]at(\i,0){\v};\else\node[sort compared]at(\i,0){\v};\fi\else\ifnum\i=5\ifnum\a=0\node[sort done]at(\i,0){\v};\else\node[sort cell]at(\i,0){\v};\fi\else\node[sort cell]at(\i,0){\v};\fi\fi\fi}
 \end{tikzpicture}
-\vspace{4mm}\only<1|handout:0>{29와 10: 역전이므로 swap}\only<2|handout:0>{29와 14: swap}\only<3|handout:0>{37과 13: swap}\only<4|handout:1>{첫 pass 종료: 최댓값 37 확정}
+\vspace{4mm}\only<1|handout:0>{29와 10: 역전이므로 swap}\only<2|handout:0>{29와 14: swap}\only<3|handout:0>{29와 37: 순서대로이므로 swap 없음}\only<4|handout:0>{37과 13: swap}\only<5|handout:1>{첫 pass 종료: 최댓값 37 확정}
 \end{frame}
 \begin{frame}{Bubble Sort의 시간과 성질}
 \begin{tabular}{lccc}\toprule&best&average&worst\\\midrule 조기 종료 구현&$\Theta(n)$&$\Theta(n^2)$&$\Theta(n^2)$\\\bottomrule\end{tabular}
