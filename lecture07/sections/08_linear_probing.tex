@@ -21,7 +21,7 @@ h(k,i)=\bigl(h'(k)+i\bigr)\bmod m.
 \foreach \i/\v in {0/13,1/1,2/15,3/16,4/28,5/31,7/7,8/20,12/25}{\node[ht occupied,minimum width=8mm]at(s\i){\v};}
 \only<1|handout:0>{\node[ht collision,minimum width=8mm]at(s12){25};\node[callout]at(6,1.2){38 home $=12$};}
 \only<2|handout:0>{\foreach \i/\v in {12/25,0/13,1/1,2/15,3/16,4/28,5/31}{\node[ht collision,minimum width=8mm]at(s\i){\v};}\node[callout]at(6,1.2){$12\to0\to1\to\cdots\to5$ occupied};}
-\only<3|handout:1>{\node[ht probe,minimum width=8mm]at(s6){38};\draw[probe arrow] (s12.north) to[bend left=35] node[above,font=\scriptsize]{wrap} (s0.north);\node[callout]at(6,1.2){first EMPTY $=6$};}
+\only<3|handout:1>{\node[ht probe,minimum width=8mm]at(s6){38};\draw[probe arrow] (s12.north) to[out=165,in=100] node[above,font=\scriptsize]{wrap} (s0.north);\node[callout]at(6,1.2){first EMPTY $=6$};}
 \end{tikzpicture}
 \end{frame}
 \begin{frame}{Linear Probing Final Table}

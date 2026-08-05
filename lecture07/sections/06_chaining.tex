@@ -29,7 +29,7 @@
 \begin{frame}{Chaining Animation: Insert}
 \centering\begin{tikzpicture}[x=1.7cm,y=.8cm]
 \foreach \i in {0,...,6}{\node[ht slot](b\i)at(0,-\i){\i};}
-\only<1|handout:0>{\node[chain active]at(3,-3){10};\draw[chain edge](b3)--(1.8,-3);\node[callout]at(5,-1){$10\bmod7=3$};}
+\only<1|handout:0>{\node[chain active](a10)at(3,-3){10};\draw[chain edge](b3)--(a10);\node[callout]at(5,-1){$10\bmod7=3$};}
 \only<2|handout:0>{\node[chain active](a)at(2,-3){17};\node[chain node](c)at(4,-3){10};\draw[chain edge](b3)--(a);\draw[chain edge](a)--(c);\node[callout]at(5,-1){collision; head insert 17};}
 \only<3|handout:1>{\node[chain active](a)at(2,-3){24};\node[chain node](c)at(4,-3){17};\node[chain node](d)at(6,-3){10};\draw[chain edge](b3)--(a);\draw[chain edge](a)--(c);\draw[chain edge](c)--(d);\node[callout]at(5,-1){collision; head insert 24};}
 \end{tikzpicture}
