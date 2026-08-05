@@ -22,12 +22,35 @@
 \end{algorithmic}
 \end{frame}
 \begin{frame}{Permutation State Tree}
-\centering\begin{tikzpicture}[level distance=11mm,sibling distance=28mm]
-\node[ssnode]{[]}
- child{node[sscurrent]{[0]} child{node[sscurrent]{[0,1]} child{node[ssvalid]{[0,1,2]}} child{node[ssvalid]{[0,1,3]}}} child{node[ssnode]{[0,2]}}}
- child{node[ssnode]{[1]} child{node[ssnode]{[1,0]}} child{node[ssnode]{[1,2]}}};
-\node[ssnote]at(0,-3.25){\only<1|handout:0>{state = 선택한 prefix}\only<2|handout:0>{decision = unused value}\only<3|handout:0>{used가 duplicate branch를 차단}\only<4|handout:1>{leaf마다 길이 \(k\) output}};
-\end{tikzpicture}
+\centering\resizebox{!}{5.4cm}{\begin{tikzpicture}[level distance=7mm,level 1/.style={sibling distance=32mm},level 2/.style={sibling distance=42mm},level 3/.style={sibling distance=22mm},level 4/.style={sibling distance=14mm}]
+\node[sscurrent]{[]}
+ child{node[sscurrent]{[0]}
+   child{node[sscurrent]{[0,1]}
+     child{node[ssnode,fill=AlgoGray!25,draw=AlgoGray](u1){[0,1,0]}}
+     child{node[ssnode,fill=AlgoGray!25,draw=AlgoGray](u2){[0,1,1]}}
+     child{node[sscurrent]{[0,1,2]}
+       child{node[ssvalid]{[0,1,2,3]}}
+       child{node[font=\scriptsize,text=AlgoGray]{\(\cdots\)} edge from parent[dashed]}
+     }
+     child{node[ssnode]{[0,1,3]}
+       child{node[font=\scriptsize,text=AlgoGray]{\(\cdots\)} edge from parent[dashed]}
+     }
+     child{node[ssnode]{[0,1,4]}
+       child{node[font=\scriptsize,text=AlgoGray]{\(\cdots\)} edge from parent[dashed]}
+     }
+   }
+   child{node[font=\scriptsize,text=AlgoGray]{\(\cdots\)} edge from parent[dashed]}
+ }
+ child{node[font=\scriptsize,text=AlgoGray]{\(\cdots\)} edge from parent[dashed]};
+\draw[AlgoGray,thick](u1.north west)--(u1.south east);
+\draw[AlgoGray,thick](u2.north west)--(u2.south east);
+\node[font=\tiny,text=AlgoGray,below=.3mm of u1]{used};
+\node[font=\tiny,text=AlgoGray,below=.3mm of u2]{used};
+\visible<1->{\node[ssnote]at(0,-3.9){state = 선택한 prefix};}
+\visible<2->{\node[ssnote]at(0,-4.7){decision = unused value};}
+\visible<3->{\node[ssnote]at(0,-5.5){used가 duplicate branch를 차단};}
+\visible<4->{\node[ssnote]at(0,-6.3){leaf마다 길이 \(k\) output};}
+\end{tikzpicture}}
 \end{frame}
 \begin{frame}{\(nP_k\)의 크기와 비용}
 \[
