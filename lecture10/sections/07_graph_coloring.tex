@@ -11,10 +11,15 @@
 \centering\begin{tikzpicture}
 \node[gvertex](a)at(-2,1){A};\node[gvertex](b)at(0,2){B};\node[gvertex](c)at(2,1){C};\node[gvertex](d)at(0,-.5){D};
 \foreach \u/\v in{a/b,b/c,c/d,d/a,a/c}\draw[gedge](\u)--(\v);
-\only<2-|handout:1>{\node[gvertex,fill=red!20](aa)at(-2,1){A:1};}
-\only<3-|handout:1>{\node[gvertex,fill=AlgoBlue!18](bb)at(0,2){B:2};}
-\only<4|handout:0>{\node[gcycle](cc)at(2,1){C:1};\node[ssnote]at(4,-.5){A와 conflict \(\Rightarrow P\)};}
-\only<5|handout:1>{\node[gvertex,fill=green!15](cc)at(2,1){C:3};\node[gvertex,fill=AlgoBlue!18](dd)at(0,-.5){D:2};\node[ssinc]at(4,-.5){valid 3-coloring};}
+\only<1|handout:0>{\node[ssnote]at(4,-.5){order: A, B, C, D --- 아직 색이 없다};}
+\visible<2->{\node[gvertex,fill=red!20](aa)at(-2,1){A:1};}
+\only<2|handout:0>{\node[ssnote]at(4,-.5){A: 색 1 --- 이웃이 아직 없다};}
+\visible<3->{\node[gvertex,fill=AlgoBlue!18](bb)at(0,2){B:2};\node[font=\tiny,text=red!60!black,right=1mm of bb]{\(\times\)1};}
+\only<3|handout:0>{\node[ssnote]at(4,-.5){B: 색 1은 A와 충돌 \(\to\) 색 2};}
+\visible<4->{\node[gvertex,fill=green!15](cc)at(2,1){C:3};\node[font=\tiny,text=red!60!black,right=1mm of cc]{\(\times\)1 \(\times\)2};}
+\only<4|handout:0>{\node[ssnote]at(4,-.5){C: 색 1은 A와, 색 2는 B와 충돌 \(\to\) 색 3};}
+\visible<5->{\node[gvertex,fill=AlgoBlue!18](dd)at(0,-.5){D:2};\node[font=\tiny,text=red!60!black,right=1mm of dd]{\(\times\)1};}
+\only<5|handout:1>{\node[ssinc]at(4,-.5){valid 3-coloring};\node[font=\scriptsize]at(4,-1.3){D의 이웃은 A,C뿐 --- B=2지만 이웃 아님};}
 \end{tikzpicture}
 \end{frame}
 \begin{frame}{Coloring Pseudocode}
