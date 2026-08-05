@@ -7,13 +7,15 @@
 \begin{frame}{$n=3$의 핵심 상태}\centering
 \only<1|handout:0>{\textbf{초기 상태}: $H(3,L,R,M)$ 시작}
 \only<2|handout:0>{\textbf{첫 재귀 완료}: $H(2,L,M,R)$ — 3회 이동}
-\only<3|handout:1>{\textbf{전체 완료}: 큰 원판 이동 후 $H(2,M,R,L)$ — 총 7회}
+\only<3|handout:0>{\textbf{큰 원판 이동}: $L \to R$ — 4회째}
+\only<4|handout:1>{\textbf{전체 완료}: 큰 원판 이동 후 $H(2,M,R,L)$ — 총 7회}
 \vfill
 \begin{tikzpicture}[scale=1.28,transform shape]
 \foreach \x/\n in {0/L,3/M,6/R}{\draw[peg] (\x,0)--(\x,1.8);\draw[peg] (\x-1,0)--(\x+1,0);\node at (\x,-.3){\n};}
 \only<1|handout:0>{\draw[disk](-.9,.08)rectangle(.9,.3);\draw[disk](-.65,.32)rectangle(.65,.54);\draw[disk](-.4,.56)rectangle(.4,.78);}
 \only<2|handout:0>{\draw[disk](-.9,.08)rectangle(.9,.3);\draw[disk](2.35,.08)rectangle(3.65,.3);\draw[disk](2.6,.32)rectangle(3.4,.54);}
-\only<3|handout:1>{\draw[disk](5.1,.08)rectangle(6.9,.3);\draw[disk](5.35,.32)rectangle(6.65,.54);\draw[disk](5.6,.56)rectangle(6.4,.78);}
+\only<3|handout:0>{\draw[disk](5.1,.08)rectangle(6.9,.3);\draw[disk](2.35,.08)rectangle(3.65,.3);\draw[disk](2.6,.32)rectangle(3.4,.54);}
+\only<4|handout:1>{\draw[disk](5.1,.08)rectangle(6.9,.3);\draw[disk](5.35,.32)rectangle(6.65,.54);\draw[disk](5.6,.56)rectangle(6.4,.78);}
 \end{tikzpicture}
 \end{frame}
 \begin{frame}{Hanoi: 재귀 호출과 현재 작업}\centering
