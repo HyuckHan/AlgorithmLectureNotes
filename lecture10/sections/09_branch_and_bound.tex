@@ -90,7 +90,7 @@ LB(node)\ge INC\Rightarrow P
 \only<2-|handout:1>{\node[ssvalid](f)at(-2,-1){value 14};\draw[ssedge](a)--(f);}
 \only<3-|handout:1>{\node[ssinc]at(0,-2){INC = 14};}
 \only<4-|handout:1>{\node[ssbound]at(2,.5){P};\node[font=\scriptsize,text=violet]at(3.5,.5){UB 12 \(\le14\)};}
-\node[ssnote]at(0,-3){\only<1|handout:0>{root 확장}\only<2|handout:0>{feasible solution 발견}\only<3|handout:0>{incumbent 갱신}\only<4|handout:1>{더 좋아질 수 없는 B subtree prune}};
+\node[ssnote]at(0,-3){\only<1|handout:0>{root 확장}\only<2|handout:0>{feasible solution 발견}\only<3|handout:0>{incumbent 갱신}\only<4|handout:1>{UB 12인 subtree는 incumbent 14를 넘을 수 없어 prune}};
 \end{tikzpicture}
 \end{frame}
 \begin{frame}{Bound Quality}
