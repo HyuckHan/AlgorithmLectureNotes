@@ -7,7 +7,7 @@ failure[0]=-1,\qquad j\gets failure[j]
 \begin{block}{Lecture 9}본문과 Java/C 구현은 \(lps[0]=0\) convention만 사용한다.\end{block}
 \end{frame}
 \begin{frame}{Arbitrary-Precision Rolling Value}
-modulus 없이 \(d^m\) 크기의 정수를 유지하면 digit 수가 \(m\)과 함께 증가한다. 이때 곱셈·덧셈을 unit-cost로 보는 \(O(1)\) rolling update는 bit complexity 관점에서 성립하지 않을 수 있다.
+modulus 없이 \(base^m\) 크기의 정수를 유지하면 digit 수가 \(m\)과 함께 증가한다. 이때 곱셈·덧셈을 unit-cost로 보는 \(O(1)\) rolling update는 bit complexity 관점에서 성립하지 않을 수 있다.
 \begin{block}{세 층을 구분}수학적 modular arithmetic, fixed-width machine implementation의 intermediate overflow, arbitrary-precision bit complexity는 서로 다른 문제다.\end{block}
 \end{frame}
 \begin{frame}{BuildLPS의 연속 Fallback}

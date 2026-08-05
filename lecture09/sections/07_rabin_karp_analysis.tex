@@ -1,10 +1,10 @@
 \subsection{Rabin--Karp 분석과 활용}
 \begin{frame}{Rabin--Karp Pseudocode}
 \tiny\begin{algorithmic}[1]
-\Procedure{RabinKarp}{$T,P,d,q$}\State \(n\gets|T|,m\gets|P|,result\gets[]\)
+\Procedure{RabinKarp}{$T,P,base,q$}\State \(n\gets|T|,m\gets|P|,result\gets[]\)
 \If{\(m=0\)}\State\Return policy-defined result\EndIf
 \If{\(m>n\)}\State\Return \(result\)\EndIf
-\State \(h\gets d^{m-1}\bmod q;\ pHash,tHash\gets0\)
+\State \(h\gets base^{m-1}\bmod q;\ pHash,tHash\gets0\)
 \For{\(j\gets0\) to \(m-1\)}\State update \(pHash,tHash\) by Horner modulo \(q\)\EndFor
 \For{\(s\gets0\) to \(n-m\)}
 \If{\(pHash=tHash\) \textbf{ and } \Call{EqualAt}{$T,P,s$}}\State append \(s\)\EndIf
@@ -14,7 +14,7 @@
 \end{frame}
 \begin{frame}{고정 Rabin--Karp 예제}
 \[
-T=\texttt{acebbceeaabceedb},\quad P=\texttt{eeaab},\quad d=5,\ q=113.
+T=\texttt{acebbceeaabceedb},\quad P=\texttt{eeaab},\quad base=5,\ q=113.
 \]
 \[
 value(P)=3001,\quad pHash=3001\bmod113=63,\quad h=5^4\bmod113=60.

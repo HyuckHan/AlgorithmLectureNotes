@@ -1,19 +1,19 @@
 \subsection{Rolling Hash}
 \begin{frame}{Horner's Rule}
 \[
-value(x)=x[0]d^{m-1}+\cdots+x[m-1].
+value(x)=x[0]\cdot base^{m-1}+\cdots+x[m-1].
 \]
 \[
-v\gets0;\qquad v\gets d\,v+code(c)\quad\text{for each }c.
+v\gets0;\qquad v\gets base\cdot v+code(c)\quad\text{for each }c.
 \]
 \begin{block}{비용}power를 매번 만들지 않고 initial pattern/window value를 \(\Theta(m)\)에 계산한다.\end{block}
 \end{frame}
 \begin{frame}{Rolling Update 유도}
 \[
-current=value(T[s..s+m-1]),\qquad h=d^{m-1}.
+current=value(T[s..s+m-1]),\qquad h=base^{m-1}.
 \]
 \centering\begin{tikzpicture}
-\node[smhash]at(0,1){\only<1|handout:0>{\(current-leading\cdot h\)}\only<2|handout:0>{\(d(current-leading\cdot h)\)}\only<3|handout:1>{\(next=d(current-leading\cdot h)+trailing\)}};
+\node[smhash]at(0,1){\only<1|handout:0>{\(current-leading\cdot h\)}\only<2|handout:0>{\(base\cdot(current-leading\cdot h)\)}\only<3|handout:1>{\(next=base\cdot(current-leading\cdot h)+trailing\)}};
 \node[smnote]at(0,0){\only<1|handout:0>{leading contribution 제거}\only<2|handout:0>{남은 digits를 왼쪽 shift}\only<3|handout:1>{새 trailing character 추가}};
 \end{tikzpicture}
 \end{frame}
@@ -24,13 +24,13 @@ T[s..s+m-1]\longrightarrow T[s+1..s+m].
 \begin{center}
 \begin{tikzpicture}[node distance=6mm]
 \node[smhash] (remove) {old \(T[s]\) 기여 제거};
-\node[smhash,right=of remove] (multiply) {\(\times d\)};
+\node[smhash,right=of remove] (multiply) {\(\times base\)};
 \node[smhash,right=of multiply] (add) {new \(T[s+m]\) 추가};
 \draw[smarrow] (remove)--(multiply);
 \draw[smarrow] (multiply)--(add);
 \end{tikzpicture}
 \end{center}
-\begin{block}{재사용}이전 window value와 미리 계산한 \(h=d^{m-1}\)만 있으면 된다.\end{block}
+\begin{block}{재사용}이전 window value와 미리 계산한 \(h=base^{m-1}\)만 있으면 된다.\end{block}
 \begin{alertblock}{단서}큰 정수를 그대로 쓰면 arithmetic 자체가 constant time이 아닐 수 있다.\end{alertblock}
 \end{frame}
 \begin{frame}{Rolling-Hash Invariant}

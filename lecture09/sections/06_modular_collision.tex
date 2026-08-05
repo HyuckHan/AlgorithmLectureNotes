@@ -1,21 +1,21 @@
 \subsection{Modular Hash와 Collision}
 \begin{frame}{왜 Modulus가 필요한가?}
 \[
-value(x)=\Theta(d^m)\quad\Rightarrow\quad hash(x)=value(x)\bmod q.
+value(x)=\Theta(base^m)\quad\Rightarrow\quad hash(x)=value(x)\bmod q.
 \]
 \begin{itemize}
 \item modulus는 \textbf{저장되는 hash 값}을 \(0,\ldots,q-1\)로 제한한다.
 \item intermediate multiplication/subtraction은 구현에서 별도로 overflow를 피해야 한다.
-\item \(q\)가 작을수록 collision 가능성이 커지며 \(d,q\)와 input 가정이 expected cost에 영향을 준다.
+\item \(q\)가 작을수록 collision 가능성이 커지며 \(base,q\)와 input 가정이 expected cost에 영향을 준다.
 \end{itemize}
 \begin{block}{Lecture 9 C}portable modular add/subtract/multiply로 intermediate overflow 없이 수학적 modular arithmetic을 구현한다.\end{block}
 \end{frame}
 \begin{frame}{Modular Rolling Update}
 \[
-h=d^{m-1}\bmod q
+h=base^{m-1}\bmod q
 \]
 \[
-next=\bigl(d(current-code(T[s])h)+code(T[s+m])\bigr)\bmod q.
+next=\bigl(base\cdot(current-code(T[s])h)+code(T[s+m])\bigr)\bmod q.
 \]
 \begin{block}{정규화}\(\operatorname{normalizedMod}(x,q)=((x\bmod q)+q)\bmod q\).\end{block}
 \end{frame}
