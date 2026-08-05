@@ -1,5 +1,5 @@
 \begin{frame}{카드를 정리하듯 삽입한다}
-\centering\begin{tikzpicture}[x=1.35cm]\foreach \x/\v in {0/10,1/14,2/29,3/13}{\node[sort cell,minimum width=12mm,minimum height=13mm]at(\x,0){\v};}\draw[-Latex,AlgoOrange,very thick] (3,-.8) to[bend right=25] node[below]{insert} (1.5,-.8);\end{tikzpicture}
+\centering\begin{tikzpicture}[x=1.35cm]\foreach \x/\v in {0/10,1/14,2/29,3/13}{\node[sort cell,minimum width=12mm,minimum height=13mm]at(\x,0){\v};}\draw[-Latex,AlgoOrange,very thick] (3,.85) to[bend right=45] node[above,yshift=3mm]{insert} (0.5,.85);\end{tikzpicture}
 \vspace{3mm}\begin{block}{아이디어}새 key를 꺼내고, 큰 원소를 한 칸씩 shift하여 생긴 hole에 넣는다.\end{block}
 \end{frame}
 \begin{frame}{Insertion Sort의 Mission과 Invariant}
