@@ -14,7 +14,8 @@ shift[c]=m-1-\max\{j<m-1:P[j]=c\},
 \only<1|handout:0>{
 \node[smverified]at(0,0){4};\node[smverified]at(1,0){3};\node[smverified]at(2,0){2};
 \node[smcell]at(3,0){?};\node[smcell]at(4,0){?};
-\node[smnote,text width=7cm]at(2,-1.05){\(j=0,1,2\): \(shift[T]=4,\ shift[I]=3,\ shift[G]=2\)};
+\node[smhash]at(2,-1.05){\(shift[\text{other}]=m=5\) (초기화값)};
+\node[smnote,text width=9.5cm]at(2,-1.85){\(j=0,1,2\): \(shift[T]=4,\ shift[I]=3,\ shift[G]=2\)};
 }
 \only<2|handout:0>{
 \node[smverified]at(0,0){4};\node[smverified]at(1,0){3};\node[smverified]at(2,0){2};\node[smactive]at(3,0){1};
@@ -25,8 +26,7 @@ shift[c]=m-1-\max\{j<m-1:P[j]=c\},
 \only<3|handout:1>{
 \node[smverified]at(0,0){4};\node[smverified]at(1,0){3};\node[smverified]at(2,0){2};\node[smverified]at(3,0){1};
 \node[sminactive]at(4,0){5};
-\node[smhash]at(2,-1.05){\(shift[\text{other}]=m=5\) (초기화값)};
-\node[smnote,text width=8cm]at(2,-1.85){\(R\)(index \(4=m-1\))은 \(j=0..m-2\) loop에서 제외 -- 계산이 아니라 초기화 default \(5\)에 남은 값};
+\node[smnote,text width=8cm]at(2,-1.05){\(shift[R]=5\): \(R\)(index \(4=m-1\))은 \(j=0..m-2\) loop에서 제외돼 초기화 default가 그대로 남는다};
 }
 \end{tikzpicture}
 \end{frame}
