@@ -15,11 +15,28 @@ int sum(int n) {
 \end{frame}
 \begin{frame}{호출 스택: Push}\centering
 \begin{tikzpicture}[node distance=1.5mm,every node/.append style={font=\normalsize}]
-\node[stack] (a) {$sum(4)$: $4+\square$};
-\visible<2->{\node[stack,above=of a] (b) {$sum(3)$: $3+\square$};\node[stack,above=of b] (c) {$sum(2)$: $2+\square$};}
-\visible<3->{\node[stack,above=of c] (d) {$sum(1)$: $1+\square$};\node[stack,above=of d,fill=AlgoOrange!15] {$sum(0)$: return 0};}
+\path (-2.2,0)--(2.2,4.8);
+\only<1>{\node[stack,fill=AlgoOrange!15] at (0,.35) {$sum(4)$: $4+\square$};}
+\only<2>{
+  \node[stack] (a) at (0,.35) {$sum(4)$: $4+\square$};
+  \node[stack,above=of a,fill=AlgoOrange!15] {$sum(3)$: $3+\square$};}
+\only<3>{
+  \node[stack] (a) at (0,.35) {$sum(4)$: $4+\square$};
+  \node[stack,above=of a] (b) {$sum(3)$: $3+\square$};
+  \node[stack,above=of b,fill=AlgoOrange!15] {$sum(2)$: $2+\square$};}
+\only<4>{
+  \node[stack] (a) at (0,.35) {$sum(4)$: $4+\square$};
+  \node[stack,above=of a] (b) {$sum(3)$: $3+\square$};
+  \node[stack,above=of b] (c) {$sum(2)$: $2+\square$};
+  \node[stack,above=of c,fill=AlgoOrange!15] {$sum(1)$: $1+\square$};}
+\only<5>{
+  \node[stack] (a) at (0,.35) {$sum(4)$: $4+\square$};
+  \node[stack,above=of a] (b) {$sum(3)$: $3+\square$};
+  \node[stack,above=of b] (c) {$sum(2)$: $2+\square$};
+  \node[stack,above=of c] (d) {$sum(1)$: $1+\square$};
+  \node[stack,above=of d,fill=AlgoOrange!15] {$sum(0)$: return 0};}
 \end{tikzpicture}
-\vfill\only<1>{첫 호출}\only<2>{재귀 호출이 반복되어 frame이 쌓임}\only<3>{base case 도착}
+\vfill\only<1>{첫 호출: $sum(4)$ frame이 쌓인다}\only<2>{$sum(3)$ 호출 — frame이 하나 더}\only<3>{$sum(2)$ 호출}\only<4>{$sum(1)$ 호출}\only<5>{base case 도착: $sum(0)$은 재귀 없이 0을 반환}
 \end{frame}
 \begin{frame}{호출 스택: Pop}\centering
 \begin{columns}[c,onlytextwidth]
