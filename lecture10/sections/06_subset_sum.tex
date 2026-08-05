@@ -33,11 +33,34 @@ currentSum+remainingSum<W
 \end{algorithmic}
 \end{frame}
 \begin{frame}{Include/Exclude Tree: \([3,4,5,6]\), \(W=9\)}
-\centering\begin{tikzpicture}[level distance=11mm,sibling distance=34mm]
+\centering\resizebox{.94\linewidth}{!}{\begin{tikzpicture}[level distance=13mm,level 1/.style={sibling distance=95mm},level 2/.style={sibling distance=46mm},level 3/.style={sibling distance=18mm},level 4/.style={sibling distance=14mm}]
 \node[ssnode]{\(i0,s0,r18\)}
- child{node[sscurrent]{\(\{3\},s3\)} child{node[ssnode]{\(\{3,4\},s7\)} child{node[ssdead]{\(s12\)}} child{node[ssvalid]{\(\{3,6\}\)}}} child{node[ssdead]{\(\{3\},r5\)}}}
- child{node[ssnode]{\(\{\},s0\)} child{node[sscurrent]{\(\{4\},s4\)} child{node[ssvalid]{\(\{4,5\}\)}} child{node[ssdead]{\(r6<9\)}}}};
-\end{tikzpicture}
+ child{node[ssnode]{\(\{3\},s3,r15\)}
+   child{node[ssnode]{\(\{3,4\},s7,r11\)}
+     child{node[ssdead](c1){\(\{3,4,5\},s12\)}}
+     child{node[font=\scriptsize,text=AlgoGray]{\(\cdots\)} edge from parent[dashed]}
+   }
+   child{node[ssnode]{\(\{3\},s3,r11\)}
+     child{node[font=\scriptsize,text=AlgoGray]{\(\cdots\)} edge from parent[dashed]}
+     child{node[ssnode]{\(\{3\},s3,r6\)}
+       child{node[ssvalid]{\(\{3,6\},s9\)}}
+       child{node[font=\scriptsize,text=AlgoGray]{\(\cdots\)} edge from parent[dashed]}
+     }
+   }
+ }
+ child{node[ssnode]{\(\{\},s0,r15\)}
+   child{node[ssnode]{\(\{4\},s4,r11\)}
+     child{node[ssvalid]{\(\{4,5\},s9\)}}
+     child{node[font=\scriptsize,text=AlgoGray]{\(\cdots\)} edge from parent[dashed]}
+   }
+   child{node[ssnode]{\(\{\},s0,r11\)}
+     child{node[font=\scriptsize,text=AlgoGray]{\(\cdots\)} edge from parent[dashed]}
+     child{node[ssdead](c2){\(\{\},s0,r6\)}}
+   }
+ };
+\node[font=\scriptsize,text=red!70!black,below=.8mm of c1]{\(s>W\)};
+\node[font=\scriptsize,text=red!70!black,below=.8mm of c2]{\(s+r<W\)};
+\end{tikzpicture}}
 \end{frame}
 \begin{frame}{Subset Sum Trace}
 \centering\begin{tikzpicture}
