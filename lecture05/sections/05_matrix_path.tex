@@ -102,13 +102,15 @@ dp[3][3]=M[3][3]+\min(dp[2][3],dp[3][2])
 =3+\min(25,31)=28.
 \]
 \centering\begin{tikzpicture}[x=1.4cm]
-\node[dp dependency]at(1,1){25};\node[dp dependency]at(0,0){31};\node[dp current]at(1,0){28};
-\draw[dp edge](1,1)--node[right,font=\scriptsize]{chosen} (1,.45);
+\node[dp current]at(1,1){25};\node[dp dependency]at(0,0){31};\node[dp current]at(1,0){28};
+\draw[dp edge](1,1)--(1,.45);
+\node[above,font=\small]at(1,1.45){chosen};
 \draw[-Latex,AlgoGray](.45,0)--(.55,0);
 \end{tikzpicture}
 \end{frame}
 \begin{frame}{최소 경로 Reconstruction}
-\centering\begin{tikzpicture}[x=1.15cm,y=.85cm]
+\centering\begin{tikzpicture}[x=1.15cm,y=.85cm,y=1cm]
+\tikzset{dp path/.style={-Latex,ultra thick,draw=AlgoBlueTwo}}
 \foreach \r/\vals in {0/{6,7,12,5},1/{5,3,11,18},2/{7,17,3,3},3/{8,10,14,9}}
  \foreach \v [count=\c from 0] in \vals{\node[dp cell](m-\r-\c)at(\c,-\r){\v};}
 \foreach \x/\y in {0/0,0/-1,1/-1,2/-1,2/-2,3/-2,3/-3}
