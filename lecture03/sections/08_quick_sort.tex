@@ -13,14 +13,20 @@ $A[i+1..j-1]>pivot$,\; $A[j..high-1]$은 미처리,\; $A[high]$는 pivot.}
 \end{frame}
 \begin{frame}{Partition: 선택된 한쪽씩만 확정한다}
 \centering\begin{tikzpicture}[x=.94cm]
-\only<1>{\def\vals{{31,8,48,73,11,3,20,29,65,15}}\def\i{0}\def\j{1}\def\done{0}}
-\only<2>{\def\vals{{8,31,48,73,11,3,20,29,65,15}}\def\i{1}\def\j{5}\def\done{0}}
-\only<3>{\def\vals{{8,11,3,73,31,48,20,29,65,15}}\def\i{3}\def\j{9}\def\done{0}}
-\only<4>{\def\vals{{8,11,3,15,31,48,20,29,65,73}}\def\i{4}\def\j{0}\def\done{1}}
-\foreach \k in {1,...,10}{\pgfmathparse{\vals[\k-1]}\edef\v{\pgfmathresult}\ifnum\k=10\ifnum\done=0\node[sort pivot,minimum width=8mm]at(\k,0){\v};\else\node[sort cell,minimum width=8mm]at(\k,0){\v};\fi\else\ifnum\k=\i\node[sort current,minimum width=8mm]at(\k,0){\v};\else\node[sort cell,minimum width=8mm]at(\k,0){\v};\fi\fi}
+\only<1>{\def\vals{{31,8,48,73,11,3,20,29,65,15}}\def\i{0}\def\j{1}\def\swap{0}\def\done{0}}
+\only<2>{\def\vals{{8,31,48,73,11,3,20,29,65,15}}\def\i{1}\def\j{2}\def\swap{1}\def\done{0}}
+\only<3>{\def\vals{{8,31,48,73,11,3,20,29,65,15}}\def\i{1}\def\j{3}\def\swap{0}\def\done{0}}
+\only<4>{\def\vals{{8,31,48,73,11,3,20,29,65,15}}\def\i{1}\def\j{4}\def\swap{0}\def\done{0}}
+\only<5>{\def\vals{{8,11,48,73,31,3,20,29,65,15}}\def\i{2}\def\j{5}\def\swap{1}\def\done{0}}
+\only<6>{\def\vals{{8,11,3,73,31,48,20,29,65,15}}\def\i{3}\def\j{6}\def\swap{1}\def\done{0}}
+\only<7>{\def\vals{{8,11,3,73,31,48,20,29,65,15}}\def\i{3}\def\j{7}\def\swap{0}\def\done{0}}
+\only<8>{\def\vals{{8,11,3,73,31,48,20,29,65,15}}\def\i{3}\def\j{8}\def\swap{0}\def\done{0}}
+\only<9>{\def\vals{{8,11,3,73,31,48,20,29,65,15}}\def\i{3}\def\j{9}\def\swap{0}\def\done{0}}
+\only<10>{\def\vals{{8,11,3,15,31,48,20,29,65,73}}\def\i{4}\def\j{0}\def\swap{0}\def\done{1}}
+\foreach \k in {1,...,10}{\pgfmathparse{\vals[\k-1]}\edef\v{\pgfmathresult}\ifnum\k=10\ifnum\done=0\node[sort pivot,minimum width=8mm]at(\k,0){\v};\else\node[sort cell,minimum width=8mm]at(\k,0){\v};\fi\else\ifnum\k=\j\ifnum\swap=1\node[sort current,minimum width=8mm]at(\k,0){\v};\else\node[sort compared,minimum width=8mm]at(\k,0){\v};\fi\else\ifnum\k>\i\node[sort cell,minimum width=8mm]at(\k,0){\v};\else\node[sort active,minimum width=8mm]at(\k,0){\v};\fi\fi\fi}
 \ifnum\done=1\node[sort pivot,minimum width=8mm]at(4,0){15};\draw[decorate,decoration={brace,mirror,amplitude=5pt},AlgoOrange](.55,-.65)--(4.45,-.65)node[midway,below=5pt]{partition 완료};\fi
 \end{tikzpicture}
-\vspace{3mm}\only<1|handout:0>{pivot=15, scan 시작}\only<2|handout:0>{8은 왼쪽 경계 안으로}\only<3|handout:0>{11과 3까지 왼쪽으로}\only<4|handout:1>{pivot은 index 4에서 최종 위치}
+\vspace{3mm}\only<1|handout:0>{pivot=15, scan 시작: 31 > 15}\only<2|handout:0>{8 \(\le\) 15: 왼쪽 경계 안으로}\only<3-4|handout:0>{48, 73 > 15: 그대로 둔다}\only<5|handout:0>{11 \(\le\) 15: 왼쪽으로}\only<6|handout:0>{3 \(\le\) 15: 왼쪽으로}\only<7-9|handout:0>{20, 29, 65 > 15: 모두 그대로}\only<10|handout:1>{pivot은 index 4에서 최종 위치}
 \end{frame}
 \begin{frame}{균형이 성능을 결정한다}
 \begin{columns}\column{.48\textwidth}\only<1>{\begin{block}{Balanced}$n/2$와 $n/2$\\높이 $\Theta(\log n)$\end{block}}\only<2->{\begin{block}{Unbalanced}$0$과 $n-1$\\높이 $\Theta(n)$\end{block}}\column{.48\textwidth}\only<1>{\[T(n)=2T(n/2)+\Theta(n)\]}\only<2->{\[T(n)=T(n-1)+\Theta(n)\]}\end{columns}
