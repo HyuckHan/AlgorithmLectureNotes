@@ -26,12 +26,12 @@
 \end{tikzpicture}
 \end{frame}
 \begin{frame}{Hash Equality만으로는 부족하다}
-\begin{tikzpicture}[x=1.2cm]
-\node[smhash](p)at(0,0){\(h(P)=17\)};
-\node[smhash](w)at(4,0){\(h(window)=17\)};
+\centering\resizebox{\linewidth}{!}{\begin{tikzpicture}[x=1.2cm]
+\node[smhash](p)at(0,0){\(P=\texttt{abe},\ value=9,\ h(P)=9\)};
+\node[smhash](w)at(7,0){\(window=\texttt{eec},\ value=122,\ h=122\bmod113=9\)};
 \draw[smarrow](p)--node[above]{candidate \(\candidatebadge\)}(w);
-\node[smnote]at(2,-1){character-by-character verification};
-\end{tikzpicture}
+\node[smnote]at(3.5,-1){문자 비교 결과 \texttt{abe}\(\ne\)\texttt{eec} --- spurious hit \(\collisionbadge\)};
+\end{tikzpicture}}
 \begin{alertblock}{교정}\texttt{basicRabinKarp}처럼 hash equality만으로 match를 확정하면 exact matcher가 아니다.\end{alertblock}
 \end{frame}
 \begin{frame}{Rabin--Karp Checkpoint}
