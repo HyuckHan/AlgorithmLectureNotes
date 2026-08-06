@@ -13,9 +13,9 @@
 % times per overlay state, which makes dvisvgm's <defs> glyph-collection
 % order for that glyph nondeterministic across otherwise-identical
 % compiles. A path has no glyph entry, so the byte output is stable.
-% (Defined inside the tikzpicture, not before the frame, because
-% extract_tikz.py's TIKZ_RE only captures \begin{tikzpicture}..\end{tikzpicture}
-% verbatim -- a \newcommand outside that span is invisible to the pipeline.)
+% (Defined inside the picture, not before the frame, because the
+% webbook's figure-extraction pipeline only sees this picture's own
+% span verbatim -- a \newcommand outside it is invisible there.)
 \newcommand{\rejectmark}{\tikz[baseline=(current bounding box.center)]{\draw[red!60!black,line width=.5pt](0,0)--(1.3mm,1.3mm);\draw[red!60!black,line width=.5pt](0,1.3mm)--(1.3mm,0);}}
 \node[gvertex](a)at(-2,1){A};\node[gvertex](b)at(0,2){B};\node[gvertex](c)at(2,1){C};\node[gvertex](d)at(0,-.5){D};
 \foreach \u/\v in{a/b,b/c,c/d,d/a,a/c}\draw[gedge](\u)--(\v);
