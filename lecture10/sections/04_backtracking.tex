@@ -25,7 +25,7 @@
 \centering\begin{tikzpicture}
 \node[ssbox](s)at(-3,1){state \(S\)};\node[sscurrent](c)at(0,1){\(S+d\)};\node[ssbox](r)at(3,1){recursive result};
 \draw[ssactiveedge](s)--node[above,font=\small]{Apply \(d\)}(c);
-\draw[ssactiveedge](c)--node[above,font=\small]{Recurse}(r);
+\draw[ssactiveedge](c)--node[above,font=\small,yshift=1.5mm]{Recurse}(r);
 \draw[ssactiveedge](r)to[bend left=35]node[above,font=\small]{Undo \(d\): exactly \(S\)}(s);
 \visible<1->{\node[ssnote]at(0,-.5){decision을 state에 반영};}
 \visible<2->{\node[ssnote]at(0,-1.5){promising이면 재귀};}
