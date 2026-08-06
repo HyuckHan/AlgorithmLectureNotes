@@ -36,7 +36,7 @@ int bsearch(int A[], int x, int begin, int end) {
   \node[below=5pt of a0,font=\small] {$begin=0$};
   \node[below=5pt of a3,font=\small,text=AlgoOrangeText] {$mid=3$};
   \node[below=5pt of a6,font=\small] {$end=6$};
-  \node[above=3pt of a3,text=AlgoOrangeText,font=\small\bfseries] {$A[mid]=12<x$};
+  \node[above=16pt of a3,text=AlgoOrangeText,font=\small\bfseries] {$A[mid]=12<x$};
 }
 \only<2|handout:0>{
   \foreach \i/\v in {0/2,1/5,2/8,3/12}{
@@ -46,7 +46,7 @@ int bsearch(int A[], int x, int begin, int end) {
   \node[draw=AlgoOrange,very thick,minimum width=1.08cm,minimum height=.78cm,fill=AlgoOrange!20] at (5,0) {\bfseries 23};
   \node[below=5pt of a4,font=\small] {$begin=4$};
   \node[below=5pt of a6,font=\small] {$end=6$};
-  \node[above=3pt of a5,text=AlgoOrangeText,font=\small\bfseries] {$mid=5:\ A[mid]=23>x$};
+  \node[above=16pt of a5,text=AlgoOrangeText,font=\small\bfseries] {$mid=5:\ A[mid]=23>x$};
 }
 \only<3|handout:1>{
   \foreach \i/\v in {0/2,1/5,2/8,3/12,5/23,6/38}{
@@ -55,7 +55,7 @@ int bsearch(int A[], int x, int begin, int end) {
   }
   \node[draw=AlgoOrange,very thick,minimum width=1.08cm,minimum height=.78cm,fill=AlgoOrange!25] at (4,0) {\bfseries 16};
   \node[below=5pt of a4,font=\small,text=AlgoOrangeText] {$begin=mid=end=4$};
-  \node[above=3pt of a4,text=AlgoOrangeText,font=\small\bfseries] {$mid=4:\ A[mid]=x$};
+  \node[above=16pt of a4,text=AlgoOrangeText,font=\small\bfseries] {$mid=4:\ A[mid]=x$};
 }
 \end{tikzpicture}
 \vfill\normalsize 비교 결과에 맞는 \textbf{한쪽 inclusive 구간만} 다음 호출로 넘긴다.
