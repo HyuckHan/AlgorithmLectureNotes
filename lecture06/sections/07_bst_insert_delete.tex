@@ -9,7 +9,7 @@
 \State $y\gets\NIL$; $x\gets T.root$
 \While{$x\ne\NIL$}
 \State $y\gets x$
-\If{$z.key=x.key$}\State\Return \texttt{DUPLICATE}\EndIf
+\If{$z.key=x.key$}\State\Return $\Duplicate$\EndIf
 \If{$z.key<x.key$}\State $x\gets x.left$\Else\State $x\gets x.right$\EndIf
 \EndWhile
 \State $z.parent\gets y$
@@ -52,7 +52,7 @@
 \item 마지막 $y$의 올바른 NIL side에 연결하면 모든 ancestor bound 유지
 \item path length만큼 비교 → $\Theta(h)$
 \end{itemize}
-\stcheckpoint{\textbf{INSERT 14를 시도하면?} 기존 node 14에 도달해 \texttt{DUPLICATE}를 반환하고 tree는 바뀌지 않는다.}
+\stcheckpoint{\textbf{INSERT 14를 시도하면?} 기존 node 14에 도달해 $\Duplicate$를 반환하고 tree는 바뀌지 않는다.}
 \end{frame}
 \begin{frame}{DELETE의 세 Case}
 \begin{enumerate}\item child 0개: node 제거\item child 1개: child subtree를 target 위치로 올림\item child 2개: right subtree minimum인 successor로 대체\end{enumerate}
