@@ -47,10 +47,12 @@
 \end{frame}
 \begin{frame}{State-Space Tree의 구조}
 \centering
-\begin{tikzpicture}[level distance=10mm,sibling distance=29mm]
+\begin{tikzpicture}[level distance=10mm,
+  level 1/.style={sibling distance=34mm},
+  level 2/.style={sibling distance=17mm}]
 \node[ssnode,label=above:{root: 결정 0개}]{\(\varnothing\)}
  child{node[ssnode]{A} child{node[ssvalid]{A,C} edge from parent node[left,font=\tiny]{choose C}} child{node[ssdead]{A,D} edge from parent node[right,font=\tiny]{choose D}} edge from parent node[left,font=\tiny]{choose A}}
- child{node[ssnode]{B} child{node[ssnode]{B,C}} child{node[ssbound]{B,D}} edge from parent node[right,font=\tiny]{choose B}};
+ child{node[ssnode]{B} child{node[ssnode]{B,C} edge from parent node[left,font=\tiny]{choose C}} child{node[ssbound]{B,D} edge from parent node[right,font=\tiny]{choose D}} edge from parent node[right,font=\tiny]{choose B}};
 \node[font=\scriptsize]at(0,-3.3){level/depth = 내린 결정 수 \qquad leaf = complete 또는 더 확장할 수 없는 state};
 \end{tikzpicture}
 \end{frame}
