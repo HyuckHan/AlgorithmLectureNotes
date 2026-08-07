@@ -29,7 +29,12 @@ c_1=c_2\quad\text{or}\quad |r_1-r_2|=|c_1-c_2|
 \visible<4->{\node[board,fill=green!12,draw=green!45!black,ultra thick]at(0,1){Q};}
 \only<4|handout:0>{\node[ssnote]at(6,1.5){row 2: col 0 --- 앞의 두 퀸과 무충돌};}
 \visible<5->{\node[board,fill=green!12,draw=green!45!black,ultra thick]at(2,0){Q};}
-\only<5|handout:1>{\node[ssinc]at(6,1.5){\(\checkmark [1,3,0,2]\)};}
+\only<5|handout:1>{%
+\node[board,fill=green!12,draw=green!45!black,ultra thick]at(1,3){Q};
+\node[board,fill=green!12,draw=green!45!black,ultra thick]at(3,2){Q};
+\node[board,fill=green!12,draw=green!45!black,ultra thick]at(0,1){Q};
+\node[board,fill=green!12,draw=green!45!black,ultra thick]at(2,0){Q};
+\node[ssinc]at(6,1.5){\(\checkmark [1,3,0,2]\)};}
 \end{tikzpicture}
 \end{frame}
 \begin{frame}{4-Queens Partial State Tree}
