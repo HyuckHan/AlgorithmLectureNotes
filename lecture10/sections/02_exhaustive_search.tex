@@ -19,7 +19,7 @@
 \only<3-|handout:1>{\node[ssvalid](ll)at(-3,-.8){LL};\node[ssdead](lr)at(-1,-.8){LR};
 \draw[ssactiveedge](left)--(ll);\draw[ssedge](left)--(lr);}
 \only<4-|handout:1>{\node[ssvalid](rl)at(1,-.8){RL};\node[ssbound](rr)at(3,-.8){RR};
-\draw[ssedge](right)--(rl);\draw[ssedge](right)--(rr);}
+\draw[ssactiveedge](root)--(right);\draw[ssactiveedge](right)--(rl);\draw[ssedge](right)--(rr);}
 \node[ssnote]at(0,-3){\only<1|handout:0>{root만 생성}\only<2|handout:0>{필요한 두 child 생성}\only<3|handout:0>{DFS는 L subtree부터}\only<4|handout:1>{prune node의 후손은 생성하지 않음}};
 \end{tikzpicture}
 \end{frame}
