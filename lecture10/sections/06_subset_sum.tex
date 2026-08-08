@@ -38,28 +38,28 @@ currentSum+remainingSum<W
  child{node[ssnode]{\(\{3\},s3,r15\)}
    child{node[ssnode]{\(\{3,4\},s7,r11\)}
      child{node[ssdead](c1){\(\{3,4,5\},s12\)}}
-     child{node[font=\scriptsize,text=AlgoGray]{\(\cdots\)} edge from parent[dashed]}
+     child{node[font=\footnotesize\bfseries,text=AlgoGray]{\(\cdots\)} edge from parent[dashed]}
    }
    child{node[ssnode]{\(\{3\},s3,r11\)}
-     child{node[font=\scriptsize,text=AlgoGray]{\(\cdots\)} edge from parent[dashed]}
+     child{node[font=\footnotesize\bfseries,text=AlgoGray]{\(\cdots\)} edge from parent[dashed]}
      child{node[ssnode]{\(\{3\},s3,r6\)}
        child{node[ssvalid]{\(\{3,6\},s9\)}}
-       child{node[font=\scriptsize,text=AlgoGray]{\(\cdots\)} edge from parent[dashed]}
+       child{node[font=\footnotesize\bfseries,text=AlgoGray]{\(\cdots\)} edge from parent[dashed]}
      }
    }
  }
  child{node[ssnode]{\(\{\},s0,r15\)}
    child{node[ssnode]{\(\{4\},s4,r11\)}
      child{node[ssvalid]{\(\{4,5\},s9\)}}
-     child{node[font=\scriptsize,text=AlgoGray]{\(\cdots\)} edge from parent[dashed]}
+     child{node[font=\footnotesize\bfseries,text=AlgoGray]{\(\cdots\)} edge from parent[dashed]}
    }
    child{node[ssnode]{\(\{\},s0,r11\)}
-     child{node[font=\scriptsize,text=AlgoGray]{\(\cdots\)} edge from parent[dashed]}
+     child{node[font=\footnotesize\bfseries,text=AlgoGray]{\(\cdots\)} edge from parent[dashed]}
      child{node[ssdead](c2){\(\{\},s0,r6\)}}
    }
  };
-\node[font=\scriptsize,text=red!70!black,below=.8mm of c1]{\(s>W\)};
-\node[font=\scriptsize,text=red!70!black,below=.8mm of c2]{\(s+r<W\)};
+\node[font=\footnotesize\bfseries,text=red!70!black,below=.8mm of c1]{\(s>W\)};
+\node[font=\footnotesize\bfseries,text=red!70!black,below=.8mm of c2]{\(s+r<W\)};
 \end{tikzpicture}}
 \end{frame}
 \begin{frame}{Subset Sum Trace}
