@@ -48,8 +48,8 @@ fractional optimum은 0/1 feasible set을 포함하는 relaxation의 optimum이�
 \foreach \u/\v in{r/a,r/na,a/ab,a/anb,ab/abc,ab/abnc,anb/ac,na/p}\draw[ssedge](\u)--(\v);
 \node[font=\scriptsize,text=red!70!black,below=1mm of abc]{w>W};
 \node[font=\scriptsize,text=red!70!black,below=1mm of abnc]{UB80\(\le\)90};
-\node[font=\scriptsize]at(0,-3.6){node label: weight / profit / UB};
-\node[font=\scriptsize]at(0,-4){P = prune,\ \ w>W = 용량 초과로 폐기};
+\node[font=\scriptsize\bfseries]at(0,-3.6){node label: weight / profit / UB};
+\node[font=\scriptsize\bfseries]at(0,-4){P = prune,\ \ w>W = 용량 초과로 폐기};
 \end{tikzpicture}}
 \end{frame}
 \begin{frame}{Knapsack Invariants와 Bound 검증}
