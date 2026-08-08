@@ -46,10 +46,10 @@ fractional optimum은 0/1 feasible set을 포함하는 relaxation의 optimum이�
 \node[ssdead](abc)at(-4.8,-2.1){17/-};\node[ssbound](abnc)at(-2.8,-2.1){12/80/80};
 \node[ssvalid](ac)at(-.5,-2.1){12/90/90};\node[ssbound](p)at(2,-2.1){P};
 \foreach \u/\v in{r/a,r/na,a/ab,a/anb,ab/abc,ab/abnc,anb/ac,na/p}\draw[ssedge](\u)--(\v);
-\node[font=\tiny,text=red!70!black,below=1mm of abc]{w>W};
-\node[font=\tiny,text=red!70!black,below=1mm of abnc]{UB80\(\le\)90};
-\node[font=\tiny]at(0,-3.6){node label: weight / profit / UB};
-\node[font=\tiny]at(0,-4){P = prune,\ \ w>W = 용량 초과로 폐기};
+\node[font=\scriptsize,text=red!70!black,below=1mm of abc]{w>W};
+\node[font=\scriptsize,text=red!70!black,below=1mm of abnc]{UB80\(\le\)90};
+\node[font=\scriptsize]at(0,-3.6){node label: weight / profit / UB};
+\node[font=\scriptsize]at(0,-4){P = prune,\ \ w>W = 용량 초과로 폐기};
 \end{tikzpicture}}
 \end{frame}
 \begin{frame}{Knapsack Invariants와 Bound 검증}
